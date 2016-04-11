@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "browserify -t [ stringify --extensions [.html] ] index.js -o build.js",
+    "watch": "watchify -t [ stringify --extensions [.html] ] index.js -o build.js -d"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,14 @@
   "bugs": {
     "url": "https://github.com/TehShrike/revelation-visualized/issues"
   },
-  "homepage": "https://github.com/TehShrike/revelation-visualized#readme"
+  "homepage": "https://github.com/TehShrike/revelation-visualized#readme",
+  "dependencies": {
+    "browserify": "13.0.0",
+    "pickering-majority-text-revelation": "1.0.0",
+    "ractive": "0.7.3",
+    "stringify": "5.1.0"
+  },
+  "devDependencies": {
+    "watchify": "3.7.0"
+  }
 }
