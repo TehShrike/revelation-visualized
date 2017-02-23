@@ -20,7 +20,7 @@
   "homepage": "https://github.com/TehShrike/revelation-visualized#readme",
   "dependencies": {
     "browserify": "13.0.0",
-    "pickering-majority-text-revelation": "1.0.0",
+    "pickering-majority-text-revelation": "~1.1.3",
     "ractive": "0.7.3",
     "stringify": "5.1.0"
   },
