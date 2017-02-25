@@ -1,3 +1,5 @@
+const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
+
 module.exports = [
 	{
 		identifier: 'A',
@@ -26,7 +28,7 @@ module.exports = [
 		identifier: 'C',
 		title: 'Second Septet – Seven Seals',
 		description: 'Legal Judgments to be Executed Against Church’s Persecutors',
-		range: r([ 4, 1 ], [ 7, 17 ]),
+		range: r([ 4, 1 ], [ 8, 1 ]),
 		introduction: {
 			title: 'Introduction to the seven seals – Christ is on His throne and is governing all of history',
 			range: r([ 4, 1 ], [ 5, 14 ])
@@ -34,7 +36,7 @@ module.exports = [
 		subsections: [
 			s('Seal 1 - the white horse', r([ 6, 1 ], [ 6, 2 ]), 'a'),
 			s('Seal 2 - the red horse', r([ 6, 3 ], [ 6, 4 ]), 'b'),
-			s('Seal 3 - he black horse', r([ 6, 5 ], [ 6, 6 ]), 'c'),
+			s('Seal 3 - the black horse', r([ 6, 5 ], [ 6, 6 ]), 'c'),
 			s('Seal 4 - the yellowish-green horse', r([ 6, 7 ], [ 6, 8 ]), 'd'),
 			s('Seal 5 - the souls under the altar', r([ 6, 9 ], [ 6, 11 ]), 'e'),
 			s('Seal 6 - the earthquake', r([ 6, 12 ], [ 6, 17 ]), 'f'),
@@ -94,7 +96,7 @@ module.exports = [
 	}, {
 		identifier: 'D',
 		title: 'Fifth Septet – Seven Bowls of Wrath Containing the Seven Plagues',
-		range: r([ 15, 2 ], [ 16, 21 ]),
+		range: r([ 15, 2 ], [ 16, 17 ]),
 		introduction: {
 			title: 'Introduction to the seven plagues – angels preparing for warfare; temple filled with God’s glory',
 			range: r([ 15, 2 ], [ 16, 1 ])
@@ -106,12 +108,12 @@ module.exports = [
 			s('Bowl 4 - On the sun', r([ 16, 8 ], [ 16, 9 ])),
 			s('Bowl 5 - On the throne of the beast', r([ 16, 10 ], [ 16, 11 ])),
 			s('Bowl 6 - On the Euphrates', r([ 16, 12 ], [ 16, 16 ])),
-			s('Bowl 7 - On the air – note that this 7th bowl seems to introduce all of the next septet (cf. 16:17-21)', r([ 16, 17 ], [ 16, 17 ])),
+			s('Bowl 7 - On the air – note that this 7th bowl seems to introduce all of the next septet (cf. 16:17-21)', r([ 16, 17 ], [ 16, 17 ]))
 		)
 	}, {
 		identifier: 'C',
 		title: 'Sixth Septet – Seven Condemnations of Babylon',
-		range: r([ 16, 17 ], [ 19, 5 ]),
+		range: r([ 16, 17 ], [ 19, 10 ]),
 		introduction: {
 			title: 'Introduction to the seven condemnations – Even with Roman support, Jerusalem is no match for Christ',
 			range: r([ 16, 17 ], [ 16, 21 ])
@@ -123,7 +125,7 @@ module.exports = [
 			s('Ungodly statist/commercial alliance', r([ 18, 9 ], [ 18, 20 ])),
 			s('The finality of Babylon’s fall', r([ 18, 21 ], [ 18, 24 ])),
 			s('All heaven agreeing with her judgment', r([ 19, 1 ], [ 19, 4 ])),
-			s('The death of the harlot is followed by the marriage of the Lamb', r([ 19, 5 ], [ 19, 10 ])),
+			s('The death of the harlot is followed by the marriage of the Lamb', r([ 19, 5 ], [ 19, 10 ]))
 		)
 	}, {
 		identifier: 'B',
@@ -140,7 +142,7 @@ module.exports = [
 			s('All things made new', r([ 21, 1 ], [ 21, 8 ])),
 			s('The New Jerusalem as the spotless bride', r([ 21, 9 ], [ 21, 27 ])),
 			s('The river of life', r([ 22, 1 ], [ 22, 5 ])),
-			s('Reiteration that Christ will come soon to finish the old and to continue the renewal of all things', r([ 22, 6 ], [ 22, 17 ])),
+			s('Reiteration that Christ will come soon to finish the old and to continue the renewal of all things', r([ 22, 6 ], [ 22, 17 ]))
 		)
 	}, {
 		identifier: 'A',
@@ -149,13 +151,13 @@ module.exports = [
 	}
 ]
 
-const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
 function makeSubsections(...subsections) {
 	return subsections.map(({ title, range }, i) => {
+		const identifier = identifiers[i]
 		return {
 			title,
 			range,
-			identifier: identifiers[i]
+			identifier
 		}
 	})
 }
