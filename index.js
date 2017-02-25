@@ -1,7 +1,7 @@
 const Ractive = require('ractive')
 const template = require('./revelation.html')
 const revelation = require('pickering-majority-text-revelation')
-
+const slugify = require('slugify')
 
 const transformedVerses = revelation.versesNoteReferencesAndHeaders.map(function(verseChunk) {
 	if (verseChunk.type === 'verse' && !/^\u2014/.test(verseChunk.text)) {
@@ -34,13 +34,30 @@ transformedVerses.forEach(function(chunk) {
 	}
 })
 
-console.log(allStuff)
+// console.log(allStuff)
+
+const colors = [
+	"#018d5d",
+	"#ba4460",
+	"#9ea946",
+	"#00479f",
+	"#c26939",
+	"#8188df",
+	"#ee6bd4"
+]
+
+function headerToSlug(header) {
+	return `header-${slugify(header.toLowerCase())}`
+}
 
 new Ractive({
 	el: '#verses',
 	template: template,
 	data: {
 		versesNoteReferencesAndHeaders: allStuff,
-		notes: revelation.notes
+		notes: revelation.notes,
+		colors,
+		headerToSlug
 	}
 })
+

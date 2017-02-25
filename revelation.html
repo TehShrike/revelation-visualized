@@ -1,11 +1,11 @@
 {{#versesNoteReferencesAndHeaders}}
 	{{#if type === 'header'}}
-		<h2>{{text}}</h2>
+		<h2 id="{{headerToSlug(text)}}">{{text}}</h2>
 	{{elseif type === 'paragraph'}}
 		<p>
 		{{#contents}}
 			{{#if type === 'verse'}}
-				<span chapter-number="{{chapterNumber}}" verse-number="{{verseNumber}}">
+				<span data-chapter-number="{{chapterNumber}}" data-verse-number="{{verseNumber}}">
 					{{text}}
 				</span>
 			{{/if}}
