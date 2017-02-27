@@ -1,15 +1,18 @@
-{{#versesNoteReferencesAndHeaders}}
-	{{#if type === 'header'}}
-		<h2 id="{{headerToSlug(text)}}">{{text}}</h2>
-	{{elseif type === 'paragraph'}}
-		<p>
-		{{#contents}}
-			{{#if type === 'verse'}}
-				<span data-chapter-number="{{chapterNumber}}" data-verse-number="{{verseNumber}}">
-					{{text}}
-				</span>
-			{{/if}}
-		{{/contents}}
-		</p>
-	{{/if}}
-{{/versesNoteReferencesAndHeaders}}
+<div data-chiasm-selected="{{!!currentChiasm}}">
+	{{#each structuredText as outerChiasm}}
+		<div
+			class="chiasm-section"
+			data-is-selected="{{currentChiasm && currentChiasm === identifier}}"
+		>
+			<div
+				class="chiasm-color-bar"
+				style="background-color: {{getChiasmColor(identifier)}}"
+				on-click="@this.setChiasm(identifier)"
+			>
+			</div>
+			<div class="chiasm-text">
+				<Paragraphs verses="{{outerChiasm.verses}}" />
+			</div>
+		</div>
+	{{/each}}
+</div>

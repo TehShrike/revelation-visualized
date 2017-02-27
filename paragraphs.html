@@ -1,0 +1,15 @@
+{{#each paragraphs as paragraph}}
+	<p>
+		{{#each paragraph as chunk}}
+			{{#if type === 'verse'}}
+				<span
+				data-chapter-number="{{chapterNumber}}"
+				data-verse-number="{{verseNumber}}"
+				data-section-number="{{sectionNumber}}"
+				>
+					{{text}}
+				</span>
+			{{/if}}
+		{{/each}}
+	</p>
+{{/each}}
