@@ -2,12 +2,12 @@
 	{{#each structuredText as outerChiasm}}
 		<div
 			class="chiasm-section"
-			data-is-selected="{{currentChiasm && currentChiasm === identifier}}"
+			data-is-selected="{{currentChiasm && currentChiasm === outerChiasm.identifier}}"
 		>
 			<div
 				class="chiasm-color-bar"
-				style="background-color: {{getChiasmColor(identifier)}}"
-				on-click="@this.setChiasm(identifier)"
+				style="background-color: {{getChiasmColor(outerChiasm.identifier)}}"
+				on:click="setChiasm(outerChiasm.identifier)"
 			>
 			</div>
 			<div class="chiasm-text">
@@ -15,11 +15,62 @@
 			</div>
 			<div
 				class="chiasm-header-bar"
-				style="color: {{getChiasmColor(identifier)}}"
+				style="color: {{getChiasmColor(outerChiasm.identifier)}}"
 			>
-				<h1>{{title}}</h1>
-				<h2>{{description}}</h2>
+				<h1>{{outerChiasm.title}}</h1>
+				<h2>{{outerChiasm.description}}</h2>
 			</div>
 		</div>
 	{{/each}}
 </div>
+
+<script>
+const Paragraphs = require('./paragraphs.html')
+
+const colors = [
+	'#018d5d',
+	'#ba4460',
+	'#9ea946',
+	'#00479f',
+	'#c26939',
+	'#8188df',
+	'#ee6bd4'
+]
+const chiasmColors = {
+	a: 0,
+	b: 1,
+	c: 2,
+	d: 3,
+	e: 4,
+	f: 5,
+	g: 6,
+	h: 7
+}
+
+export default {
+	data() {
+		return {
+
+		}
+	},
+	components: {
+		Paragraphs
+	},
+	methods: {
+		setChiasm(identifier) {
+			const currentChiasm = this.get('currentChiasm')
+
+			const newChiasm = currentChiasm === identifier ? null : identifier
+
+			this.set({ currentChiasm: newChiasm })
+		}
+	},
+	helpers: {
+		getChiasmColor(identifier) {
+			const key = identifier[identifier.length - 1].toLowerCase()
+			const colorIndex = chiasmColors[key]
+			return colors[colorIndex]
+		}
+	}
+}
+</script>

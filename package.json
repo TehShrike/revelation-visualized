@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "browserify -t [ stringify --extensions [.html] ] index.js -o build.js",
-    "watch": "watchify -t [ stringify --extensions [.html] ] index.js -o build.js -d"
+    "build": "browserify -t [ sveltify --extensions [.html] ] index.js -o build.js",
+    "watch": "watchify -t [ sveltify --extensions [.html] ] index.js -o build.js -d"
   },
   "repository": {
     "type": "git",
@@ -23,9 +23,9 @@
     "multi-part-range-compare": "1.0.1",
     "one-to-many-array-zip": "~1.0.2",
     "pickering-majority-text-revelation": "~1.2.0",
-    "ractive": "0.8.11",
     "slugify": "1.1.0",
-    "stringify": "5.1.0"
+    "svelte": "1.7.0",
+    "sveltify": "1.0.3"
   },
   "devDependencies": {
     "babel-preset-es2015": "6.22.0",

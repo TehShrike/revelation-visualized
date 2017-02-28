@@ -1,15 +1,55 @@
 {{#each paragraphs as paragraph}}
 	<p>
 		{{#each paragraph as chunk}}
-			{{#if type === 'verse'}}
+			{{#if chunk.type === 'verse'}}
 				<span
-				data-chapter-number="{{chapterNumber}}"
-				data-verse-number="{{verseNumber}}"
-				data-section-number="{{sectionNumber}}"
+				data-chapter-number="{{chunk.chapterNumber}}"
+				data-verse-number="{{chunk.verseNumber}}"
+				data-section-number="{{chunk.sectionNumber}}"
 				>
-					{{text}}
+					{{chunk.text}}
 				</span>
 			{{/if}}
 		{{/each}}
 	</p>
 {{/each}}
+
+<script>
+
+function splitIntoParagraphs(chunks) {
+	const paragraphs = []
+	let currentParagraph = []
+
+	function finishParagraph() {
+		if (currentParagraph.length > 0) {
+			paragraphs.push(currentParagraph)
+			currentParagraph = []
+		}
+	}
+
+	chunks.forEach(chunk => {
+		if (chunk.type === 'paragraph break') {
+			finishParagraph()
+		} else {
+			currentParagraph.push(chunk)
+		}
+	})
+
+	finishParagraph()
+
+	return paragraphs
+}
+
+export default {
+	data() {
+		return {
+			verses: []
+		}
+	},
+	computed: {
+		paragraphs(verses) {
+			return splitIntoParagraphs(verses)
+		}
+	}
+}
+</script>

@@ -19,4 +19,4 @@ const structuredText = addVersesToStructure(verses)
 
 console.log(structuredText)
 
-const ractive = makeMainView({ el: '#verses', structuredText })
+const component = makeMainView({ targetSelector: '#verses', structuredText })
