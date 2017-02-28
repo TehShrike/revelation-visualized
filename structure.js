@@ -10,7 +10,7 @@ module.exports = [
 		identifier: 'B',
 		title: 'First Septet – Seven Churches',
 		description: 'A Look at the Beginnings of the Church that Christ is Building',
-		range: r([ 1, 12 ], [ 3, 22 ]),
+		range: r([ 2, 1 ], [ 3, 22 ]),
 		introduction: {
 			title: 'Introduction to the seven churches – Christ is present with His church',
 			range: r([ 1, 12 ], [ 1, 20 ])
@@ -28,7 +28,7 @@ module.exports = [
 		identifier: 'C',
 		title: 'Second Septet – Seven Seals',
 		description: 'Legal Judgments to be Executed Against Church’s Persecutors',
-		range: r([ 4, 1 ], [ 8, 1 ]),
+		range: r([ 6, 1 ], [ 8, 1 ]),
 		introduction: {
 			title: 'Introduction to the seven seals – Christ is on His throne and is governing all of history',
 			range: r([ 4, 1 ], [ 5, 14 ])
@@ -47,7 +47,7 @@ module.exports = [
 		identifier: 'D',
 		title: 'Third Septet – Seven Trumpets',
 		description: 'The War Against the Church’s Persecutors',
-		range: r([ 8, 2 ], [ 11, 19 ]),
+		range: r([ 8, 7 ], [ 11, 19 ]),
 		introduction: {
 			title: 'Introduction to the seven trumpets – God ordains victory for the church through prayer',
 			range: r([ 8, 2 ], [ 8, 6 ])
@@ -66,7 +66,7 @@ module.exports = [
 		identifier: 'E',
 		title: 'Fourth Septet – Seven Visions',
 		description: 'From Total Defeat to Victory',
-		range: r([ 12, 1 ], [ 15, 4 ]),
+		range: r([ 13, 1 ], [ 15, 4 ]),
 		introduction: {
 			title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
 			range: r([ 12, 1 ], [ 12, 17 ]),
@@ -96,7 +96,7 @@ module.exports = [
 	}, {
 		identifier: 'D',
 		title: 'Fifth Septet – Seven Bowls of Wrath Containing the Seven Plagues',
-		range: r([ 15, 2 ], [ 16, 17 ]),
+		range: r([ 16, 2 ], [ 16, 17 ]),
 		introduction: {
 			title: 'Introduction to the seven plagues – angels preparing for warfare; temple filled with God’s glory',
 			range: r([ 15, 2 ], [ 16, 1 ])
@@ -113,7 +113,7 @@ module.exports = [
 	}, {
 		identifier: 'C',
 		title: 'Sixth Septet – Seven Condemnations of Babylon',
-		range: r([ 16, 17 ], [ 19, 10 ]),
+		range: r([ 17, 1 ], [ 19, 10 ]),
 		introduction: {
 			title: 'Introduction to the seven condemnations – Even with Roman support, Jerusalem is no match for Christ',
 			range: r([ 16, 17 ], [ 16, 21 ])
@@ -130,7 +130,7 @@ module.exports = [
 	}, {
 		identifier: 'B',
 		title: 'Seventh Septet – Seven visions of the victory of Christ’s Kingdom – The Church Militant & Triumphant',
-		range: r([ 19, 11 ], [ 22, 17 ]),
+		range: r([ 20, 1 ], [ 22, 17 ]),
 		introduction: {
 			title: 'Introduction to the seven New Covenant visions – Jesus proves that He is King of kings and Lord of lords',
 			range: r([ 19, 11 ], [ 19, 21 ])
