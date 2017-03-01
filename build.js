@@ -427,6 +427,10 @@ function applyComputations ( state, newState, oldState, isInitial ) {
 	if ( isInitial || ( 'querystringParameters' in newState && typeof state.querystringParameters === 'object' || state.querystringParameters !== oldState.querystringParameters ) ) {
 		state.currentChiasm = newState.currentChiasm = template.computed.currentChiasm( state.querystringParameters );
 	}
+	
+	if ( isInitial || ( 'currentChiasm' in newState && typeof state.currentChiasm === 'object' || state.currentChiasm !== oldState.currentChiasm ) ) {
+		state.getLinkParameters = newState.getLinkParameters = template.computed.getLinkParameters( state.currentChiasm );
+	}
 }
 
 var template = (function () {
@@ -439,16 +443,17 @@ const { Link } = require('lib/router-instance')
 const extractRangeFromVerses = require('lib/extract-range-from-verses')
 const getChiasmColor = require('lib/chiasm-color')
 
-function getLinkParameters(currentChiasm, chiasmIdentifier) {
-	return currentChiasm === chiasmIdentifier
-		? {}
-		: { chiasm: chiasmIdentifier }
-}
-
 return {
 	computed: {
 		currentChiasm: querystringParameters => {
 			return querystringParameters && querystringParameters.chiasm
+		},
+		getLinkParameters: currentChiasm => {
+			return chiasmIdentifier => {
+				return currentChiasm === chiasmIdentifier
+					? {}
+					: { chiasm: chiasmIdentifier }
+			}
 		}
 	},
 	components: {
@@ -459,8 +464,7 @@ return {
 	},
 	helpers: {
 		getChiasmColor,
-		extractRangeFromVerses,
-		getLinkParameters
+		extractRangeFromVerses
 	}
 }
 }());
@@ -468,7 +472,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-2726106839].chiasm-section, [svelte-2726106839] .chiasm-section {\n\tdisplay: flex;\n}\n\n[svelte-2726106839].section-body, [svelte-2726106839] .section-body {\n\tdisplay: flex;\n\tflex-grow: 1;\n\tflex-direction: column;\n}\n\n[svelte-2726106839].section-color-bar, [svelte-2726106839] .section-color-bar {\n\twidth: 50px;\n\tflex-shrink: 0;\n\tcursor: pointer;\n}\n\n[svelte-2726106839][data-chiasm-selected=true] [data-is-selected=false], [svelte-2726106839] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2726106839][data-chiasm-selected=true] [data-is-selected=true], [svelte-2726106839] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n";
+	style.textContent = "\n[svelte-2102259155].chiasm-section, [svelte-2102259155] .chiasm-section {\n\tdisplay: flex;\n}\n\n[svelte-2102259155].section-body, [svelte-2102259155] .section-body {\n\tdisplay: flex;\n\tflex-grow: 1;\n\tflex-direction: column;\n}\n\n[svelte-2102259155].section-color-bar, [svelte-2102259155] .section-color-bar {\n\twidth: 50px;\n\tflex-shrink: 0;\n\tcursor: pointer;\n}\n\n[svelte-2102259155][data-chiasm-selected=true] [data-is-selected=false], [svelte-2102259155] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2102259155][data-chiasm-selected=true] [data-is-selected=true], [svelte-2102259155] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -476,7 +480,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2726106839', '' );
+	setAttribute( div, 'svelte-2102259155', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -531,7 +535,7 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2726106839', '' );
+	setAttribute( div, 'svelte-2102259155', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
@@ -539,7 +543,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	var link_initialData = {
 		className: "section-color-bar",
 		style: "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) ),
-		parameters: template.helpers.getLinkParameters(root.currentChiasm, outerChiasm.identifier)
+		parameters: root.getLinkParameters(outerChiasm.identifier)
 	};
 	var link = new template.components.Link({
 		target: div,
@@ -550,7 +554,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-2726106839', '' );
+	setAttribute( div1, 'svelte-2102259155', '' );
 	div1.className = "section-body";
 	
 	appendNode( div1, div );
@@ -610,7 +614,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 			var link_changes = {};
 			
 			if ( 'structuredText' in changed ) link_changes.style = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
-			if ( 'currentChiasm' in changed||'structuredText' in changed ) link_changes.parameters = template.helpers.getLinkParameters(root.currentChiasm, outerChiasm.identifier);
+			if ( 'getLinkParameters' in changed||'structuredText' in changed ) link_changes.parameters = root.getLinkParameters(outerChiasm.identifier);
 			
 			if ( Object.keys( link_changes ).length ) link.set( link_changes );
 			
@@ -893,7 +897,7 @@ function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-2726106839', '' );
+	setAttribute( h1, 'svelte-2102259155', '' );
 	h1.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
