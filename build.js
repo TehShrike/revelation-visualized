@@ -105,7 +105,7 @@ function renderEachBlock ( root, eachBlock_value, paragraph, paragraph__index, c
 	var eachBlock1_iterations = [];
 	
 	for ( var i = 0; i < eachBlock1_value.length; i += 1 ) {
-		eachBlock1_iterations[i] = renderEachBlock1( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, eachBlock1_value[i], i, component );
+		eachBlock1_iterations[i] = renderEachBlock1( root,eachBlock_value,paragraph,paragraph__index, eachBlock1_value, eachBlock1_value[i], i, component );
 		eachBlock1_iterations[i].mount( eachBlock1_anchor.parentNode, eachBlock1_anchor );
 	}
 
@@ -126,10 +126,10 @@ function renderEachBlock ( root, eachBlock_value, paragraph, paragraph__index, c
 			
 			for ( var i = 0; i < eachBlock1_value.length; i += 1 ) {
 				if ( !eachBlock1_iterations[i] ) {
-					eachBlock1_iterations[i] = renderEachBlock1( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, eachBlock1_value[i], i, component );
+					eachBlock1_iterations[i] = renderEachBlock1( root,eachBlock_value,paragraph,paragraph__index, eachBlock1_value, eachBlock1_value[i], i, component );
 					eachBlock1_iterations[i].mount( eachBlock1_anchor.parentNode, eachBlock1_anchor );
 				} else {
-					eachBlock1_iterations[i].update( changed, root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, eachBlock1_value[i], i );
+					eachBlock1_iterations[i].update( changed, root,eachBlock_value,paragraph,paragraph__index, eachBlock1_value, eachBlock1_value[i], i );
 				}
 			}
 			
@@ -338,7 +338,7 @@ paragraphs.prototype.teardown = function teardown ( detach ) {
 	this._torndown = true;
 };
 
-function dispatchObservers( component, group, newState, oldState ) {
+var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
 	for ( var key in group ) {
 		if ( !( key in newState ) ) continue;
 
@@ -395,42 +395,72 @@ function createText( data ) {
 	return document.createTextNode( data );
 }
 
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
 module.exports = paragraphs;
 
 },{}],2:[function(require,module,exports){
 'use strict';
+
+function applyComputations ( state, newState, oldState, isInitial ) {
+	if ( isInitial || ( 'querystringParameters' in newState && typeof state.querystringParameters === 'object' || state.querystringParameters !== oldState.querystringParameters ) ) {
+		state.currentChiasm = newState.currentChiasm = template.computed.currentChiasm( state.querystringParameters );
+	}
+}
 
 var template = (function () {
 const Paragraphs = require('component/paragraphs.html')
 const Subsections = require('component/subsections.html')
 const SectionLine = require('component/section-line.html')
 
+const { Link } = require('lib/router-instance')
+
 const extractRangeFromVerses = require('lib/extract-range-from-verses')
 const getChiasmColor = require('lib/chiasm-color')
 
-return {
-	data() {
-		return {
+function getLinkParameters(currentChiasm, chiasmIdentifier) {
+	return currentChiasm === chiasmIdentifier
+		? {}
+		: { chiasm: chiasmIdentifier }
+}
 
+return {
+	computed: {
+		currentChiasm: querystringParameters => {
+			return querystringParameters && querystringParameters.chiasm
 		}
 	},
 	components: {
 		Paragraphs,
 		Subsections,
-		SectionLine
-	},
-	methods: {
-		setChiasm(identifier) {
-			const currentChiasm = this.get('currentChiasm')
-
-			const newChiasm = currentChiasm === identifier ? null : identifier
-
-			this.set({ currentChiasm: newChiasm })
-		}
+		SectionLine,
+		Link
 	},
 	helpers: {
 		getChiasmColor,
-		extractRangeFromVerses
+		extractRangeFromVerses,
+		getLinkParameters
 	}
 }
 }());
@@ -438,7 +468,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-218225389].chiasm-section, [svelte-218225389] .chiasm-section {\n\tdisplay: flex;\n}\n\n[svelte-218225389].section-body, [svelte-218225389] .section-body {\n\tdisplay: flex;\n\tflex-grow: 1;\n\tflex-direction: column;\n}\n\n[svelte-218225389].section-color-bar, [svelte-218225389] .section-color-bar {\n\twidth: 50px;\n\tflex-shrink: 0;\n\tcursor: pointer;\n}\n\n[svelte-218225389][data-chiasm-selected=true] [data-is-selected=false], [svelte-218225389] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-218225389][data-chiasm-selected=true] [data-is-selected=true], [svelte-218225389] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n";
+	style.textContent = "\n[svelte-2726106839].chiasm-section, [svelte-2726106839] .chiasm-section {\n\tdisplay: flex;\n}\n\n[svelte-2726106839].section-body, [svelte-2726106839] .section-body {\n\tdisplay: flex;\n\tflex-grow: 1;\n\tflex-direction: column;\n}\n\n[svelte-2726106839].section-color-bar, [svelte-2726106839] .section-color-bar {\n\twidth: 50px;\n\tflex-shrink: 0;\n\tcursor: pointer;\n}\n\n[svelte-2726106839][data-chiasm-selected=true] [data-is-selected=false], [svelte-2726106839] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2726106839][data-chiasm-selected=true] [data-is-selected=true], [svelte-2726106839] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -446,7 +476,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-218225389', '' );
+	setAttribute( div, 'svelte-2726106839', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -501,37 +531,29 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-218225389', '' );
+	setAttribute( div, 'svelte-2726106839', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
 	
-	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-218225389', '' );
-	div1.className = "section-color-bar";
-	div1.style.cssText = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
-	
-	function clickHandler ( event ) {
-		var eachBlock_value = this.__svelte.eachBlock_value, outerChiasm__index = this.__svelte.outerChiasm__index, outerChiasm = eachBlock_value[outerChiasm__index]
-		
-		component.setChiasm(outerChiasm.identifier);
-	}
-	
-	addEventListener( div1, 'click', clickHandler );
-	
-	div1.__svelte = {
-		eachBlock_value: eachBlock_value,
-		outerChiasm__index: outerChiasm__index
+	var link_initialData = {
+		className: "section-color-bar",
+		style: "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) ),
+		parameters: template.helpers.getLinkParameters(root.currentChiasm, outerChiasm.identifier)
 	};
+	var link = new template.components.Link({
+		target: div,
+		_root: component._root || component,
+		data: link_initialData
+	});
 	
-	appendNode( div1, div );
 	appendNode( createText( "\n\t\t\t" ), div );
 	
-	var div2 = createElement( 'div' );
-	setAttribute( div2, 'svelte-218225389', '' );
-	div2.className = "section-body";
+	var div1 = createElement( 'div' );
+	setAttribute( div1, 'svelte-2726106839', '' );
+	div1.className = "section-body";
 	
-	appendNode( div2, div );
+	appendNode( div1, div );
 	var sectionLine_yieldFragment = rendersectionLineYieldFragment( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
 	var sectionLine_initialData = {
@@ -539,15 +561,15 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 		description: outerChiasm.description
 	};
 	var sectionLine = new template.components.SectionLine({
-		target: div2,
+		target: div1,
 		_root: component._root || component,
 		_yield: sectionLine_yieldFragment,
 		data: sectionLine_initialData
 	});
 	
-	appendNode( createText( "\n\n\t\t\t\t" ), div2 );
+	appendNode( createText( "\n\n\t\t\t\t" ), div1 );
 	var ifBlock_anchor = createComment();
-	appendNode( ifBlock_anchor, div2 );
+	appendNode( ifBlock_anchor, div1 );
 	
 	function getBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
 		if ( outerChiasm.introduction ) return renderIfBlock_0;
@@ -558,9 +580,9 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	var ifBlock = currentBlock && currentBlock( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
 	if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
-	appendNode( createText( "\n\n\t\t\t\t" ), div2 );
+	appendNode( createText( "\n\n\t\t\t\t" ), div1 );
 	var ifBlock2_anchor = createComment();
-	appendNode( ifBlock2_anchor, div2 );
+	appendNode( ifBlock2_anchor, div1 );
 	
 	function getBlock2 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
 		if ( outerChiasm.subsections ) return renderIfBlock2_0;
@@ -585,10 +607,12 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 				setAttribute( div, 'data-is-selected', last_div_data_is_selected );
 			}
 			
-			div1.style.cssText = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+			var link_changes = {};
 			
-			div1.__svelte.eachBlock_value = eachBlock_value;
-			div1.__svelte.outerChiasm__index = outerChiasm__index;
+			if ( 'structuredText' in changed ) link_changes.style = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+			if ( 'currentChiasm' in changed||'structuredText' in changed ) link_changes.parameters = template.helpers.getLinkParameters(root.currentChiasm, outerChiasm.identifier);
+			
+			if ( Object.keys( link_changes ).length ) link.set( link_changes );
 			
 			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
 			
@@ -620,7 +644,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 		},
 		
 		teardown: function ( detach ) {
-			removeEventListener( div1, 'click', clickHandler );
+			link.teardown( false );
 			sectionLine.teardown( false );
 			if ( ifBlock ) ifBlock.teardown( false );
 			if ( ifBlock2 ) ifBlock2.teardown( false );
@@ -869,7 +893,7 @@ function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-218225389', '' );
+	setAttribute( h1, 'svelte-2726106839', '' );
 	h1.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -902,7 +926,8 @@ function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, ou
 function revelation ( options ) {
 	options = options || {};
 	
-	this._state = Object.assign( template.data(), options.data );
+	this._state = options.data || {};
+applyComputations( this._state, this._state, {}, true );
 
 	this._observers = {
 		pre: Object.create( null ),
@@ -923,8 +948,6 @@ function revelation ( options ) {
 	
 	this._flush();
 }
-
-revelation.prototype = template.methods;
 
 revelation.prototype.get = function get( key ) {
  	return key ? this._state[ key ] : this._state;
@@ -987,6 +1010,7 @@ revelation.prototype._flush = function _flush() {
 revelation.prototype._set = function _set ( newState ) {
 	var oldState = this._state;
 	this._state = Object.assign( {}, oldState, newState );
+	applyComputations( this._state, newState, oldState, false )
 	
 	dispatchObservers( this, this._observers.pre, newState, oldState );
 	if ( this._fragment ) this._fragment.update( newState, this._state );
@@ -1005,7 +1029,7 @@ revelation.prototype.teardown = function teardown ( detach ) {
 	this._torndown = true;
 };
 
-function dispatchObservers( component, group, newState, oldState ) {
+var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
 	for ( var key in group ) {
 		if ( !( key in newState ) ) continue;
 
@@ -1058,21 +1082,36 @@ function teardownEach( iterations, detach, start ) {
 	}
 }
 
-function addEventListener( node, event, handler ) {
-	node.addEventListener ( event, handler, false );
-}
-
-function removeEventListener( node, event, handler ) {
-	node.removeEventListener ( event, handler, false );
-}
-
 function createText( data ) {
 	return document.createTextNode( data );
 }
 
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
 module.exports = revelation;
 
-},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/chiasm-color":6,"lib/extract-range-from-verses":8}],3:[function(require,module,exports){
+},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/chiasm-color":6,"lib/extract-range-from-verses":8,"lib/router-instance":9}],3:[function(require,module,exports){
 'use strict';
 
 var template = (function () {
@@ -1229,7 +1268,7 @@ sectionline.prototype.teardown = function teardown ( detach ) {
 	this._torndown = true;
 };
 
-function dispatchObservers( component, group, newState, oldState ) {
+var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
 	for ( var key in group ) {
 		if ( !( key in newState ) ) continue;
 
@@ -1274,6 +1313,29 @@ function createComment() {
 
 function createText( data ) {
 	return document.createTextNode( data );
+}
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
 }
 
 module.exports = sectionline;
@@ -1537,7 +1599,7 @@ subsections.prototype.teardown = function teardown ( detach ) {
 	this._torndown = true;
 };
 
-function dispatchObservers( component, group, newState, oldState ) {
+var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
 	for ( var key in group ) {
 		if ( !( key in newState ) ) continue;
 
@@ -1578,6 +1640,29 @@ function teardownEach( iterations, detach, start ) {
 	}
 }
 
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
 module.exports = subsections;
 
 },{"component/paragraphs.html":1,"component/section-line.html":3,"lib/chiasm-color":6,"lib/combine-structure-and-verses":7}],5:[function(require,module,exports){
@@ -1589,6 +1674,9 @@ var combineStructureAndVerses = require('lib/combine-structure-and-verses');
 var structure = require('lib/structure');
 
 var makeMainView = require('./view');
+
+var _require = require('lib/router-instance'),
+    mountComponent = _require.mountComponent;
 
 var verses = revelation.versesNoteReferencesAndHeaders.map(function (chunk) {
 	return chunk.type === 'end paragraph' ? { type: 'paragraph break' } : chunk;
@@ -1608,11 +1696,19 @@ console.log(structuredText);
 
 var component = makeMainView({ targetSelector: '#verses', structuredText: structuredText });
 
-},{"./view":10,"lib/combine-structure-and-verses":7,"lib/structure":9,"pickering-majority-text-revelation":13}],6:[function(require,module,exports){
-'use strict';
+mountComponent(component);
 
-var colors = ['#018d5d', '#ba4460', '#9ea946', '#00479f', '#c26939', '#8188df', '#ee6bd4'];
-var chiasmColors = {
+},{"./view":13,"lib/combine-structure-and-verses":7,"lib/router-instance":9,"lib/structure":12,"pickering-majority-text-revelation":17}],6:[function(require,module,exports){
+const colors = [
+	'#018d5d',
+	'#ba4460',
+	'#9ea946',
+	'#00479f',
+	'#c26939',
+	'#8188df',
+	'#ee6bd4'
+]
+const chiasmColors = {
 	a: 0,
 	b: 1,
 	c: 2,
@@ -1621,207 +1717,665 @@ var chiasmColors = {
 	f: 5,
 	g: 6,
 	h: 7
-};
-
-module.exports = function getChiasmColor(identifier) {
-	var key = identifier[identifier.length - 1].toLowerCase();
-	var colorIndex = chiasmColors[key];
-	return colors[colorIndex];
-};
-
-},{}],7:[function(require,module,exports){
-'use strict';
-
-var oneToManyZip = require('one-to-many-array-zip');
-var withinRange = require('multi-part-range-compare');
-
-module.exports = function combineStructureAndVerses(structure, verses) {
-	return oneToManyZip(structure, verses, function (_ref, verse) {
-		var range = _ref.range,
-		    introduction = _ref.introduction;
-
-		var rangeStart = introduction ? introduction.range[0] : range[0];
-		var rangeEnd = range[1];
-
-		return verse.type !== 'verse' || withinRange(rangeStart, rangeEnd, verseReference(verse));
-	}).map(function (_ref2) {
-		var section = _ref2.one,
-		    verses = _ref2.many;
-		return Object.assign({}, section, { verses: verses });
-	});
-};
-
-function verseReference(_ref3) {
-	var chapterNumber = _ref3.chapterNumber,
-	    verseNumber = _ref3.verseNumber,
-	    sectionNumber = _ref3.sectionNumber;
-
-	return [chapterNumber, verseNumber, sectionNumber];
 }
 
-},{"multi-part-range-compare":11,"one-to-many-array-zip":12}],8:[function(require,module,exports){
-'use strict';
+module.exports = function getChiasmColor(identifier) {
+	const key = identifier[identifier.length - 1].toLowerCase()
+	const colorIndex = chiasmColors[key]
+	return colors[colorIndex]
+}
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+},{}],7:[function(require,module,exports){
+const oneToManyZip = require('one-to-many-array-zip')
+const withinRange = require('multi-part-range-compare')
 
-var withinRange = require('multi-part-range-compare');
+module.exports = function combineStructureAndVerses(structure, verses) {
+	return oneToManyZip(structure, verses, ({ range, introduction }, verse) => {
+		const rangeStart = introduction ? introduction.range[0] : range[0]
+		const rangeEnd = range[1]
+
+		return verse.type !== 'verse' || withinRange(rangeStart, rangeEnd, verseReference(verse))
+	}).map(({ one: section, many: verses }) => Object.assign({}, section, { verses }))
+}
+
+function verseReference({ chapterNumber, verseNumber, sectionNumber }) {
+	return [ chapterNumber, verseNumber, sectionNumber ]
+}
+
+},{"multi-part-range-compare":15,"one-to-many-array-zip":16}],8:[function(require,module,exports){
+const withinRange = require('multi-part-range-compare')
 
 module.exports = function extractRangeFromVerses(verses, range) {
-	var _range = _slicedToArray(range, 2),
-	    rangeStart = _range[0],
-	    rangeEnd = _range[1];
+	const [ rangeStart, rangeEnd ] = range
+	const matching = []
 
-	var matching = [];
-
-	var insideMatchingRange = false;
-	var hitEndOfRange = false;
-	verses.forEach(function (chunk) {
+	let insideMatchingRange = false
+	let hitEndOfRange = false
+	verses.forEach(chunk => {
 		if (!hitEndOfRange) {
-			var chapterNumber = chunk.chapterNumber,
-			    verseNumber = chunk.verseNumber,
-			    sectionNumber = chunk.sectionNumber;
-
-			var isAnActualVerse = chunk.type === 'verse';
+			const { chapterNumber, verseNumber, sectionNumber } = chunk
+			const isAnActualVerse = chunk.type === 'verse'
 
 			if (isAnActualVerse) {
-				var currentVerseIsInRange = withinRange(rangeStart, rangeEnd, [chapterNumber, verseNumber, sectionNumber]);
+				const currentVerseIsInRange = withinRange(rangeStart, rangeEnd,
+					[ chapterNumber, verseNumber, sectionNumber ])
 
-				hitEndOfRange = insideMatchingRange && !currentVerseIsInRange;
-				insideMatchingRange = currentVerseIsInRange;
+				hitEndOfRange = insideMatchingRange && !currentVerseIsInRange
+				insideMatchingRange = currentVerseIsInRange
 			}
 
 			if (insideMatchingRange) {
-				matching.push(chunk);
+				matching.push(chunk)
 			}
 		}
-	});
+	})
 
-	return matching;
-};
+	return matching
+}
 
-},{"multi-part-range-compare":11}],9:[function(require,module,exports){
+},{"multi-part-range-compare":15}],9:[function(require,module,exports){
+const createRouterInstance = require('lib/router')
+
+module.exports = createRouterInstance()
+
+},{"lib/router":10}],10:[function(require,module,exports){
+const Link = require('./link.html')
+const EventEmitter = require('eventemitter3')
+
+function defaultPushState(state, title, url) {
+	history.pushState(state, title, url)
+}
+
+function defaultCurrentQuerystring() {
+	const querystring = location.search
+	const keyValuePairs = querystring.length > 1
+		?	querystring.slice(1).split('&').map(keyValuePairString => keyValuePairString.split('='))
+		: []
+
+	const parameters = keyValuePairs.reduce((map, [ key, value ]) => {
+		map[key] = value
+		return map
+	}, Object.create(null))
+
+	return {
+		querystring,
+		parameters
+	}
+}
+
+module.exports = function createRouterInstance(pushState = defaultPushState, currentQuerystring = defaultCurrentQuerystring) {
+	const emitter = new EventEmitter()
+	let current = currentQuerystring()
+
+	return {
+		Link: function linkProxy(options) {
+			const linkComponent = new Link(options)
+
+			linkComponent.on('navigate', ({ querystring, parameters }) => {
+				current = { querystring, parameters }
+				emitter.emit('navigate', { querystring, parameters })
+				pushState(parameters, '', querystring)
+			})
+
+			return linkComponent
+		},
+		mountComponent(component) {
+			function navigateListener({ parameters }) {
+				component.set({
+					querystringParameters: parameters
+				})
+			}
+			emitter.on('navigate', navigateListener)
+			component.on('teardown', () => emitter.removeListener('navigate', navigateListener))
+			component.set({
+				querystringParameters: current.parameters
+			})
+		}
+	}
+}
+
+},{"./link.html":11,"eventemitter3":14}],11:[function(require,module,exports){
 'use strict';
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var identifiers = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-var VERSE_SECTION_RANGE_MIN = 1;
-var VERSE_SECTION_RANGE_MAX = 9999;
-
-module.exports = [{
-	identifier: 'A',
-	title: 'Prologue',
-	description: 'How to Read This Book',
-	range: r([1, 1], [1, 11])
-}, {
-	identifier: 'B',
-	title: 'First Septet – Seven Churches',
-	description: 'A Look at the Beginnings of the Church that Christ is Building',
-	range: r([2, 1], [3, 22]),
-	introduction: {
-		title: 'Introduction to the seven churches – Christ is present with His church',
-		range: r([1, 12], [1, 20])
-	},
-	subsections: makeSubsections(s('Ephesus', r([2, 1], [2, 7])), s('Smyrna', r([2, 8], [2, 11])), s('Pergamos', r([2, 12], [2, 17])), s('Thyatira', r([2, 18], [2, 29])), s('Sardis', r([3, 1], [3, 6])), s('Philadelphia', r([3, 7], [3, 13])), s('Laodicea', r([3, 14], [3, 22])))
-}, {
-	identifier: 'C',
-	title: 'Second Septet – Seven Seals',
-	description: 'Legal Judgments to be Executed Against Church’s Persecutors',
-	range: r([6, 1], [8, 1]),
-	introduction: {
-		title: 'Introduction to the seven seals – Christ is on His throne and is governing all of history',
-		range: r([4, 1], [5, 14])
-	},
-	subsections: [s('Seal 1 - the white horse', r([6, 1], [6, 2]), 'a'), s('Seal 2 - the red horse', r([6, 3], [6, 4]), 'b'), s('Seal 3 - the black horse', r([6, 5], [6, 6]), 'c'), s('Seal 4 - the yellowish-green horse', r([6, 7], [6, 8]), 'd'), s('Seal 5 - the souls under the altar', r([6, 9], [6, 11]), 'e'), s('Seal 6 - the earthquake', r([6, 12], [6, 17]), 'f'), s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([7, 1], [7, 17])), s('Seal 7 - introduces the seven trumpets and seems to comprise all of the third septet', r([8, 1], [8, 1]), 'g')]
-}, {
-	identifier: 'D',
-	title: 'Third Septet – Seven Trumpets',
-	description: 'The War Against the Church’s Persecutors',
-	range: r([8, 7], [11, 19]),
-	introduction: {
-		title: 'Introduction to the seven trumpets – God ordains victory for the church through prayer',
-		range: r([8, 2], [8, 6])
-	},
-	subsections: [s('Trumpet 1 - The land is set on fire', r([8, 7], [8, 7]), 'a'), s('Trumpet 2 - The sea is turned to blood', r([8, 8], [8, 9]), 'b'), s('Trumpet 3 - The rivers and springs become bitter', r([8, 10], [8, 12]), 'c'), s('Trumpet 4 - The heavenly bodies are dimmed', r([8, 12], [8, 13]), 'd'), s('Trumpet 5 - Demons released from the pit', r([9, 1], [9, 12]), 'e'), s('Trumpet 6 - Demons released from Euphrates', r([9, 13], [9, 21]), 'f'), s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([10, 1], [11, 14])), s('Trumpet 7 - The seventh trumpet seems to comprise all of the fourth septet', r([11, 15], [11, 19]), 'g')]
-}, {
-	identifier: 'E',
-	title: 'Fourth Septet – Seven Visions',
-	description: 'From Total Defeat to Victory',
-	range: r([13, 1], [15, 1]),
-	introduction: {
-		title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
-		range: r([12, 1], [12, 17]),
-		subsections: [s('The Bride reflecting the glory of her husband', r([12, 1], [12, 1]), 'Ea'), s('The Child of the woman', r([12, 2], [12, 2]), 'Eb'), s('The Dragon tries to devour the Child', r([12, 3], [12, 5]), 'Ec'), s('The woman flees to the wilderness', r([12, 6], [12, 6]), 'Ed'), s('Dragon war in heaven', r([12, 7], [12, 9]), 'Ee'), s('Victory of Christ & His people over the dragon', r([12, 10], [12, 11]), 'Ef'), s('Dragon war on earth', r([12, 12], [12, 13]), 'Ee'), s('The woman flees to the wilderness', r([12, 14], [12, 14]), 'Ed'), s('The Dragon\'s mouth & the earth swallows the serpents flood', r([12, 15], [12, 16]), 'Ec'), s('The rest of the offspring of the woman', r([12, 17, 1], [12, 17, 1]), 'Eb'), s('The church reflecting the word of Christ', r([12, 17, 2], [12, 17]), 'Ea')]
-	},
-	subsections: [s('The beast rising out of the sea', r([13, 1], [13, 10])), s('The beast rising out of the land', r([13, 11], [13, 18])), s('The 144,000 virgin (warriors) and the Lamb', r([14, 1], [14, 5])), s('The seven angels', r([14, 6], [14, 13])), s('The positive reaping of wheat', r([14, 14], [14, 16])), s('The negative reaping of grapes', r([14, 17], [14, 20])), s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations (15:1-4)', r([15, 1], [15, 1]))]
-}, {
-	identifier: 'D',
-	title: 'Fifth Septet – Seven Bowls of Wrath Containing the Seven Plagues',
-	range: r([16, 2], [16, 17]),
-	introduction: {
-		title: 'Introduction to the seven plagues – angels preparing for warfare; temple filled with God’s glory',
-		range: r([15, 2], [16, 1])
-	},
-	subsections: makeSubsections(s('Bowl 1 - On the land', r([16, 2], [16, 2])), s('Bowl 2 - On the sea', r([16, 3], [16, 3])), s('Bowl 3 - On the waters', r([16, 4], [16, 7])), s('Bowl 4 - On the sun', r([16, 8], [16, 9])), s('Bowl 5 - On the throne of the beast', r([16, 10], [16, 11])), s('Bowl 6 - On the Euphrates', r([16, 12], [16, 16])), s('Bowl 7 - On the air – note that this 7th bowl seems to introduce all of the next septet (cf. 16:17-21)', r([16, 17], [16, 17])))
-}, {
-	identifier: 'C',
-	title: 'Sixth Septet – Seven Condemnations of Babylon',
-	range: r([17, 1], [19, 10]),
-	introduction: {
-		title: 'Introduction to the seven condemnations – Even with Roman support, Jerusalem is no match for Christ',
-		range: r([16, 17], [16, 21])
-	},
-	subsections: makeSubsections(s('Blasphemy of the Harlot', r([17, 1], [17, 6])), s('Harlots Pagan Alliance with Rome', r([17, 7], [17, 18])), s('Spiritual fornications', r([18, 1], [18, 8])), s('Ungodly statist/commercial alliance', r([18, 9], [18, 20])), s('The finality of Babylon’s fall', r([18, 21], [18, 24])), s('All heaven agreeing with her judgment', r([19, 1], [19, 4])), s('The death of the harlot is followed by the marriage of the Lamb', r([19, 5], [19, 10])))
-}, {
-	identifier: 'B',
-	title: 'Seventh Septet – Seven visions of the victory of Christ’s Kingdom – The Church Militant & Triumphant',
-	range: r([20, 1], [22, 17]),
-	introduction: {
-		title: 'Introduction to the seven New Covenant visions – Jesus proves that He is King of kings and Lord of lords',
-		range: r([19, 11], [19, 21])
-	},
-	subsections: makeSubsections(s('Satan’s power bound', r([20, 1], [20, 3])), s('Victory over death guaranteed – reign in life and in death', r([20, 4], [20, 6])), s('Final judgment', r([20, 7], [20, 15])), s('All things made new', r([21, 1], [21, 8])), s('The New Jerusalem as the spotless bride', r([21, 9], [21, 27])), s('The river of life', r([22, 1], [22, 5])), s('Reiteration that Christ will come soon to finish the old and to continue the renewal of all things', r([22, 6], [22, 17])))
-}, {
-	identifier: 'A',
-	title: 'Epilogue: How to Read This Book',
-	range: r([22, 18], [22, 21])
-}];
-
-function makeSubsections() {
-	for (var _len = arguments.length, subsections = Array(_len), _key = 0; _key < _len; _key++) {
-		subsections[_key] = arguments[_key];
+function applyComputations ( state, newState, oldState, isInitial ) {
+	if ( isInitial || ( 'parameters' in newState && typeof state.parameters === 'object' || state.parameters !== oldState.parameters ) ) {
+		state.querystring = newState.querystring = template.computed.querystring( state.parameters );
 	}
+}
 
-	return subsections.map(function (_ref, i) {
-		var title = _ref.title,
-		    range = _ref.range;
+var template = (function () {
 
-		var identifier = identifiers[i];
+return {
+	data() {
 		return {
-			title: title,
-			range: range,
-			identifier: identifier
-		};
-	});
+			className: '',
+			style: ''
+		}
+	},
+	computed: {
+		querystring: parameters => {
+			if (!parameters) {
+				return ''
+			}
+
+			const keys = Object.keys(parameters)
+
+			return '?' + keys.map(key => `${key}=${encodeURIComponent(parameters[key])}`).join('&')
+		}
+	},
+	methods: {
+		navigate(event) {
+			event.preventDefault()
+
+			this.fire('navigate', {
+				querystring: this.get('querystring'),
+				parameters: this.get('parameters')
+			})
+		}
+	}
+}
+}());
+
+function renderMainFragment ( root, component ) {
+	var ifBlock_anchor = createComment();
+	
+	function getBlock ( root ) {
+		if ( root.parameters ) return renderIfBlock_0;
+		return renderIfBlock_1;
+	}
+	
+	var currentBlock = getBlock( root );
+	var ifBlock = currentBlock && currentBlock( root, component );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( ifBlock_anchor, target, anchor );
+			if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			var _currentBlock = currentBlock;
+			currentBlock = getBlock( root );
+			if ( _currentBlock === currentBlock && ifBlock) {
+				ifBlock.update( changed, root );
+			} else {
+				if ( ifBlock ) ifBlock.teardown( true );
+				ifBlock = currentBlock && currentBlock( root, component );
+				if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( ifBlock ) ifBlock.teardown( detach );
+			
+			if ( detach ) {
+				detachNode( ifBlock_anchor );
+			}
+		}
+	};
+}
+
+function renderIfBlock_1 ( root, component ) {
+	var a = createElement( 'a' );
+	var last_a_class = root.className;
+	a.className = last_a_class;
+	var last_a_style = root.style;
+	a.style.cssText = last_a_style;
+	
+	var yield_anchor = createComment();
+	appendNode( yield_anchor, a );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( a, target, anchor );
+			component._yield && component._yield.mount( a, yield_anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			if ( ( __tmp = root.className ) !== last_a_class ) {
+				last_a_class = __tmp;
+				a.className = last_a_class;
+			}
+			
+			if ( ( __tmp = root.style ) !== last_a_style ) {
+				last_a_style = __tmp;
+				a.style.cssText = last_a_style;
+			}
+		},
+		
+		teardown: function ( detach ) {
+			component._yield && component._yield.teardown( detach );
+			
+			if ( detach ) {
+				detachNode( a );
+			}
+		}
+	};
+}
+
+function renderIfBlock_0 ( root, component ) {
+	var a = createElement( 'a' );
+	var last_a_href = root.querystring;
+	a.href = last_a_href;
+	var last_a_class = root.className;
+	a.className = last_a_class;
+	var last_a_style = root.style;
+	a.style.cssText = last_a_style;
+	
+	function clickHandler ( event ) {
+		component.navigate(event);
+	}
+	
+	addEventListener( a, 'click', clickHandler );
+	
+	var yield_anchor = createComment();
+	appendNode( yield_anchor, a );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( a, target, anchor );
+			component._yield && component._yield.mount( a, yield_anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			if ( ( __tmp = root.querystring ) !== last_a_href ) {
+				last_a_href = __tmp;
+				a.href = last_a_href;
+			}
+			
+			if ( ( __tmp = root.className ) !== last_a_class ) {
+				last_a_class = __tmp;
+				a.className = last_a_class;
+			}
+			
+			if ( ( __tmp = root.style ) !== last_a_style ) {
+				last_a_style = __tmp;
+				a.style.cssText = last_a_style;
+			}
+		},
+		
+		teardown: function ( detach ) {
+			removeEventListener( a, 'click', clickHandler );
+			component._yield && component._yield.teardown( detach );
+			
+			if ( detach ) {
+				detachNode( a );
+			}
+		}
+	};
+}
+
+function link ( options ) {
+	options = options || {};
+	
+	this._state = Object.assign( template.data(), options.data );
+applyComputations( this._state, this._state, {}, true );
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._torndown = false;
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+link.prototype = template.methods;
+
+link.prototype.get = function get( key ) {
+ 	return key ? this._state[ key ] : this._state;
+ };
+
+link.prototype.fire = function fire( eventName, data ) {
+ 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
+ 	if ( !handlers ) return;
+ 
+ 	for ( var i = 0; i < handlers.length; i += 1 ) {
+ 		handlers[i].call( this, data );
+ 	}
+ };
+
+link.prototype.observe = function observe( key, callback, options ) {
+ 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
+ 
+ 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
+ 
+ 	if ( !options || options.init !== false ) {
+ 		callback.__calling = true;
+ 		callback.call( this, this._state[ key ] );
+ 		callback.__calling = false;
+ 	}
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = group[ key ].indexOf( callback );
+ 			if ( ~index ) group[ key ].splice( index, 1 );
+ 		}
+ 	};
+ };
+
+link.prototype.on = function on( eventName, handler ) {
+ 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
+ 	handlers.push( handler );
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = handlers.indexOf( handler );
+ 			if ( ~index ) handlers.splice( index, 1 );
+ 		}
+ 	};
+ };
+
+link.prototype.set = function set( newState ) {
+ 	this._set( newState );
+ 	( this._root || this )._flush();
+ };
+
+link.prototype._flush = function _flush() {
+ 	if ( !this._renderHooks ) return;
+ 
+ 	while ( this._renderHooks.length ) {
+ 		var hook = this._renderHooks.pop();
+ 		hook.fn.call( hook.context );
+ 	}
+ };
+
+link.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	applyComputations( this._state, newState, oldState, false )
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+link.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
+
+var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+function addEventListener( node, event, handler ) {
+	node.addEventListener ( event, handler, false );
+}
+
+function removeEventListener( node, event, handler ) {
+	node.removeEventListener ( event, handler, false );
+}
+
+function createElement( name ) {
+	return document.createElement( name );
+}
+
+function detachNode( node ) {
+	node.parentNode.removeChild( node );
+}
+
+function insertNode( node, target, anchor ) {
+	target.insertBefore( node, anchor );
+}
+
+function createComment() {
+	return document.createComment( '' );
+}
+
+function appendNode( node, target ) {
+	target.appendChild( node );
+}
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+module.exports = link;
+
+},{}],12:[function(require,module,exports){
+const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
+const VERSE_SECTION_RANGE_MIN = 1
+const VERSE_SECTION_RANGE_MAX = 9999
+
+module.exports = [
+	{
+		identifier: 'A',
+		title: 'Prologue',
+		description: 'How to Read This Book',
+		range: r([ 1, 1 ], [ 1, 11 ])
+	}, {
+		identifier: 'B',
+		title: 'First Septet – Seven Churches',
+		description: 'A Look at the Beginnings of the Church that Christ is Building',
+		range: r([ 2, 1 ], [ 3, 22 ]),
+		introduction: {
+			title: 'Introduction to the seven churches – Christ is present with His church',
+			range: r([ 1, 12 ], [ 1, 20 ])
+		},
+		subsections: makeSubsections(
+			s('Ephesus', r([ 2, 1 ], [ 2, 7 ])),
+			s('Smyrna', r([ 2, 8 ], [ 2, 11 ])),
+			s('Pergamos', r([ 2, 12 ], [ 2, 17 ])),
+			s('Thyatira', r([ 2, 18 ], [ 2, 29 ])),
+			s('Sardis', r([ 3, 1 ], [ 3, 6 ])),
+			s('Philadelphia', r([ 3, 7 ], [ 3, 13 ])),
+			s('Laodicea', r([ 3, 14 ], [ 3, 22 ]))
+		)
+	}, {
+		identifier: 'C',
+		title: 'Second Septet – Seven Seals',
+		description: 'Legal Judgments to be Executed Against Church’s Persecutors',
+		range: r([ 6, 1 ], [ 8, 1 ]),
+		introduction: {
+			title: 'Introduction to the seven seals – Christ is on His throne and is governing all of history',
+			range: r([ 4, 1 ], [ 5, 14 ])
+		},
+		subsections: [
+			s('Seal 1 - the white horse', r([ 6, 1 ], [ 6, 2 ]), 'a'),
+			s('Seal 2 - the red horse', r([ 6, 3 ], [ 6, 4 ]), 'b'),
+			s('Seal 3 - the black horse', r([ 6, 5 ], [ 6, 6 ]), 'c'),
+			s('Seal 4 - the yellowish-green horse', r([ 6, 7 ], [ 6, 8 ]), 'd'),
+			s('Seal 5 - the souls under the altar', r([ 6, 9 ], [ 6, 11 ]), 'e'),
+			s('Seal 6 - the earthquake', r([ 6, 12 ], [ 6, 17 ]), 'f'),
+			s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([ 7, 1 ], [ 7, 17 ])),
+			s('Seal 7 - introduces the seven trumpets and seems to comprise all of the third septet', r([ 8, 1 ], [ 8, 1 ]), 'g')
+		]
+	}, {
+		identifier: 'D',
+		title: 'Third Septet – Seven Trumpets',
+		description: 'The War Against the Church’s Persecutors',
+		range: r([ 8, 7 ], [ 11, 19 ]),
+		introduction: {
+			title: 'Introduction to the seven trumpets – God ordains victory for the church through prayer',
+			range: r([ 8, 2 ], [ 8, 6 ])
+		},
+		subsections: [
+			s('Trumpet 1 - The land is set on fire', r([ 8, 7 ], [ 8, 7 ]), 'a'),
+			s('Trumpet 2 - The sea is turned to blood', r([ 8, 8 ], [ 8, 9 ]), 'b'),
+			s('Trumpet 3 - The rivers and springs become bitter', r([ 8, 10 ], [ 8, 12 ]), 'c'),
+			s('Trumpet 4 - The heavenly bodies are dimmed', r([ 8, 12 ], [ 8, 13 ]), 'd'),
+			s('Trumpet 5 - Demons released from the pit', r([ 9, 1 ], [ 9, 12 ]), 'e'),
+			s('Trumpet 6 - Demons released from Euphrates', r([ 9, 13 ], [ 9, 21 ]), 'f'),
+			s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([ 10, 1 ], [ 11, 14 ])),
+			s('Trumpet 7 - The seventh trumpet seems to comprise all of the fourth septet', r([ 11, 15 ], [ 11, 19 ]), 'g'),
+		]
+	}, {
+		identifier: 'E',
+		title: 'Fourth Septet – Seven Visions',
+		description: 'From Total Defeat to Victory',
+		range: r([ 13, 1 ], [ 15, 1 ]),
+		introduction: {
+			title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
+			range: r([ 12, 1 ], [ 12, 17 ]),
+			subsections: [
+				s('The Bride reflecting the glory of her husband', r([ 12, 1 ], [ 12, 1 ]), 'Ea'),
+				s('The Child of the woman', r([ 12, 2 ], [ 12, 2 ]), 'Eb'),
+				s('The Dragon tries to devour the Child', r([ 12, 3 ], [ 12, 5 ]), 'Ec'),
+				s('The woman flees to the wilderness', r([ 12, 6 ], [ 12, 6 ]), 'Ed'),
+				s('Dragon war in heaven', r([ 12, 7 ], [ 12, 9 ]), 'Ee'),
+				s('Victory of Christ & His people over the dragon', r([ 12, 10 ], [ 12, 11 ]), 'Ef'),
+				s('Dragon war on earth', r([ 12, 12 ], [ 12, 13 ]), 'Ee'),
+				s('The woman flees to the wilderness', r([ 12, 14 ], [ 12, 14 ]), 'Ed'),
+				s(`The Dragon's mouth & the earth swallows the serpents flood`, r([ 12, 15 ], [ 12, 16 ]), 'Ec'),
+				s('The rest of the offspring of the woman', r([ 12, 17, 1 ], [ 12, 17, 1 ]), 'Eb'),
+				s('The church reflecting the word of Christ', r([ 12, 17, 2 ], [ 12, 17 ]), 'Ea'),
+			]
+		},
+		subsections: [
+			s('The beast rising out of the sea', r([ 13, 1 ], [ 13, 10 ])),
+			s('The beast rising out of the land', r([ 13, 11 ], [ 13, 18 ])),
+			s('The 144,000 virgin (warriors) and the Lamb', r([ 14, 1 ], [ 14, 5 ])),
+			s('The seven angels', r([ 14, 6 ], [ 14, 13 ])),
+			s('The positive reaping of wheat', r([ 14, 14 ], [ 14, 16 ])),
+			s('The negative reaping of grapes', r([ 14, 17 ], [ 14, 20 ])),
+			s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations (15:1-4)', r([ 15, 1 ], [ 15, 1 ])),
+		]
+	}, {
+		identifier: 'D',
+		title: 'Fifth Septet – Seven Bowls of Wrath Containing the Seven Plagues',
+		range: r([ 16, 2 ], [ 16, 17 ]),
+		introduction: {
+			title: 'Introduction to the seven plagues – angels preparing for warfare; temple filled with God’s glory',
+			range: r([ 15, 2 ], [ 16, 1 ])
+		},
+		subsections: makeSubsections(
+			s('Bowl 1 - On the land', r([ 16, 2 ], [ 16, 2 ])),
+			s('Bowl 2 - On the sea', r([ 16, 3 ], [ 16, 3 ])),
+			s('Bowl 3 - On the waters', r([ 16, 4 ], [ 16, 7 ])),
+			s('Bowl 4 - On the sun', r([ 16, 8 ], [ 16, 9 ])),
+			s('Bowl 5 - On the throne of the beast', r([ 16, 10 ], [ 16, 11 ])),
+			s('Bowl 6 - On the Euphrates', r([ 16, 12 ], [ 16, 16 ])),
+			s('Bowl 7 - On the air – note that this 7th bowl seems to introduce all of the next septet (cf. 16:17-21)', r([ 16, 17 ], [ 16, 17 ]))
+		)
+	}, {
+		identifier: 'C',
+		title: 'Sixth Septet – Seven Condemnations of Babylon',
+		range: r([ 17, 1 ], [ 19, 10 ]),
+		introduction: {
+			title: 'Introduction to the seven condemnations – Even with Roman support, Jerusalem is no match for Christ',
+			range: r([ 16, 17 ], [ 16, 21 ])
+		},
+		subsections: makeSubsections(
+			s('Blasphemy of the Harlot', r([ 17, 1 ], [ 17, 6 ])),
+			s('Harlots Pagan Alliance with Rome', r([ 17, 7 ], [ 17, 18 ])),
+			s('Spiritual fornications', r([ 18, 1 ], [ 18, 8 ])),
+			s('Ungodly statist/commercial alliance', r([ 18, 9 ], [ 18, 20 ])),
+			s('The finality of Babylon’s fall', r([ 18, 21 ], [ 18, 24 ])),
+			s('All heaven agreeing with her judgment', r([ 19, 1 ], [ 19, 4 ])),
+			s('The death of the harlot is followed by the marriage of the Lamb', r([ 19, 5 ], [ 19, 10 ]))
+		)
+	}, {
+		identifier: 'B',
+		title: 'Seventh Septet – Seven visions of the victory of Christ’s Kingdom – The Church Militant & Triumphant',
+		range: r([ 20, 1 ], [ 22, 17 ]),
+		introduction: {
+			title: 'Introduction to the seven New Covenant visions – Jesus proves that He is King of kings and Lord of lords',
+			range: r([ 19, 11 ], [ 19, 21 ])
+		},
+		subsections: makeSubsections(
+			s('Satan’s power bound', r([ 20, 1 ], [ 20, 3 ])),
+			s('Victory over death guaranteed – reign in life and in death', r([ 20, 4 ], [ 20, 6 ])),
+			s('Final judgment', r([ 20, 7 ], [ 20, 15 ])),
+			s('All things made new', r([ 21, 1 ], [ 21, 8 ])),
+			s('The New Jerusalem as the spotless bride', r([ 21, 9 ], [ 21, 27 ])),
+			s('The river of life', r([ 22, 1 ], [ 22, 5 ])),
+			s('Reiteration that Christ will come soon to finish the old and to continue the renewal of all things', r([ 22, 6 ], [ 22, 17 ]))
+		)
+	}, {
+		identifier: 'A',
+		title: 'Epilogue: How to Read This Book',
+		range: r([ 22, 18 ], [ 22, 21 ])
+	}
+]
+
+function makeSubsections(...subsections) {
+	return subsections.map(({ title, range }, i) => {
+		const identifier = identifiers[i]
+		return {
+			title,
+			range,
+			identifier
+		}
+	})
 }
 
 function s(title, range, identifier) {
-	return { title: title, range: range, identifier: identifier };
+	return { title, range, identifier }
 }
 
 function r(rangeStart, randeEnd) {
-	return [guaranteeRangeSection(rangeStart, VERSE_SECTION_RANGE_MIN), guaranteeRangeSection(randeEnd, VERSE_SECTION_RANGE_MAX)];
+	return [
+		guaranteeRangeSection(rangeStart, VERSE_SECTION_RANGE_MIN),
+		guaranteeRangeSection(randeEnd, VERSE_SECTION_RANGE_MAX),
+	]
 }
 
 function guaranteeRangeSection(range, defaultSection) {
 	if (range.length === 3) {
-		return range;
+		return range
 	} else {
-		return [].concat(_toConsumableArray(range), [defaultSection]);
+		return [ ...range, defaultSection ]
 	}
 }
 
-},{}],10:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var slugify = require('slugify');
@@ -1845,7 +2399,320 @@ module.exports = function makeMainView(_ref) {
 	});
 };
 
-},{"component/revelation.html":2,"slugify":16}],11:[function(require,module,exports){
+},{"component/revelation.html":2,"slugify":20}],14:[function(require,module,exports){
+'use strict';
+
+var has = Object.prototype.hasOwnProperty
+  , prefix = '~';
+
+/**
+ * Constructor to create a storage for our `EE` objects.
+ * An `Events` instance is a plain object whose properties are event names.
+ *
+ * @constructor
+ * @api private
+ */
+function Events() {}
+
+//
+// We try to not inherit from `Object.prototype`. In some engines creating an
+// instance in this way is faster than calling `Object.create(null)` directly.
+// If `Object.create(null)` is not supported we prefix the event names with a
+// character to make sure that the built-in object properties are not
+// overridden or used as an attack vector.
+//
+if (Object.create) {
+  Events.prototype = Object.create(null);
+
+  //
+  // This hack is needed because the `__proto__` property is still inherited in
+  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+  //
+  if (!new Events().__proto__) prefix = false;
+}
+
+/**
+ * Representation of a single event listener.
+ *
+ * @param {Function} fn The listener function.
+ * @param {Mixed} context The context to invoke the listener with.
+ * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+ * @constructor
+ * @api private
+ */
+function EE(fn, context, once) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once || false;
+}
+
+/**
+ * Minimal `EventEmitter` interface that is molded against the Node.js
+ * `EventEmitter` interface.
+ *
+ * @constructor
+ * @api public
+ */
+function EventEmitter() {
+  this._events = new Events();
+  this._eventsCount = 0;
+}
+
+/**
+ * Return an array listing the events for which the emitter has registered
+ * listeners.
+ *
+ * @returns {Array}
+ * @api public
+ */
+EventEmitter.prototype.eventNames = function eventNames() {
+  var names = []
+    , events
+    , name;
+
+  if (this._eventsCount === 0) return names;
+
+  for (name in (events = this._events)) {
+    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+  }
+
+  if (Object.getOwnPropertySymbols) {
+    return names.concat(Object.getOwnPropertySymbols(events));
+  }
+
+  return names;
+};
+
+/**
+ * Return the listeners registered for a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @param {Boolean} exists Only check if there are listeners.
+ * @returns {Array|Boolean}
+ * @api public
+ */
+EventEmitter.prototype.listeners = function listeners(event, exists) {
+  var evt = prefix ? prefix + event : event
+    , available = this._events[evt];
+
+  if (exists) return !!available;
+  if (!available) return [];
+  if (available.fn) return [available.fn];
+
+  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
+    ee[i] = available[i].fn;
+  }
+
+  return ee;
+};
+
+/**
+ * Calls each of the listeners registered for a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @returns {Boolean} `true` if the event had listeners, else `false`.
+ * @api public
+ */
+EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return false;
+
+  var listeners = this._events[evt]
+    , len = arguments.length
+    , args
+    , i;
+
+  if (listeners.fn) {
+    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+    switch (len) {
+      case 1: return listeners.fn.call(listeners.context), true;
+      case 2: return listeners.fn.call(listeners.context, a1), true;
+      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+    }
+
+    for (i = 1, args = new Array(len -1); i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
+    listeners.fn.apply(listeners.context, args);
+  } else {
+    var length = listeners.length
+      , j;
+
+    for (i = 0; i < length; i++) {
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+      switch (len) {
+        case 1: listeners[i].fn.call(listeners[i].context); break;
+        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+        default:
+          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+            args[j - 1] = arguments[j];
+          }
+
+          listeners[i].fn.apply(listeners[i].context, args);
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {Mixed} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @api public
+ */
+EventEmitter.prototype.on = function on(event, fn, context) {
+  var listener = new EE(fn, context || this)
+    , evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
+  else if (!this._events[evt].fn) this._events[evt].push(listener);
+  else this._events[evt] = [this._events[evt], listener];
+
+  return this;
+};
+
+/**
+ * Add a one-time listener for a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {Mixed} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @api public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  var listener = new EE(fn, context || this, true)
+    , evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
+  else if (!this._events[evt].fn) this._events[evt].push(listener);
+  else this._events[evt] = [this._events[evt], listener];
+
+  return this;
+};
+
+/**
+ * Remove the listeners of a given event.
+ *
+ * @param {String|Symbol} event The event name.
+ * @param {Function} fn Only remove the listeners that match this function.
+ * @param {Mixed} context Only remove the listeners that have this context.
+ * @param {Boolean} once Only remove one-time listeners.
+ * @returns {EventEmitter} `this`.
+ * @api public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return this;
+  if (!fn) {
+    if (--this._eventsCount === 0) this._events = new Events();
+    else delete this._events[evt];
+    return this;
+  }
+
+  var listeners = this._events[evt];
+
+  if (listeners.fn) {
+    if (
+         listeners.fn === fn
+      && (!once || listeners.once)
+      && (!context || listeners.context === context)
+    ) {
+      if (--this._eventsCount === 0) this._events = new Events();
+      else delete this._events[evt];
+    }
+  } else {
+    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+      if (
+           listeners[i].fn !== fn
+        || (once && !listeners[i].once)
+        || (context && listeners[i].context !== context)
+      ) {
+        events.push(listeners[i]);
+      }
+    }
+
+    //
+    // Reset the array, or remove it completely if we have no more listeners.
+    //
+    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+    else if (--this._eventsCount === 0) this._events = new Events();
+    else delete this._events[evt];
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners, or those of the specified event.
+ *
+ * @param {String|Symbol} [event] The event name.
+ * @returns {EventEmitter} `this`.
+ * @api public
+ */
+EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+  var evt;
+
+  if (event) {
+    evt = prefix ? prefix + event : event;
+    if (this._events[evt]) {
+      if (--this._eventsCount === 0) this._events = new Events();
+      else delete this._events[evt];
+    }
+  } else {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+
+  return this;
+};
+
+//
+// Alias methods names because people roll like that.
+//
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+//
+// This function doesn't apply anymore.
+//
+EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
+  return this;
+};
+
+//
+// Expose the prefix.
+//
+EventEmitter.prefixed = prefix;
+
+//
+// Allow `EventEmitter` to be imported as module namespace.
+//
+EventEmitter.EventEmitter = EventEmitter;
+
+//
+// Expose the module.
+//
+if ('undefined' !== typeof module) {
+  module.exports = EventEmitter;
+}
+
+},{}],15:[function(require,module,exports){
 
 const LESS_THAN = -1
 const WITHIN = 0
@@ -1896,7 +2763,7 @@ withinRange.GREATER_THAN_END = GREATER_THAN
 
 withinRange.relative = relative
 
-},{}],12:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 module.exports = function oneToManyZip(oneArray, manyArray, compareFn) {
@@ -1933,7 +2800,7 @@ function assert(value, message) {
 	}
 }
 
-},{}],13:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var versesNoteReferencesAndHeaders = require('./verses-note-references-and-headers.json')
 var notes = require('./notes.json')
 
@@ -1942,7 +2809,7 @@ module.exports = {
 	notes: notes
 }
 
-},{"./notes.json":14,"./verses-note-references-and-headers.json":15}],14:[function(require,module,exports){
+},{"./notes.json":18,"./verses-note-references-and-headers.json":19}],18:[function(require,module,exports){
 module.exports={
 	"1": "Both the translation and the comments are the responsibility of Wilbur N. Pickering, ThM PhD, ©, being based on his edition of the Greek New Testament, according to the only significant line of transmission, both ancient and independent, that has a demonstrable archetypal form in all 27 books. The Greek Text of which this is a translation, and articles explaining the preference, may be downloaded free from  www.prunch.org.",
 	"2": "Whose, the Father’s or the Son’s? Probably the Son’s, but in practice it makes little or no difference. Yes, the Text says “slaves”, so this book is not intended for the merely curious.",
@@ -2232,7 +3099,7 @@ module.exports={
 	"286": "“Words”, plural, includes the individual words that make up the whole. Those textual critics who have wantonly removed words from the Text, on the basis of satanically inspired presuppositions, are out. Those who interpret the Text in such a way as to avoid its plain meaning, likewise. Jehovah the Son affirms that the words are “true and  faithful ”, and He expects us to interpret them that way.",
 	"287": "“The Lord Jesus Christ” is now the full name or title of Jehovah the Son."
 }
-},{}],15:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports=[
 	{
 		"type": "note reference",
@@ -8412,7 +9279,7 @@ module.exports=[
 		"type": "end paragraph"
 	}
 ]
-},{}],16:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 
 ;(function (name, root, factory) {
   if (typeof exports === 'object') {

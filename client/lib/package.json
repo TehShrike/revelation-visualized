@@ -1,0 +1,13 @@
+{
+  "name": "lib",
+  "browserify": {
+    "transform": [
+      [
+        "sveltify"
+      ]
+    ]
+  },
+  "browser": {
+    "eventemitter": "eventemitter3"
+  }
+}

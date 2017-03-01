@@ -1,0 +1,50 @@
+{{#if parameters}}
+	<a
+		href="{{querystring}}"
+		class="{{className}}"
+		style="{{style}}"
+		on:click="navigate(event)"
+	>
+		{{yield}}
+	</a>
+{{else}}
+	<a
+		class="{{className}}"
+		style="{{style}}"
+	>
+		{{yield}}
+	</a>
+{{/if}}
+
+<script>
+
+export default {
+	data() {
+		return {
+			className: '',
+			style: ''
+		}
+	},
+	computed: {
+		querystring: parameters => {
+			if (!parameters) {
+				return ''
+			}
+
+			const keys = Object.keys(parameters)
+
+			return '?' + keys.map(key => `${key}=${encodeURIComponent(parameters[key])}`).join('&')
+		}
+	},
+	methods: {
+		navigate(event) {
+			event.preventDefault()
+
+			this.fire('navigate', {
+				querystring: this.get('querystring'),
+				parameters: this.get('parameters')
+			})
+		}
+	}
+}
+</script>

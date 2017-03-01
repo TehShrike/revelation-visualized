@@ -4,12 +4,12 @@
 			class="chiasm-section"
 			data-is-selected="{{currentChiasm && currentChiasm === outerChiasm.identifier}}"
 		>
-			<div
-				class="section-color-bar"
+			<Link
+				className="section-color-bar"
 				style="background-color: {{getChiasmColor(outerChiasm.identifier)}}"
-				on:click="setChiasm(outerChiasm.identifier)"
+				parameters="{{ getLinkParameters(currentChiasm, outerChiasm.identifier) }}"
 			>
-			</div>
+			</Link>
 			<div class="section-body">
 				<SectionLine description="{{outerChiasm.description}}" descriptionClass="header-margin">
 					<h1 style="color: {{getChiasmColor(outerChiasm.identifier)}}">
@@ -78,32 +78,33 @@ const Paragraphs = require('component/paragraphs.html')
 const Subsections = require('component/subsections.html')
 const SectionLine = require('component/section-line.html')
 
+const { Link } = require('lib/router-instance')
+
 const extractRangeFromVerses = require('lib/extract-range-from-verses')
 const getChiasmColor = require('lib/chiasm-color')
 
-export default {
-	data() {
-		return {
+function getLinkParameters(currentChiasm, chiasmIdentifier) {
+	return currentChiasm === chiasmIdentifier
+		? {}
+		: { chiasm: chiasmIdentifier }
+}
 
+export default {
+	computed: {
+		currentChiasm: querystringParameters => {
+			return querystringParameters && querystringParameters.chiasm
 		}
 	},
 	components: {
 		Paragraphs,
 		Subsections,
-		SectionLine
-	},
-	methods: {
-		setChiasm(identifier) {
-			const currentChiasm = this.get('currentChiasm')
-
-			const newChiasm = currentChiasm === identifier ? null : identifier
-
-			this.set({ currentChiasm: newChiasm })
-		}
+		SectionLine,
+		Link
 	},
 	helpers: {
 		getChiasmColor,
-		extractRangeFromVerses
+		extractRangeFromVerses,
+		getLinkParameters
 	}
 }
 </script>

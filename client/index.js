@@ -5,6 +5,8 @@ const structure = require('lib/structure')
 
 const makeMainView = require('./view')
 
+const { mountComponent } = require('lib/router-instance')
+
 const verses = revelation.versesNoteReferencesAndHeaders
 .map(chunk => {
 	return chunk.type === 'end paragraph' ? { type: 'paragraph break' } : chunk
@@ -23,3 +25,5 @@ const structuredText = combineStructureAndVerses(structure, verses)
 console.log(structuredText)
 
 const component = makeMainView({ targetSelector: '#verses', structuredText })
+
+mountComponent(component)
