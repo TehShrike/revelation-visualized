@@ -7353,7 +7353,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-1454122309].chiasm-section, [svelte-1454122309] .chiasm-section {\n\tdisplay: flex;\n}\n\n[svelte-1454122309].section-body, [svelte-1454122309] .section-body {\n\tdisplay: flex;\n\tflex-grow: 1;\n\tflex-direction: column;\n}\n\n[svelte-1454122309].section-color-bar, [svelte-1454122309] .section-color-bar {\n\twidth: 50px;\n\tflex-shrink: 0;\n\tcursor: pointer;\n}\n\n[svelte-1454122309][data-chiasm-selected=true] [data-is-selected=false], [svelte-1454122309] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-1454122309][data-chiasm-selected=true] [data-is-selected=true], [svelte-1454122309] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n";
+	style.textContent = "\n[svelte-1168587148].chiasm-section, [svelte-1168587148] .chiasm-section {\n\tdisplay: flex;\n}\n\n[svelte-1168587148].section-body, [svelte-1168587148] .section-body {\n\tdisplay: flex;\n\tflex-grow: 1;\n\tflex-direction: column;\n}\n\n[svelte-1168587148].section-color-bar, [svelte-1168587148] .section-color-bar {\n\twidth: 50px;\n\tflex-shrink: 0;\n\tcursor: pointer;\n}\n\n[svelte-1168587148][data-chiasm-selected=true] [data-is-selected=false], [svelte-1168587148] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-1168587148][data-chiasm-selected=true] [data-is-selected=true], [svelte-1168587148] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -7361,7 +7361,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-1454122309', '' );
+	setAttribute( div, 'svelte-1168587148', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -7416,13 +7416,13 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-1454122309', '' );
+	setAttribute( div, 'svelte-1168587148', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-1454122309', '' );
+	setAttribute( div1, 'svelte-1168587148', '' );
 	div1.className = "section-color-bar";
 	div1.style.cssText = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
 	
@@ -7443,7 +7443,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div2 = createElement( 'div' );
-	setAttribute( div2, 'svelte-1454122309', '' );
+	setAttribute( div2, 'svelte-1168587148', '' );
 	div2.className = "section-body";
 	
 	appendNode( div2, div );
@@ -7607,7 +7607,8 @@ function rendersectionLineYieldFragment2 ( root, eachBlock_value, outerChiasm, o
 function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var subsections_initialData = {
 		subsections: outerChiasm.subsections,
-		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range),
+		useColor: !!root.currentChiasm
 	};
 	var subsections = new template.components.Subsections({
 		target: null,
@@ -7627,6 +7628,7 @@ function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 			
 			if ( 'structuredText' in changed ) subsections_changes.subsections = outerChiasm.subsections;
 			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range);
+			if ( 'currentChiasm' in changed ) subsections_changes.useColor = !!root.currentChiasm;
 			
 			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
 		},
@@ -7748,7 +7750,8 @@ function rendersectionLineYieldFragment1 ( root, eachBlock_value, outerChiasm, o
 function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var subsections_initialData = {
 		subsections: outerChiasm.introduction.subsections,
-		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range),
+		useColor: !!root.currentChiasm
 	};
 	var subsections = new template.components.Subsections({
 		target: null,
@@ -7768,6 +7771,7 @@ function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 			
 			if ( 'structuredText' in changed ) subsections_changes.subsections = outerChiasm.introduction.subsections;
 			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range);
+			if ( 'currentChiasm' in changed ) subsections_changes.useColor = !!root.currentChiasm;
 			
 			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
 		},
@@ -7780,7 +7784,7 @@ function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-1454122309', '' );
+	setAttribute( h1, 'svelte-1168587148', '' );
 	h1.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -8207,6 +8211,11 @@ const Paragraphs = require('./paragraphs.html')
 const SectionLine = require('./section-line.html')
 
 return {
+	data() {
+		return {
+			useColor: false
+		}
+	},
 	components: {
 		Paragraphs,
 		SectionLine
@@ -8308,7 +8317,7 @@ function renderEachBlock ( root, eachBlock_value, subsection, subsection__index,
 function rendersectionLineYieldFragment ( root, eachBlock_value, subsection, subsection__index, component ) {
 	var paragraphs_initialData = {
 		verses: subsection.verses,
-		color: subsection.identifier && template.helpers.getChiasmColor(subsection.identifier)
+		color: root.useColor && subsection.identifier && template.helpers.getChiasmColor(subsection.identifier)
 	};
 	var paragraphs = new template.components.Paragraphs({
 		target: null,
@@ -8327,7 +8336,7 @@ function rendersectionLineYieldFragment ( root, eachBlock_value, subsection, sub
 			var paragraphs_changes = {};
 			
 			if ( 'subsectionsWithVerses' in changed ) paragraphs_changes.verses = subsection.verses;
-			if ( 'subsectionsWithVerses' in changed||'subsectionsWithVerses' in changed ) paragraphs_changes.color = subsection.identifier && template.helpers.getChiasmColor(subsection.identifier);
+			if ( 'useColor' in changed||'subsectionsWithVerses' in changed||'subsectionsWithVerses' in changed ) paragraphs_changes.color = root.useColor && subsection.identifier && template.helpers.getChiasmColor(subsection.identifier);
 			
 			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
 		},
@@ -8341,7 +8350,7 @@ function rendersectionLineYieldFragment ( root, eachBlock_value, subsection, sub
 function subsections ( options ) {
 	options = options || {};
 	
-	this._state = options.data || {};
+	this._state = Object.assign( template.data(), options.data );
 applyComputations( this._state, this._state, {}, true );
 
 	this._observers = {

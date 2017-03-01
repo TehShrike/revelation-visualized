@@ -22,6 +22,7 @@
 						<Subsections
 							subsections="{{outerChiasm.introduction.subsections}}"
 							verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}"
+							useColor="{{!!currentChiasm}}"
 						/>
 					{{else}}
 						<SectionLine description="{{outerChiasm.introduction.title}}">
@@ -34,6 +35,7 @@
 					<Subsections
 						subsections="{{outerChiasm.subsections}}"
 						verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)}}"
+						useColor="{{!!currentChiasm}}"
 					/>
 				{{else}}
 					<SectionLine>

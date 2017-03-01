@@ -2,7 +2,7 @@
 <SectionLine description="{{subsection.title}}">
 	<Paragraphs
 		verses="{{subsection.verses}}"
-		color="{{subsection.identifier && getChiasmColor(subsection.identifier)}}"
+		color="{{useColor && subsection.identifier && getChiasmColor(subsection.identifier)}}"
 	/>
 </SectionLine>
 {{/each}}
@@ -16,6 +16,11 @@ const Paragraphs = require('./paragraphs.html')
 const SectionLine = require('./section-line.html')
 
 export default {
+	data() {
+		return {
+			useColor: false
+		}
+	},
 	components: {
 		Paragraphs,
 		SectionLine
