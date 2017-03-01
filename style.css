@@ -27,6 +27,7 @@ h1, .header-margin {
 	flex-shrink: 0;
 	width: 400px;
 	padding: 0 1em;
+	color: #7d7d7d;
 }
 
 @media (max-width: 900px) {
