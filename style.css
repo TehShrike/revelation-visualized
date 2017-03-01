@@ -3,39 +3,35 @@
 	font-size: 1.3em;
 }
 
-.chiasm-section {
+p, .paragraph-margin {
+	margin: 10px 0;
+}
+
+h1, .header-margin {
+	margin: 25px 0;
+}
+
+.section-line {
 	display: flex;
+	flex-direction: row;
 }
 
-.chiasm-color-bar {
-	width: 50px;
-	flex-shrink: 0;
-	cursor: pointer;
-}
-
-.chiasm-header-bar {
-	flex-shrink: 0;
-	width: 400px;
-	padding: 0 1em;
-}
-
-@media (max-width: 900px) {
-	.chiasm-header-bar {
-		width: 250px;
-	}
-}
-
-.chiasm-text {
+.section-text {
 	flex-grow: 1;
 	padding: 0 1em;
 	min-width: 300px;
 	max-width: 800px;
 }
 
-[data-chiasm-selected=true] [data-is-selected=false] {
-	display: none;
+.section-description {
+	flex-shrink: 0;
+	width: 400px;
+	padding: 0 1em;
 }
 
-[data-chiasm-selected=true] [data-is-selected=true] {
-	margin-bottom: 20px;
+@media (max-width: 900px) {
+	.section-description {
+		width: 250px;
+	}
 }
+

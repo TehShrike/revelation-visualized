@@ -1,0 +1,32 @@
+{{#each subsectionsWithVerses as subsection}}
+<SectionLine description="{{subsection.title}}">
+	<Paragraphs
+		verses="{{subsection.verses}}"
+		color="{{subsection.identifier && getChiasmColor(subsection.identifier)}}"
+	/>
+</SectionLine>
+{{/each}}
+
+<script>
+const combineStructureAndVerses = require('../combine-structure-and-verses')
+const getChiasmColor = require('../chiasm-color')
+// const extractRangeFromVerses = require('../extract-range-from-verses')
+
+const Paragraphs = require('./paragraphs.html')
+const SectionLine = require('./section-line.html')
+
+export default {
+	components: {
+		Paragraphs,
+		SectionLine
+	},
+	computed: {
+		subsectionsWithVerses(subsections, verses) {
+			return combineStructureAndVerses(subsections, verses)
+		}
+	},
+	helpers: {
+		getChiasmColor
+	}
+}
+</script>

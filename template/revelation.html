@@ -5,47 +5,79 @@
 			data-is-selected="{{currentChiasm && currentChiasm === outerChiasm.identifier}}"
 		>
 			<div
-				class="chiasm-color-bar"
+				class="section-color-bar"
 				style="background-color: {{getChiasmColor(outerChiasm.identifier)}}"
 				on:click="setChiasm(outerChiasm.identifier)"
 			>
 			</div>
-			<div class="chiasm-text">
-				<Paragraphs verses="{{outerChiasm.verses}}" />
-			</div>
-			<div
-				class="chiasm-header-bar"
-				style="color: {{getChiasmColor(outerChiasm.identifier)}}"
-			>
-				<h1>{{outerChiasm.title}}</h1>
-				<h2>{{outerChiasm.description}}</h2>
+			<div class="section-body">
+				<SectionLine description="{{outerChiasm.description}}" descriptionClass="header-margin">
+					<h1 style="color: {{getChiasmColor(outerChiasm.identifier)}}">
+						{{outerChiasm.title}}
+					</h1>
+				</SectionLine>
+
+				{{#if outerChiasm.introduction}}
+					{{#if outerChiasm.introduction.subsections}}
+						<Subsections
+							subsections="{{outerChiasm.introduction.subsections}}"
+							verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}"
+						/>
+					{{else}}
+						<SectionLine description="{{outerChiasm.introduction.title}}">
+							<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}" />
+						</SectionLine>
+					{{/if}}
+				{{/if}}
+
+				{{#if outerChiasm.subsections}}
+					<Subsections
+						subsections="{{outerChiasm.subsections}}"
+						verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)}}"
+					/>
+				{{else}}
+					<SectionLine>
+						<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)}}" />
+					</SectionLine>
+				{{/if}}
 			</div>
 		</div>
 	{{/each}}
 </div>
 
+<style>
+.chiasm-section {
+	display: flex;
+}
+
+.section-body {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: column;
+}
+
+.section-color-bar {
+	width: 50px;
+	flex-shrink: 0;
+	cursor: pointer;
+}
+
+[data-chiasm-selected=true] [data-is-selected=false] {
+	display: none;
+}
+
+[data-chiasm-selected=true] [data-is-selected=true] {
+	margin-bottom: 20px;
+}
+</style>
+
 <script>
 const Paragraphs = require('./paragraphs.html')
+const Subsections = require('./subsections.html')
+const SectionLine = require('./section-line.html')
 
-const colors = [
-	'#018d5d',
-	'#ba4460',
-	'#9ea946',
-	'#00479f',
-	'#c26939',
-	'#8188df',
-	'#ee6bd4'
-]
-const chiasmColors = {
-	a: 0,
-	b: 1,
-	c: 2,
-	d: 3,
-	e: 4,
-	f: 5,
-	g: 6,
-	h: 7
-}
+const extractRangeFromVerses = require('../extract-range-from-verses')
+const getChiasmColor = require('../chiasm-color')
 
 export default {
 	data() {
@@ -54,7 +86,9 @@ export default {
 		}
 	},
 	components: {
-		Paragraphs
+		Paragraphs,
+		Subsections,
+		SectionLine
 	},
 	methods: {
 		setChiasm(identifier) {
@@ -66,11 +100,8 @@ export default {
 		}
 	},
 	helpers: {
-		getChiasmColor(identifier) {
-			const key = identifier[identifier.length - 1].toLowerCase()
-			const colorIndex = chiasmColors[key]
-			return colors[colorIndex]
-		}
+		getChiasmColor,
+		extractRangeFromVerses
 	}
 }
 </script>

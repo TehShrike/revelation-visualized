@@ -1,9 +1,7 @@
 const oneToManyZip = require('one-to-many-array-zip')
 const withinRange = require('multi-part-range-compare')
 
-const structure = require('./structure')
-
-module.exports = function addVersesToStructure(verses) {
+module.exports = function combineStructureAndVerses(structure, verses) {
 	return oneToManyZip(structure, verses, ({ range, introduction }, verse) => {
 		const rangeStart = introduction ? introduction.range[0] : range[0]
 		const rangeEnd = range[1]

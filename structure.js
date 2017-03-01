@@ -66,7 +66,7 @@ module.exports = [
 		identifier: 'E',
 		title: 'Fourth Septet – Seven Visions',
 		description: 'From Total Defeat to Victory',
-		range: r([ 13, 1 ], [ 15, 4 ]),
+		range: r([ 13, 1 ], [ 15, 1 ]),
 		introduction: {
 			title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
 			range: r([ 12, 1 ], [ 12, 17 ]),
@@ -138,7 +138,7 @@ module.exports = [
 		subsections: makeSubsections(
 			s('Satan’s power bound', r([ 20, 1 ], [ 20, 3 ])),
 			s('Victory over death guaranteed – reign in life and in death', r([ 20, 4 ], [ 20, 6 ])),
-			s('Final judgment', r([ 20, 11 ], [ 20, 15 ])),
+			s('Final judgment', r([ 20, 7 ], [ 20, 15 ])),
 			s('All things made new', r([ 21, 1 ], [ 21, 8 ])),
 			s('The New Jerusalem as the spotless bride', r([ 21, 9 ], [ 21, 27 ])),
 			s('The river of life', r([ 22, 1 ], [ 22, 5 ])),

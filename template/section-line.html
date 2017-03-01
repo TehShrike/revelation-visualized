@@ -1,0 +1,18 @@
+<div class="section-line">
+	<div class="section-text">
+		{{yield}}
+	</div>
+	<div class="section-description {{descriptionClass}}">
+		{{description || ''}}
+	</div>
+</div>
+
+<script>
+export default {
+	data() {
+		return {
+			descriptionClass: 'paragraph-margin'
+		}
+	}
+}
+</script>

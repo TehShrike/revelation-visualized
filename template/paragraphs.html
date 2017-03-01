@@ -1,5 +1,5 @@
 {{#each paragraphs as paragraph}}
-	<p>
+	<p style="{{color ? 'color: ' + color : ''}}">
 		{{#each paragraph as chunk}}
 			{{#if chunk.type === 'verse'}}
 				<span

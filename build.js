@@ -1,7 +1,98 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var addVersesToStructure = require('./structured-text');
+var colors = ['#018d5d', '#ba4460', '#9ea946', '#00479f', '#c26939', '#8188df', '#ee6bd4'];
+var chiasmColors = {
+	a: 0,
+	b: 1,
+	c: 2,
+	d: 3,
+	e: 4,
+	f: 5,
+	g: 6,
+	h: 7
+};
+
+module.exports = function getChiasmColor(identifier) {
+	var key = identifier[identifier.length - 1].toLowerCase();
+	var colorIndex = chiasmColors[key];
+	return colors[colorIndex];
+};
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+var oneToManyZip = require('one-to-many-array-zip');
+var withinRange = require('multi-part-range-compare');
+
+module.exports = function combineStructureAndVerses(structure, verses) {
+	return oneToManyZip(structure, verses, function (_ref, verse) {
+		var range = _ref.range,
+		    introduction = _ref.introduction;
+
+		var rangeStart = introduction ? introduction.range[0] : range[0];
+		var rangeEnd = range[1];
+
+		return verse.type !== 'verse' || withinRange(rangeStart, rangeEnd, verseReference(verse));
+	}).map(function (_ref2) {
+		var section = _ref2.one,
+		    verses = _ref2.many;
+		return Object.assign({}, section, { verses: verses });
+	});
+};
+
+function verseReference(_ref3) {
+	var chapterNumber = _ref3.chapterNumber,
+	    verseNumber = _ref3.verseNumber,
+	    sectionNumber = _ref3.sectionNumber;
+
+	return [chapterNumber, verseNumber, sectionNumber];
+}
+
+},{"multi-part-range-compare":5,"one-to-many-array-zip":6}],3:[function(require,module,exports){
+'use strict';
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var withinRange = require('multi-part-range-compare');
+
+module.exports = function extractRangeFromVerses(verses, range) {
+	var _range = _slicedToArray(range, 2),
+	    rangeStart = _range[0],
+	    rangeEnd = _range[1];
+
+	var matching = [];
+
+	var insideMatchingRange = false;
+	var hitEndOfRange = false;
+	verses.forEach(function (chunk) {
+		if (!hitEndOfRange) {
+			var chapterNumber = chunk.chapterNumber,
+			    verseNumber = chunk.verseNumber,
+			    sectionNumber = chunk.sectionNumber;
+
+			var isAnActualVerse = chunk.type === 'verse';
+
+			if (isAnActualVerse) {
+				var currentVerseIsInRange = withinRange(rangeStart, rangeEnd, [chapterNumber, verseNumber, sectionNumber]);
+
+				hitEndOfRange = insideMatchingRange && !currentVerseIsInRange;
+				insideMatchingRange = currentVerseIsInRange;
+			}
+
+			if (insideMatchingRange) {
+				matching.push(chunk);
+			}
+		}
+	});
+
+	return matching;
+};
+
+},{"multi-part-range-compare":5}],4:[function(require,module,exports){
+'use strict';
+
+var combineStructureAndVerses = require('./combine-structure-and-verses');
 var revelation = require('pickering-majority-text-revelation');
 var makeMainView = require('./view');
 
@@ -17,13 +108,15 @@ var verses = revelation.versesNoteReferencesAndHeaders.map(function (chunk) {
 	return Object.assign({}, verseChunk, { text: ' ' + verseChunk.text });
 });
 
-var structuredText = addVersesToStructure(verses);
+var structure = require('./structure');
+
+var structuredText = combineStructureAndVerses(structure, verses);
 
 console.log(structuredText);
 
 var component = makeMainView({ targetSelector: '#verses', structuredText: structuredText });
 
-},{"./structured-text":9,"./view":12,"pickering-majority-text-revelation":4}],2:[function(require,module,exports){
+},{"./combine-structure-and-verses":2,"./structure":11,"./view":16,"pickering-majority-text-revelation":7}],5:[function(require,module,exports){
 
 const LESS_THAN = -1
 const WITHIN = 0
@@ -74,7 +167,7 @@ withinRange.GREATER_THAN_END = GREATER_THAN
 
 withinRange.relative = relative
 
-},{}],3:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 module.exports = function oneToManyZip(oneArray, manyArray, compareFn) {
@@ -111,7 +204,7 @@ function assert(value, message) {
 	}
 }
 
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var versesNoteReferencesAndHeaders = require('./verses-note-references-and-headers.json')
 var notes = require('./notes.json')
 
@@ -120,7 +213,7 @@ module.exports = {
 	notes: notes
 }
 
-},{"./notes.json":5,"./verses-note-references-and-headers.json":6}],5:[function(require,module,exports){
+},{"./notes.json":8,"./verses-note-references-and-headers.json":9}],8:[function(require,module,exports){
 module.exports={
 	"1": "Both the translation and the comments are the responsibility of Wilbur N. Pickering, ThM PhD, ©, being based on his edition of the Greek New Testament, according to the only significant line of transmission, both ancient and independent, that has a demonstrable archetypal form in all 27 books. The Greek Text of which this is a translation, and articles explaining the preference, may be downloaded free from  www.prunch.org.",
 	"2": "Whose, the Father’s or the Son’s? Probably the Son’s, but in practice it makes little or no difference. Yes, the Text says “slaves”, so this book is not intended for the merely curious.",
@@ -410,7 +503,7 @@ module.exports={
 	"286": "“Words”, plural, includes the individual words that make up the whole. Those textual critics who have wantonly removed words from the Text, on the basis of satanically inspired presuppositions, are out. Those who interpret the Text in such a way as to avoid its plain meaning, likewise. Jehovah the Son affirms that the words are “true and  faithful ”, and He expects us to interpret them that way.",
 	"287": "“The Lord Jesus Christ” is now the full name or title of Jehovah the Son."
 }
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports=[
 	{
 		"type": "note reference",
@@ -4166,14 +4259,7 @@ module.exports=[
 		"type": "verse",
 		"chapterNumber": 13,
 		"verseNumber": 18,
-		"text": "Here is wisdom: let the one who has understanding evaluate the number of the Beast, for it is the number of man—his number is",
-		"sectionNumber": 1
-	},
-	{
-		"type": "verse",
-		"chapterNumber": 13,
-		"verseNumber": 6,
-		"text": ".",
+		"text": "Here is wisdom: let the one who has understanding evaluate the number of the Beast, for it is the number of man—his number is 666.",
 		"sectionNumber": 1
 	},
 	{
@@ -4234,14 +4320,14 @@ module.exports=[
 		"type": "verse",
 		"chapterNumber": 14,
 		"verseNumber": 3,
-		"text": "And they sing a new song before the Throne, and before the four living beings and the elders; and no one was able to learn the song except the",
+		"text": "And they sing a new song before the Throne, and before the four living beings and the elders; and no one was able to learn the song except the 144 thousand, who had been redeemed from the earth.",
 		"sectionNumber": 1
 	},
 	{
 		"type": "verse",
 		"chapterNumber": 14,
 		"verseNumber": 4,
-		"text": "thousand, who had been redeemed from the earth. These are the ones not defiled with women, for they are virgins;",
+		"text": "These are the ones not defiled with women, for they are virgins;",
 		"sectionNumber": 1
 	},
 	{
@@ -6597,7 +6683,7 @@ module.exports=[
 		"type": "end paragraph"
 	}
 ]
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 ;(function (name, root, factory) {
   if (typeof exports === 'object') {
@@ -6705,7 +6791,7 @@ module.exports=[
   return replace
 }))
 
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -6751,7 +6837,7 @@ module.exports = [{
 	identifier: 'E',
 	title: 'Fourth Septet – Seven Visions',
 	description: 'From Total Defeat to Victory',
-	range: r([13, 1], [15, 4]),
+	range: r([13, 1], [15, 1]),
 	introduction: {
 		title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
 		range: r([12, 1], [12, 17]),
@@ -6784,7 +6870,7 @@ module.exports = [{
 		title: 'Introduction to the seven New Covenant visions – Jesus proves that He is King of kings and Lord of lords',
 		range: r([19, 11], [19, 21])
 	},
-	subsections: makeSubsections(s('Satan’s power bound', r([20, 1], [20, 3])), s('Victory over death guaranteed – reign in life and in death', r([20, 4], [20, 6])), s('Final judgment', r([20, 11], [20, 15])), s('All things made new', r([21, 1], [21, 8])), s('The New Jerusalem as the spotless bride', r([21, 9], [21, 27])), s('The river of life', r([22, 1], [22, 5])), s('Reiteration that Christ will come soon to finish the old and to continue the renewal of all things', r([22, 6], [22, 17])))
+	subsections: makeSubsections(s('Satan’s power bound', r([20, 1], [20, 3])), s('Victory over death guaranteed – reign in life and in death', r([20, 4], [20, 6])), s('Final judgment', r([20, 7], [20, 15])), s('All things made new', r([21, 1], [21, 8])), s('The New Jerusalem as the spotless bride', r([21, 9], [21, 27])), s('The river of life', r([22, 1], [22, 5])), s('Reiteration that Christ will come soon to finish the old and to continue the renewal of all things', r([22, 6], [22, 17])))
 }, {
 	identifier: 'A',
 	title: 'Epilogue: How to Read This Book',
@@ -6825,39 +6911,7 @@ function guaranteeRangeSection(range, defaultSection) {
 	}
 }
 
-},{}],9:[function(require,module,exports){
-'use strict';
-
-var oneToManyZip = require('one-to-many-array-zip');
-var withinRange = require('multi-part-range-compare');
-
-var structure = require('./structure');
-
-module.exports = function addVersesToStructure(verses) {
-	return oneToManyZip(structure, verses, function (_ref, verse) {
-		var range = _ref.range,
-		    introduction = _ref.introduction;
-
-		var rangeStart = introduction ? introduction.range[0] : range[0];
-		var rangeEnd = range[1];
-
-		return verse.type !== 'verse' || withinRange(rangeStart, rangeEnd, verseReference(verse));
-	}).map(function (_ref2) {
-		var section = _ref2.one,
-		    verses = _ref2.many;
-		return Object.assign({}, section, { verses: verses });
-	});
-};
-
-function verseReference(_ref3) {
-	var chapterNumber = _ref3.chapterNumber,
-	    verseNumber = _ref3.verseNumber,
-	    sectionNumber = _ref3.sectionNumber;
-
-	return [chapterNumber, verseNumber, sectionNumber];
-}
-
-},{"./structure":8,"multi-part-range-compare":2,"one-to-many-array-zip":3}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -6955,6 +7009,8 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, paragraph, paragraph__index, component ) {
 	var p = createElement( 'p' );
+	var last_p_style = root.color ? 'color: ' + root.color : '';
+	p.style.cssText = last_p_style;
 	
 	var eachBlock1_anchor = createComment();
 	appendNode( eachBlock1_anchor, p );
@@ -6974,6 +7030,11 @@ function renderEachBlock ( root, eachBlock_value, paragraph, paragraph__index, c
 		update: function ( changed, root, eachBlock_value, paragraph, paragraph__index ) {
 			var __tmp;
 		
+			if ( ( __tmp = root.color ? 'color: ' + root.color : '' ) !== last_p_style ) {
+				last_p_style = __tmp;
+				p.style.cssText = last_p_style;
+			}
+			
 			var eachBlock1_value = paragraph;
 			
 			for ( var i = 0; i < eachBlock1_value.length; i += 1 ) {
@@ -7249,31 +7310,16 @@ function createText( data ) {
 
 module.exports = paragraphs;
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var template = (function () {
 const Paragraphs = require('./paragraphs.html')
+const Subsections = require('./subsections.html')
+const SectionLine = require('./section-line.html')
 
-const colors = [
-	'#018d5d',
-	'#ba4460',
-	'#9ea946',
-	'#00479f',
-	'#c26939',
-	'#8188df',
-	'#ee6bd4'
-]
-const chiasmColors = {
-	a: 0,
-	b: 1,
-	c: 2,
-	d: 3,
-	e: 4,
-	f: 5,
-	g: 6,
-	h: 7
-}
+const extractRangeFromVerses = require('../extract-range-from-verses')
+const getChiasmColor = require('../chiasm-color')
 
 return {
 	data() {
@@ -7282,7 +7328,9 @@ return {
 		}
 	},
 	components: {
-		Paragraphs
+		Paragraphs,
+		Subsections,
+		SectionLine
 	},
 	methods: {
 		setChiasm(identifier) {
@@ -7294,17 +7342,24 @@ return {
 		}
 	},
 	helpers: {
-		getChiasmColor(identifier) {
-			const key = identifier[identifier.length - 1].toLowerCase()
-			const colorIndex = chiasmColors[key]
-			return colors[colorIndex]
-		}
+		getChiasmColor,
+		extractRangeFromVerses
 	}
 }
 }());
 
+let addedCss = false;
+function addCss () {
+	var style = createElement( 'style' );
+	style.textContent = "\n[svelte-1454122309].chiasm-section, [svelte-1454122309] .chiasm-section {\n\tdisplay: flex;\n}\n\n[svelte-1454122309].section-body, [svelte-1454122309] .section-body {\n\tdisplay: flex;\n\tflex-grow: 1;\n\tflex-direction: column;\n}\n\n[svelte-1454122309].section-color-bar, [svelte-1454122309] .section-color-bar {\n\twidth: 50px;\n\tflex-shrink: 0;\n\tcursor: pointer;\n}\n\n[svelte-1454122309][data-chiasm-selected=true] [data-is-selected=false], [svelte-1454122309] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-1454122309][data-chiasm-selected=true] [data-is-selected=true], [svelte-1454122309] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n";
+	appendNode( style, document.head );
+
+	addedCss = true;
+}
+
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
+	setAttribute( div, 'svelte-1454122309', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -7359,12 +7414,14 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
+	setAttribute( div, 'svelte-1454122309', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
 	
 	var div1 = createElement( 'div' );
-	div1.className = "chiasm-color-bar";
+	setAttribute( div1, 'svelte-1454122309', '' );
+	div1.className = "section-color-bar";
 	div1.style.cssText = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
 	
 	function clickHandler ( event ) {
@@ -7384,41 +7441,49 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div2 = createElement( 'div' );
-	div2.className = "chiasm-text";
+	setAttribute( div2, 'svelte-1454122309', '' );
+	div2.className = "section-body";
 	
 	appendNode( div2, div );
+	var sectionLine_yieldFragment = rendersectionLineYieldFragment( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
-	var paragraphs_initialData = {
-		verses: outerChiasm.verses
+	var sectionLine_initialData = {
+		descriptionClass: "header-margin",
+		description: outerChiasm.description
 	};
-	var paragraphs = new template.components.Paragraphs({
+	var sectionLine = new template.components.SectionLine({
 		target: div2,
 		_root: component._root || component,
-		data: paragraphs_initialData
+		_yield: sectionLine_yieldFragment,
+		data: sectionLine_initialData
 	});
 	
-	appendNode( createText( "\n\t\t\t" ), div );
+	appendNode( createText( "\n\n\t\t\t\t" ), div2 );
+	var ifBlock_anchor = createComment();
+	appendNode( ifBlock_anchor, div2 );
 	
-	var div3 = createElement( 'div' );
-	div3.className = "chiasm-header-bar";
-	div3.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+	function getBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+		if ( outerChiasm.introduction ) return renderIfBlock_0;
+		return null;
+	}
 	
-	appendNode( div3, div );
+	var currentBlock = getBlock( root, eachBlock_value, outerChiasm, outerChiasm__index );
+	var ifBlock = currentBlock && currentBlock( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
-	var h1 = createElement( 'h1' );
+	if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+	appendNode( createText( "\n\n\t\t\t\t" ), div2 );
+	var ifBlock2_anchor = createComment();
+	appendNode( ifBlock2_anchor, div2 );
 	
-	appendNode( h1, div3 );
-	var last_text2 = outerChiasm.title
-	var text2 = createText( last_text2 );
-	appendNode( text2, h1 );
-	appendNode( createText( "\n\t\t\t\t" ), div3 );
+	function getBlock2 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+		if ( outerChiasm.subsections ) return renderIfBlock2_0;
+		return renderIfBlock2_1;
+	}
 	
-	var h2 = createElement( 'h2' );
+	var currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
+	var ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
-	appendNode( h2, div3 );
-	var last_text4 = outerChiasm.description
-	var text4 = createText( last_text4 );
-	appendNode( text4, h2 );
+	if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
 
 	return {
 		mount: function ( target, anchor ) {
@@ -7438,29 +7503,306 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 			div1.__svelte.eachBlock_value = eachBlock_value;
 			div1.__svelte.outerChiasm__index = outerChiasm__index;
 			
-			var paragraphs_changes = {};
+			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
 			
-			if ( 'structuredText' in changed ) paragraphs_changes.verses = outerChiasm.verses;
+			var sectionLine_changes = {};
 			
-			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
+			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.description;
 			
-			div3.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
 			
-			if ( ( __tmp = outerChiasm.title ) !== last_text2 ) {
-				text2.data = last_text2 = __tmp;
+			var _currentBlock = currentBlock;
+			currentBlock = getBlock( root, eachBlock_value, outerChiasm, outerChiasm__index );
+			if ( _currentBlock === currentBlock && ifBlock) {
+				ifBlock.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			} else {
+				if ( ifBlock ) ifBlock.teardown( true );
+				ifBlock = currentBlock && currentBlock( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+				if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
 			}
 			
-			if ( ( __tmp = outerChiasm.description ) !== last_text4 ) {
-				text4.data = last_text4 = __tmp;
+			var _currentBlock2 = currentBlock2;
+			currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
+			if ( _currentBlock2 === currentBlock2 && ifBlock2) {
+				ifBlock2.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			} else {
+				if ( ifBlock2 ) ifBlock2.teardown( true );
+				ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+				if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
 			}
 		},
 		
 		teardown: function ( detach ) {
 			removeEventListener( div1, 'click', clickHandler );
-			paragraphs.teardown( false );
+			sectionLine.teardown( false );
+			if ( ifBlock ) ifBlock.teardown( false );
+			if ( ifBlock2 ) ifBlock2.teardown( false );
 			
 			if ( detach ) {
 				detachNode( div );
+			}
+		}
+	};
+}
+
+function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var sectionLine_yieldFragment = rendersectionLineYieldFragment2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	
+	var sectionLine = new template.components.SectionLine({
+		target: null,
+		_root: component._root || component,
+		_yield: sectionLine_yieldFragment
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			sectionLine._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+		},
+		
+		teardown: function ( detach ) {
+			sectionLine.teardown( detach );
+		}
+	};
+}
+
+function rendersectionLineYieldFragment2 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var paragraphs_initialData = {
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)
+	};
+	var paragraphs = new template.components.Paragraphs({
+		target: null,
+		_root: component._root || component,
+		data: paragraphs_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			paragraphs._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var paragraphs_changes = {};
+			
+			if ( 'structuredText' in changed||'structuredText' in changed ) paragraphs_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range);
+			
+			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
+		},
+		
+		teardown: function ( detach ) {
+			paragraphs.teardown( detach );
+		}
+	};
+}
+
+function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var subsections_initialData = {
+		subsections: outerChiasm.subsections,
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)
+	};
+	var subsections = new template.components.Subsections({
+		target: null,
+		_root: component._root || component,
+		data: subsections_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			subsections._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var subsections_changes = {};
+			
+			if ( 'structuredText' in changed ) subsections_changes.subsections = outerChiasm.subsections;
+			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range);
+			
+			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
+		},
+		
+		teardown: function ( detach ) {
+			subsections.teardown( detach );
+		}
+	};
+}
+
+function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var ifBlock1_anchor = createComment();
+	
+	function getBlock1 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+		if ( outerChiasm.introduction.subsections ) return renderIfBlock1_0;
+		return renderIfBlock1_1;
+	}
+	
+	var currentBlock1 = getBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index );
+	var ifBlock1 = currentBlock1 && currentBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( ifBlock1_anchor, target, anchor );
+			if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var _currentBlock1 = currentBlock1;
+			currentBlock1 = getBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index );
+			if ( _currentBlock1 === currentBlock1 && ifBlock1) {
+				ifBlock1.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			} else {
+				if ( ifBlock1 ) ifBlock1.teardown( true );
+				ifBlock1 = currentBlock1 && currentBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+				if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( ifBlock1 ) ifBlock1.teardown( detach );
+			
+			if ( detach ) {
+				detachNode( ifBlock1_anchor );
+			}
+		}
+	};
+}
+
+function renderIfBlock1_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var sectionLine_yieldFragment = rendersectionLineYieldFragment1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	
+	var sectionLine_initialData = {
+		description: outerChiasm.introduction.title
+	};
+	var sectionLine = new template.components.SectionLine({
+		target: null,
+		_root: component._root || component,
+		_yield: sectionLine_yieldFragment,
+		data: sectionLine_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			sectionLine._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			
+			var sectionLine_changes = {};
+			
+			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.introduction.title;
+			
+			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
+		},
+		
+		teardown: function ( detach ) {
+			sectionLine.teardown( detach );
+		}
+	};
+}
+
+function rendersectionLineYieldFragment1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var paragraphs_initialData = {
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)
+	};
+	var paragraphs = new template.components.Paragraphs({
+		target: null,
+		_root: component._root || component,
+		data: paragraphs_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			paragraphs._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var paragraphs_changes = {};
+			
+			if ( 'structuredText' in changed||'structuredText' in changed ) paragraphs_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range);
+			
+			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
+		},
+		
+		teardown: function ( detach ) {
+			paragraphs.teardown( detach );
+		}
+	};
+}
+
+function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var subsections_initialData = {
+		subsections: outerChiasm.introduction.subsections,
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)
+	};
+	var subsections = new template.components.Subsections({
+		target: null,
+		_root: component._root || component,
+		data: subsections_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			subsections._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var subsections_changes = {};
+			
+			if ( 'structuredText' in changed ) subsections_changes.subsections = outerChiasm.introduction.subsections;
+			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range);
+			
+			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
+		},
+		
+		teardown: function ( detach ) {
+			subsections.teardown( detach );
+		}
+	};
+}
+
+function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var h1 = createElement( 'h1' );
+	setAttribute( h1, 'svelte-1454122309', '' );
+	h1.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+	
+	var last_text = outerChiasm.title
+	var text = createText( last_text );
+	appendNode( text, h1 );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( h1, target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			h1.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+			
+			if ( ( __tmp = outerChiasm.title ) !== last_text ) {
+				text.data = last_text = __tmp;
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				detachNode( h1 );
 			}
 		}
 	};
@@ -7482,6 +7824,7 @@ function revelation ( options ) {
 	this._yield = options._yield;
 
 	this._torndown = false;
+	if ( !addedCss ) addCss();
 	this._renderHooks = [];
 	
 	this._fragment = renderMainFragment( this._state, this );
@@ -7638,7 +7981,510 @@ function createText( data ) {
 
 module.exports = revelation;
 
-},{"./paragraphs.html":10}],12:[function(require,module,exports){
+},{"../chiasm-color":1,"../extract-range-from-verses":3,"./paragraphs.html":12,"./section-line.html":14,"./subsections.html":15}],14:[function(require,module,exports){
+'use strict';
+
+var template = (function () {
+return {
+	data() {
+		return {
+			descriptionClass: 'paragraph-margin'
+		}
+	}
+}
+}());
+
+function renderMainFragment ( root, component ) {
+	var div = createElement( 'div' );
+	div.className = "section-line";
+	
+	var div1 = createElement( 'div' );
+	div1.className = "section-text";
+	
+	appendNode( div1, div );
+	var yield_anchor = createComment();
+	appendNode( yield_anchor, div1 );
+	appendNode( createText( "\n\t" ), div );
+	
+	var div2 = createElement( 'div' );
+	div2.className = "section-description " + ( root.descriptionClass );
+	
+	appendNode( div2, div );
+	var last_text1 = root.description || ''
+	var text1 = createText( last_text1 );
+	appendNode( text1, div2 );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( div, target, anchor );
+			component._yield && component._yield.mount( div1, yield_anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			div2.className = "section-description " + ( root.descriptionClass );
+			
+			if ( ( __tmp = root.description || '' ) !== last_text1 ) {
+				text1.data = last_text1 = __tmp;
+			}
+		},
+		
+		teardown: function ( detach ) {
+			component._yield && component._yield.teardown( detach );
+			
+			if ( detach ) {
+				detachNode( div );
+			}
+		}
+	};
+}
+
+function sectionline ( options ) {
+	options = options || {};
+	
+	this._state = Object.assign( template.data(), options.data );
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._torndown = false;
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+sectionline.prototype.get = function get( key ) {
+ 	return key ? this._state[ key ] : this._state;
+ };
+
+sectionline.prototype.fire = function fire( eventName, data ) {
+ 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
+ 	if ( !handlers ) return;
+ 
+ 	for ( var i = 0; i < handlers.length; i += 1 ) {
+ 		handlers[i].call( this, data );
+ 	}
+ };
+
+sectionline.prototype.observe = function observe( key, callback, options ) {
+ 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
+ 
+ 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
+ 
+ 	if ( !options || options.init !== false ) {
+ 		callback.__calling = true;
+ 		callback.call( this, this._state[ key ] );
+ 		callback.__calling = false;
+ 	}
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = group[ key ].indexOf( callback );
+ 			if ( ~index ) group[ key ].splice( index, 1 );
+ 		}
+ 	};
+ };
+
+sectionline.prototype.on = function on( eventName, handler ) {
+ 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
+ 	handlers.push( handler );
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = handlers.indexOf( handler );
+ 			if ( ~index ) handlers.splice( index, 1 );
+ 		}
+ 	};
+ };
+
+sectionline.prototype.set = function set( newState ) {
+ 	this._set( newState );
+ 	( this._root || this )._flush();
+ };
+
+sectionline.prototype._flush = function _flush() {
+ 	if ( !this._renderHooks ) return;
+ 
+ 	while ( this._renderHooks.length ) {
+ 		var hook = this._renderHooks.pop();
+ 		hook.fn.call( hook.context );
+ 	}
+ };
+
+sectionline.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+sectionline.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+function createElement( name ) {
+	return document.createElement( name );
+}
+
+function detachNode( node ) {
+	node.parentNode.removeChild( node );
+}
+
+function insertNode( node, target, anchor ) {
+	target.insertBefore( node, anchor );
+}
+
+function appendNode( node, target ) {
+	target.appendChild( node );
+}
+
+function createComment() {
+	return document.createComment( '' );
+}
+
+function createText( data ) {
+	return document.createTextNode( data );
+}
+
+module.exports = sectionline;
+
+},{}],15:[function(require,module,exports){
+'use strict';
+
+function applyComputations ( state, newState, oldState, isInitial ) {
+	if ( isInitial || ( 'subsections' in newState && typeof state.subsections === 'object' || state.subsections !== oldState.subsections ) || ( 'verses' in newState && typeof state.verses === 'object' || state.verses !== oldState.verses ) ) {
+		state.subsectionsWithVerses = newState.subsectionsWithVerses = template.computed.subsectionsWithVerses( state.subsections, state.verses );
+	}
+}
+
+var template = (function () {
+const combineStructureAndVerses = require('../combine-structure-and-verses')
+const getChiasmColor = require('../chiasm-color')
+// const extractRangeFromVerses = require('../extract-range-from-verses')
+
+const Paragraphs = require('./paragraphs.html')
+const SectionLine = require('./section-line.html')
+
+return {
+	components: {
+		Paragraphs,
+		SectionLine
+	},
+	computed: {
+		subsectionsWithVerses(subsections, verses) {
+			return combineStructureAndVerses(subsections, verses)
+		}
+	},
+	helpers: {
+		getChiasmColor
+	}
+}
+}());
+
+function renderMainFragment ( root, component ) {
+	var eachBlock_anchor = createComment();
+	var eachBlock_value = root.subsectionsWithVerses;
+	var eachBlock_iterations = [];
+	
+	for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+		eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+	}
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( eachBlock_anchor, target, anchor );
+			
+			for ( var i = 0; i < eachBlock_iterations.length; i += 1 ) {
+				eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+			}
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			var eachBlock_value = root.subsectionsWithVerses;
+			
+			for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+				if ( !eachBlock_iterations[i] ) {
+					eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+					eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+				} else {
+					eachBlock_iterations[i].update( changed, root, eachBlock_value, eachBlock_value[i], i );
+				}
+			}
+			
+			teardownEach( eachBlock_iterations, true, eachBlock_value.length );
+			
+			eachBlock_iterations.length = eachBlock_value.length;
+		},
+		
+		teardown: function ( detach ) {
+			teardownEach( eachBlock_iterations, detach );
+			
+			if ( detach ) {
+				detachNode( eachBlock_anchor );
+			}
+		}
+	};
+}
+
+function renderEachBlock ( root, eachBlock_value, subsection, subsection__index, component ) {
+	var sectionLine_yieldFragment = rendersectionLineYieldFragment( root, eachBlock_value, subsection, subsection__index, component );
+	
+	var sectionLine_initialData = {
+		description: subsection.title
+	};
+	var sectionLine = new template.components.SectionLine({
+		target: null,
+		_root: component._root || component,
+		_yield: sectionLine_yieldFragment,
+		data: sectionLine_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			sectionLine._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, subsection, subsection__index ) {
+			var __tmp;
+		
+			sectionLine_yieldFragment.update( changed, root, eachBlock_value, subsection, subsection__index );
+			
+			var sectionLine_changes = {};
+			
+			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.description = subsection.title;
+			
+			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
+		},
+		
+		teardown: function ( detach ) {
+			sectionLine.teardown( detach );
+		}
+	};
+}
+
+function rendersectionLineYieldFragment ( root, eachBlock_value, subsection, subsection__index, component ) {
+	var paragraphs_initialData = {
+		verses: subsection.verses,
+		color: subsection.identifier && template.helpers.getChiasmColor(subsection.identifier)
+	};
+	var paragraphs = new template.components.Paragraphs({
+		target: null,
+		_root: component._root || component,
+		data: paragraphs_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			paragraphs._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, subsection, subsection__index ) {
+			var __tmp;
+		
+			var paragraphs_changes = {};
+			
+			if ( 'subsectionsWithVerses' in changed ) paragraphs_changes.verses = subsection.verses;
+			if ( 'subsectionsWithVerses' in changed||'subsectionsWithVerses' in changed ) paragraphs_changes.color = subsection.identifier && template.helpers.getChiasmColor(subsection.identifier);
+			
+			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
+		},
+		
+		teardown: function ( detach ) {
+			paragraphs.teardown( detach );
+		}
+	};
+}
+
+function subsections ( options ) {
+	options = options || {};
+	
+	this._state = options.data || {};
+applyComputations( this._state, this._state, {}, true );
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._torndown = false;
+	this._renderHooks = [];
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+	
+	this._flush();
+}
+
+subsections.prototype.get = function get( key ) {
+ 	return key ? this._state[ key ] : this._state;
+ };
+
+subsections.prototype.fire = function fire( eventName, data ) {
+ 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
+ 	if ( !handlers ) return;
+ 
+ 	for ( var i = 0; i < handlers.length; i += 1 ) {
+ 		handlers[i].call( this, data );
+ 	}
+ };
+
+subsections.prototype.observe = function observe( key, callback, options ) {
+ 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
+ 
+ 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
+ 
+ 	if ( !options || options.init !== false ) {
+ 		callback.__calling = true;
+ 		callback.call( this, this._state[ key ] );
+ 		callback.__calling = false;
+ 	}
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = group[ key ].indexOf( callback );
+ 			if ( ~index ) group[ key ].splice( index, 1 );
+ 		}
+ 	};
+ };
+
+subsections.prototype.on = function on( eventName, handler ) {
+ 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
+ 	handlers.push( handler );
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = handlers.indexOf( handler );
+ 			if ( ~index ) handlers.splice( index, 1 );
+ 		}
+ 	};
+ };
+
+subsections.prototype.set = function set( newState ) {
+ 	this._set( newState );
+ 	( this._root || this )._flush();
+ };
+
+subsections.prototype._flush = function _flush() {
+ 	if ( !this._renderHooks ) return;
+ 
+ 	while ( this._renderHooks.length ) {
+ 		var hook = this._renderHooks.pop();
+ 		hook.fn.call( hook.context );
+ 	}
+ };
+
+subsections.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	applyComputations( this._state, newState, oldState, false )
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+	
+	this._flush();
+};
+
+subsections.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+function createComment() {
+	return document.createComment( '' );
+}
+
+function insertNode( node, target, anchor ) {
+	target.insertBefore( node, anchor );
+}
+
+function detachNode( node ) {
+	node.parentNode.removeChild( node );
+}
+
+function teardownEach( iterations, detach, start ) {
+	for ( var i = ( start || 0 ); i < iterations.length; i += 1 ) {
+		iterations[i].teardown( detach );
+	}
+}
+
+module.exports = subsections;
+
+},{"../chiasm-color":1,"../combine-structure-and-verses":2,"./paragraphs.html":12,"./section-line.html":14}],16:[function(require,module,exports){
 'use strict';
 
 var slugify = require('slugify');
@@ -7662,4 +8508,4 @@ module.exports = function makeMainView(_ref) {
 	});
 };
 
-},{"./template/revelation.html":11,"slugify":7}]},{},[1]);
+},{"./template/revelation.html":13,"slugify":10}]},{},[4]);
