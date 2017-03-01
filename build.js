@@ -6797,6 +6797,8 @@ module.exports=[
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var identifiers = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+var VERSE_SECTION_RANGE_MIN = 1;
+var VERSE_SECTION_RANGE_MAX = 9999;
 
 module.exports = [{
 	identifier: 'A',
@@ -6841,7 +6843,7 @@ module.exports = [{
 	introduction: {
 		title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
 		range: r([12, 1], [12, 17]),
-		subsections: [s('The Bride reflecting the glory of her husband', r([12, 1], [12, 1]), 'Ea'), s('The Child of the woman', r([12, 2], [12, 2]), 'Eb'), s('The Dragon tries to devour the Child', r([12, 3], [12, 5]), 'Ec'), s('The woman flees to the wilderness', r([12, 6], [12, 6]), 'Ed'), s('Dragon war in heaven', r([12, 7], [12, 9]), 'Ee'), s('Victory of Christ & His people over the dragon', r([12, 10], [12, 11]), 'Ef'), s('Dragon war on earth', r([12, 12], [12, 13]), 'Ee'), s('The woman flees to the wilderness', r([12, 14], [12, 14]), 'Ed'), s('The Dragon\'s mouth & the earth swallows the serpents flood', r([12, 15], [12, 16]), 'Ec'), s('The rest of the offspring of the woman', r([12, 17, 0], [12, 17, 0]), 'Eb'), s('The church reflecting the word of Christ', r([12, 17, 1], [12, 17]), 'Ea')]
+		subsections: [s('The Bride reflecting the glory of her husband', r([12, 1], [12, 1]), 'Ea'), s('The Child of the woman', r([12, 2], [12, 2]), 'Eb'), s('The Dragon tries to devour the Child', r([12, 3], [12, 5]), 'Ec'), s('The woman flees to the wilderness', r([12, 6], [12, 6]), 'Ed'), s('Dragon war in heaven', r([12, 7], [12, 9]), 'Ee'), s('Victory of Christ & His people over the dragon', r([12, 10], [12, 11]), 'Ef'), s('Dragon war on earth', r([12, 12], [12, 13]), 'Ee'), s('The woman flees to the wilderness', r([12, 14], [12, 14]), 'Ed'), s('The Dragon\'s mouth & the earth swallows the serpents flood', r([12, 15], [12, 16]), 'Ec'), s('The rest of the offspring of the woman', r([12, 17, 1], [12, 17, 1]), 'Eb'), s('The church reflecting the word of Christ', r([12, 17, 2], [12, 17]), 'Ea')]
 	},
 	subsections: [s('The beast rising out of the sea', r([13, 1], [13, 10])), s('The beast rising out of the land', r([13, 11], [13, 18])), s('The 144,000 virgin (warriors) and the Lamb', r([14, 1], [14, 5])), s('The seven angels', r([14, 6], [14, 13])), s('The positive reaping of wheat', r([14, 14], [14, 16])), s('The negative reaping of grapes', r([14, 17], [14, 20])), s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations (15:1-4)', r([15, 1], [15, 1]))]
 }, {
@@ -6900,7 +6902,7 @@ function s(title, range, identifier) {
 }
 
 function r(rangeStart, randeEnd) {
-	return [guaranteeRangeSection(rangeStart, 0), guaranteeRangeSection(randeEnd, 9999)];
+	return [guaranteeRangeSection(rangeStart, VERSE_SECTION_RANGE_MIN), guaranteeRangeSection(randeEnd, VERSE_SECTION_RANGE_MAX)];
 }
 
 function guaranteeRangeSection(range, defaultSection) {

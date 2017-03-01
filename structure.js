@@ -1,4 +1,6 @@
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
+const VERSE_SECTION_RANGE_MIN = 1
+const VERSE_SECTION_RANGE_MAX = 9999
 
 module.exports = [
 	{
@@ -80,8 +82,8 @@ module.exports = [
 				s('Dragon war on earth', r([ 12, 12 ], [ 12, 13 ]), 'Ee'),
 				s('The woman flees to the wilderness', r([ 12, 14 ], [ 12, 14 ]), 'Ed'),
 				s(`The Dragon's mouth & the earth swallows the serpents flood`, r([ 12, 15 ], [ 12, 16 ]), 'Ec'),
-				s('The rest of the offspring of the woman', r([ 12, 17, 0 ], [ 12, 17, 0 ]), 'Eb'),
-				s('The church reflecting the word of Christ', r([ 12, 17, 1 ], [ 12, 17 ]), 'Ea'),
+				s('The rest of the offspring of the woman', r([ 12, 17, 1 ], [ 12, 17, 1 ]), 'Eb'),
+				s('The church reflecting the word of Christ', r([ 12, 17, 2 ], [ 12, 17 ]), 'Ea'),
 			]
 		},
 		subsections: [
@@ -168,8 +170,8 @@ function s(title, range, identifier) {
 
 function r(rangeStart, randeEnd) {
 	return [
-		guaranteeRangeSection(rangeStart, 0),
-		guaranteeRangeSection(randeEnd, 9999),
+		guaranteeRangeSection(rangeStart, VERSE_SECTION_RANGE_MIN),
+		guaranteeRangeSection(randeEnd, VERSE_SECTION_RANGE_MAX),
 	]
 }
 
