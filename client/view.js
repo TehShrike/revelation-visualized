@@ -1,6 +1,6 @@
 const slugify = require('slugify')
 
-const Revelation = require('./template/revelation.html')
+const Revelation = require('component/revelation.html')
 
 
 function headerToSlug(header) {

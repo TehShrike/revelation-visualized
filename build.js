@@ -1,6 +1,1616 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+function applyComputations ( state, newState, oldState, isInitial ) {
+	if ( isInitial || ( 'verses' in newState && typeof state.verses === 'object' || state.verses !== oldState.verses ) ) {
+		state.paragraphs = newState.paragraphs = template.computed.paragraphs( state.verses );
+	}
+}
+
+var template = (function () {
+
+function splitIntoParagraphs(chunks) {
+	const paragraphs = []
+	let currentParagraph = []
+
+	function finishParagraph() {
+		if (currentParagraph.length > 0) {
+			paragraphs.push(currentParagraph)
+			currentParagraph = []
+		}
+	}
+
+	chunks.forEach(chunk => {
+		if (chunk.type === 'paragraph break') {
+			finishParagraph()
+		} else {
+			currentParagraph.push(chunk)
+		}
+	})
+
+	finishParagraph()
+
+	return paragraphs
+}
+
+return {
+	data() {
+		return {
+			verses: []
+		}
+	},
+	computed: {
+		paragraphs(verses) {
+			return splitIntoParagraphs(verses)
+		}
+	}
+}
+}());
+
+function renderMainFragment ( root, component ) {
+	var eachBlock_anchor = createComment();
+	var eachBlock_value = root.paragraphs;
+	var eachBlock_iterations = [];
+	
+	for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+		eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+	}
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( eachBlock_anchor, target, anchor );
+			
+			for ( var i = 0; i < eachBlock_iterations.length; i += 1 ) {
+				eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+			}
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			var eachBlock_value = root.paragraphs;
+			
+			for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+				if ( !eachBlock_iterations[i] ) {
+					eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+					eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+				} else {
+					eachBlock_iterations[i].update( changed, root, eachBlock_value, eachBlock_value[i], i );
+				}
+			}
+			
+			teardownEach( eachBlock_iterations, true, eachBlock_value.length );
+			
+			eachBlock_iterations.length = eachBlock_value.length;
+		},
+		
+		teardown: function ( detach ) {
+			teardownEach( eachBlock_iterations, detach );
+			
+			if ( detach ) {
+				detachNode( eachBlock_anchor );
+			}
+		}
+	};
+}
+
+function renderEachBlock ( root, eachBlock_value, paragraph, paragraph__index, component ) {
+	var p = createElement( 'p' );
+	var last_p_style = root.color ? 'color: ' + root.color : '';
+	p.style.cssText = last_p_style;
+	
+	var eachBlock1_anchor = createComment();
+	appendNode( eachBlock1_anchor, p );
+	var eachBlock1_value = paragraph;
+	var eachBlock1_iterations = [];
+	
+	for ( var i = 0; i < eachBlock1_value.length; i += 1 ) {
+		eachBlock1_iterations[i] = renderEachBlock1( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, eachBlock1_value[i], i, component );
+		eachBlock1_iterations[i].mount( eachBlock1_anchor.parentNode, eachBlock1_anchor );
+	}
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( p, target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, paragraph, paragraph__index ) {
+			var __tmp;
+		
+			if ( ( __tmp = root.color ? 'color: ' + root.color : '' ) !== last_p_style ) {
+				last_p_style = __tmp;
+				p.style.cssText = last_p_style;
+			}
+			
+			var eachBlock1_value = paragraph;
+			
+			for ( var i = 0; i < eachBlock1_value.length; i += 1 ) {
+				if ( !eachBlock1_iterations[i] ) {
+					eachBlock1_iterations[i] = renderEachBlock1( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, eachBlock1_value[i], i, component );
+					eachBlock1_iterations[i].mount( eachBlock1_anchor.parentNode, eachBlock1_anchor );
+				} else {
+					eachBlock1_iterations[i].update( changed, root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, eachBlock1_value[i], i );
+				}
+			}
+			
+			teardownEach( eachBlock1_iterations, true, eachBlock1_value.length );
+			
+			eachBlock1_iterations.length = eachBlock1_value.length;
+		},
+		
+		teardown: function ( detach ) {
+			teardownEach( eachBlock1_iterations, false );
+			
+			if ( detach ) {
+				detachNode( p );
+			}
+		}
+	};
+}
+
+function renderEachBlock1 ( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index, component ) {
+	var ifBlock_anchor = createComment();
+	
+	function getBlock ( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index ) {
+		if ( chunk.type === 'verse' ) return renderIfBlock_0;
+		return null;
+	}
+	
+	var currentBlock = getBlock( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index );
+	var ifBlock = currentBlock && currentBlock( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index, component );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( ifBlock_anchor, target, anchor );
+			if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index ) {
+			var __tmp;
+		
+			var _currentBlock = currentBlock;
+			currentBlock = getBlock( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index );
+			if ( _currentBlock === currentBlock && ifBlock) {
+				ifBlock.update( changed, root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index );
+			} else {
+				if ( ifBlock ) ifBlock.teardown( true );
+				ifBlock = currentBlock && currentBlock( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index, component );
+				if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( ifBlock ) ifBlock.teardown( detach );
+			
+			if ( detach ) {
+				detachNode( ifBlock_anchor );
+			}
+		}
+	};
+}
+
+function renderIfBlock_0 ( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index, component ) {
+	var span = createElement( 'span' );
+	var last_span_data_chapter_number = chunk.chapterNumber;
+	setAttribute( span, 'data-chapter-number', last_span_data_chapter_number );
+	var last_span_data_verse_number = chunk.verseNumber;
+	setAttribute( span, 'data-verse-number', last_span_data_verse_number );
+	var last_span_data_section_number = chunk.sectionNumber;
+	setAttribute( span, 'data-section-number', last_span_data_section_number );
+	
+	var last_text = chunk.text
+	var text = createText( last_text );
+	appendNode( text, span );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( span, target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index ) {
+			var __tmp;
+		
+			if ( ( __tmp = chunk.chapterNumber ) !== last_span_data_chapter_number ) {
+				last_span_data_chapter_number = __tmp;
+				setAttribute( span, 'data-chapter-number', last_span_data_chapter_number );
+			}
+			
+			if ( ( __tmp = chunk.verseNumber ) !== last_span_data_verse_number ) {
+				last_span_data_verse_number = __tmp;
+				setAttribute( span, 'data-verse-number', last_span_data_verse_number );
+			}
+			
+			if ( ( __tmp = chunk.sectionNumber ) !== last_span_data_section_number ) {
+				last_span_data_section_number = __tmp;
+				setAttribute( span, 'data-section-number', last_span_data_section_number );
+			}
+			
+			if ( ( __tmp = chunk.text ) !== last_text ) {
+				text.data = last_text = __tmp;
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				detachNode( span );
+			}
+		}
+	};
+}
+
+function paragraphs ( options ) {
+	options = options || {};
+	
+	this._state = Object.assign( template.data(), options.data );
+applyComputations( this._state, this._state, {}, true );
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._torndown = false;
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+paragraphs.prototype.get = function get( key ) {
+ 	return key ? this._state[ key ] : this._state;
+ };
+
+paragraphs.prototype.fire = function fire( eventName, data ) {
+ 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
+ 	if ( !handlers ) return;
+ 
+ 	for ( var i = 0; i < handlers.length; i += 1 ) {
+ 		handlers[i].call( this, data );
+ 	}
+ };
+
+paragraphs.prototype.observe = function observe( key, callback, options ) {
+ 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
+ 
+ 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
+ 
+ 	if ( !options || options.init !== false ) {
+ 		callback.__calling = true;
+ 		callback.call( this, this._state[ key ] );
+ 		callback.__calling = false;
+ 	}
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = group[ key ].indexOf( callback );
+ 			if ( ~index ) group[ key ].splice( index, 1 );
+ 		}
+ 	};
+ };
+
+paragraphs.prototype.on = function on( eventName, handler ) {
+ 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
+ 	handlers.push( handler );
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = handlers.indexOf( handler );
+ 			if ( ~index ) handlers.splice( index, 1 );
+ 		}
+ 	};
+ };
+
+paragraphs.prototype.set = function set( newState ) {
+ 	this._set( newState );
+ 	( this._root || this )._flush();
+ };
+
+paragraphs.prototype._flush = function _flush() {
+ 	if ( !this._renderHooks ) return;
+ 
+ 	while ( this._renderHooks.length ) {
+ 		var hook = this._renderHooks.pop();
+ 		hook.fn.call( hook.context );
+ 	}
+ };
+
+paragraphs.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	applyComputations( this._state, newState, oldState, false )
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+paragraphs.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+function createComment() {
+	return document.createComment( '' );
+}
+
+function insertNode( node, target, anchor ) {
+	target.insertBefore( node, anchor );
+}
+
+function detachNode( node ) {
+	node.parentNode.removeChild( node );
+}
+
+function teardownEach( iterations, detach, start ) {
+	for ( var i = ( start || 0 ); i < iterations.length; i += 1 ) {
+		iterations[i].teardown( detach );
+	}
+}
+
+function createElement( name ) {
+	return document.createElement( name );
+}
+
+function appendNode( node, target ) {
+	target.appendChild( node );
+}
+
+function setAttribute( node, attribute, value ) {
+	node.setAttribute ( attribute, value );
+}
+
+function createText( data ) {
+	return document.createTextNode( data );
+}
+
+module.exports = paragraphs;
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+var template = (function () {
+const Paragraphs = require('component/paragraphs.html')
+const Subsections = require('component/subsections.html')
+const SectionLine = require('component/section-line.html')
+
+const extractRangeFromVerses = require('lib/extract-range-from-verses')
+const getChiasmColor = require('lib/chiasm-color')
+
+return {
+	data() {
+		return {
+
+		}
+	},
+	components: {
+		Paragraphs,
+		Subsections,
+		SectionLine
+	},
+	methods: {
+		setChiasm(identifier) {
+			const currentChiasm = this.get('currentChiasm')
+
+			const newChiasm = currentChiasm === identifier ? null : identifier
+
+			this.set({ currentChiasm: newChiasm })
+		}
+	},
+	helpers: {
+		getChiasmColor,
+		extractRangeFromVerses
+	}
+}
+}());
+
+let addedCss = false;
+function addCss () {
+	var style = createElement( 'style' );
+	style.textContent = "\n[svelte-218225389].chiasm-section, [svelte-218225389] .chiasm-section {\n\tdisplay: flex;\n}\n\n[svelte-218225389].section-body, [svelte-218225389] .section-body {\n\tdisplay: flex;\n\tflex-grow: 1;\n\tflex-direction: column;\n}\n\n[svelte-218225389].section-color-bar, [svelte-218225389] .section-color-bar {\n\twidth: 50px;\n\tflex-shrink: 0;\n\tcursor: pointer;\n}\n\n[svelte-218225389][data-chiasm-selected=true] [data-is-selected=false], [svelte-218225389] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-218225389][data-chiasm-selected=true] [data-is-selected=true], [svelte-218225389] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n";
+	appendNode( style, document.head );
+
+	addedCss = true;
+}
+
+function renderMainFragment ( root, component ) {
+	var div = createElement( 'div' );
+	setAttribute( div, 'svelte-218225389', '' );
+	var last_div_data_chiasm_selected = !!root.currentChiasm;
+	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
+	
+	var eachBlock_anchor = createComment();
+	appendNode( eachBlock_anchor, div );
+	var eachBlock_value = root.structuredText;
+	var eachBlock_iterations = [];
+	
+	for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+		eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+		eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+	}
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( div, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			if ( ( __tmp = !!root.currentChiasm ) !== last_div_data_chiasm_selected ) {
+				last_div_data_chiasm_selected = __tmp;
+				setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
+			}
+			
+			var eachBlock_value = root.structuredText;
+			
+			for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+				if ( !eachBlock_iterations[i] ) {
+					eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+					eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+				} else {
+					eachBlock_iterations[i].update( changed, root, eachBlock_value, eachBlock_value[i], i );
+				}
+			}
+			
+			teardownEach( eachBlock_iterations, true, eachBlock_value.length );
+			
+			eachBlock_iterations.length = eachBlock_value.length;
+		},
+		
+		teardown: function ( detach ) {
+			teardownEach( eachBlock_iterations, false );
+			
+			if ( detach ) {
+				detachNode( div );
+			}
+		}
+	};
+}
+
+function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var div = createElement( 'div' );
+	setAttribute( div, 'svelte-218225389', '' );
+	div.className = "chiasm-section";
+	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
+	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
+	
+	var div1 = createElement( 'div' );
+	setAttribute( div1, 'svelte-218225389', '' );
+	div1.className = "section-color-bar";
+	div1.style.cssText = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+	
+	function clickHandler ( event ) {
+		var eachBlock_value = this.__svelte.eachBlock_value, outerChiasm__index = this.__svelte.outerChiasm__index, outerChiasm = eachBlock_value[outerChiasm__index]
+		
+		component.setChiasm(outerChiasm.identifier);
+	}
+	
+	addEventListener( div1, 'click', clickHandler );
+	
+	div1.__svelte = {
+		eachBlock_value: eachBlock_value,
+		outerChiasm__index: outerChiasm__index
+	};
+	
+	appendNode( div1, div );
+	appendNode( createText( "\n\t\t\t" ), div );
+	
+	var div2 = createElement( 'div' );
+	setAttribute( div2, 'svelte-218225389', '' );
+	div2.className = "section-body";
+	
+	appendNode( div2, div );
+	var sectionLine_yieldFragment = rendersectionLineYieldFragment( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	
+	var sectionLine_initialData = {
+		descriptionClass: "header-margin",
+		description: outerChiasm.description
+	};
+	var sectionLine = new template.components.SectionLine({
+		target: div2,
+		_root: component._root || component,
+		_yield: sectionLine_yieldFragment,
+		data: sectionLine_initialData
+	});
+	
+	appendNode( createText( "\n\n\t\t\t\t" ), div2 );
+	var ifBlock_anchor = createComment();
+	appendNode( ifBlock_anchor, div2 );
+	
+	function getBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+		if ( outerChiasm.introduction ) return renderIfBlock_0;
+		return null;
+	}
+	
+	var currentBlock = getBlock( root, eachBlock_value, outerChiasm, outerChiasm__index );
+	var ifBlock = currentBlock && currentBlock( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	
+	if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+	appendNode( createText( "\n\n\t\t\t\t" ), div2 );
+	var ifBlock2_anchor = createComment();
+	appendNode( ifBlock2_anchor, div2 );
+	
+	function getBlock2 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+		if ( outerChiasm.subsections ) return renderIfBlock2_0;
+		return renderIfBlock2_1;
+	}
+	
+	var currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
+	var ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	
+	if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( div, target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			if ( ( __tmp = root.currentChiasm && root.currentChiasm === outerChiasm.identifier ) !== last_div_data_is_selected ) {
+				last_div_data_is_selected = __tmp;
+				setAttribute( div, 'data-is-selected', last_div_data_is_selected );
+			}
+			
+			div1.style.cssText = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+			
+			div1.__svelte.eachBlock_value = eachBlock_value;
+			div1.__svelte.outerChiasm__index = outerChiasm__index;
+			
+			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			
+			var sectionLine_changes = {};
+			
+			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.description;
+			
+			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
+			
+			var _currentBlock = currentBlock;
+			currentBlock = getBlock( root, eachBlock_value, outerChiasm, outerChiasm__index );
+			if ( _currentBlock === currentBlock && ifBlock) {
+				ifBlock.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			} else {
+				if ( ifBlock ) ifBlock.teardown( true );
+				ifBlock = currentBlock && currentBlock( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+				if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+			}
+			
+			var _currentBlock2 = currentBlock2;
+			currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
+			if ( _currentBlock2 === currentBlock2 && ifBlock2) {
+				ifBlock2.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			} else {
+				if ( ifBlock2 ) ifBlock2.teardown( true );
+				ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+				if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+			}
+		},
+		
+		teardown: function ( detach ) {
+			removeEventListener( div1, 'click', clickHandler );
+			sectionLine.teardown( false );
+			if ( ifBlock ) ifBlock.teardown( false );
+			if ( ifBlock2 ) ifBlock2.teardown( false );
+			
+			if ( detach ) {
+				detachNode( div );
+			}
+		}
+	};
+}
+
+function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var sectionLine_yieldFragment = rendersectionLineYieldFragment2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	
+	var sectionLine = new template.components.SectionLine({
+		target: null,
+		_root: component._root || component,
+		_yield: sectionLine_yieldFragment
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			sectionLine._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+		},
+		
+		teardown: function ( detach ) {
+			sectionLine.teardown( detach );
+		}
+	};
+}
+
+function rendersectionLineYieldFragment2 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var paragraphs_initialData = {
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)
+	};
+	var paragraphs = new template.components.Paragraphs({
+		target: null,
+		_root: component._root || component,
+		data: paragraphs_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			paragraphs._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var paragraphs_changes = {};
+			
+			if ( 'structuredText' in changed||'structuredText' in changed ) paragraphs_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range);
+			
+			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
+		},
+		
+		teardown: function ( detach ) {
+			paragraphs.teardown( detach );
+		}
+	};
+}
+
+function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var subsections_initialData = {
+		subsections: outerChiasm.subsections,
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range),
+		useColor: !!root.currentChiasm
+	};
+	var subsections = new template.components.Subsections({
+		target: null,
+		_root: component._root || component,
+		data: subsections_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			subsections._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var subsections_changes = {};
+			
+			if ( 'structuredText' in changed ) subsections_changes.subsections = outerChiasm.subsections;
+			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range);
+			if ( 'currentChiasm' in changed ) subsections_changes.useColor = !!root.currentChiasm;
+			
+			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
+		},
+		
+		teardown: function ( detach ) {
+			subsections.teardown( detach );
+		}
+	};
+}
+
+function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var ifBlock1_anchor = createComment();
+	
+	function getBlock1 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+		if ( outerChiasm.introduction.subsections ) return renderIfBlock1_0;
+		return renderIfBlock1_1;
+	}
+	
+	var currentBlock1 = getBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index );
+	var ifBlock1 = currentBlock1 && currentBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( ifBlock1_anchor, target, anchor );
+			if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var _currentBlock1 = currentBlock1;
+			currentBlock1 = getBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index );
+			if ( _currentBlock1 === currentBlock1 && ifBlock1) {
+				ifBlock1.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			} else {
+				if ( ifBlock1 ) ifBlock1.teardown( true );
+				ifBlock1 = currentBlock1 && currentBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+				if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( ifBlock1 ) ifBlock1.teardown( detach );
+			
+			if ( detach ) {
+				detachNode( ifBlock1_anchor );
+			}
+		}
+	};
+}
+
+function renderIfBlock1_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var sectionLine_yieldFragment = rendersectionLineYieldFragment1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	
+	var sectionLine_initialData = {
+		description: outerChiasm.introduction.title
+	};
+	var sectionLine = new template.components.SectionLine({
+		target: null,
+		_root: component._root || component,
+		_yield: sectionLine_yieldFragment,
+		data: sectionLine_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			sectionLine._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			
+			var sectionLine_changes = {};
+			
+			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.introduction.title;
+			
+			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
+		},
+		
+		teardown: function ( detach ) {
+			sectionLine.teardown( detach );
+		}
+	};
+}
+
+function rendersectionLineYieldFragment1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var paragraphs_initialData = {
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)
+	};
+	var paragraphs = new template.components.Paragraphs({
+		target: null,
+		_root: component._root || component,
+		data: paragraphs_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			paragraphs._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var paragraphs_changes = {};
+			
+			if ( 'structuredText' in changed||'structuredText' in changed ) paragraphs_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range);
+			
+			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
+		},
+		
+		teardown: function ( detach ) {
+			paragraphs.teardown( detach );
+		}
+	};
+}
+
+function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var subsections_initialData = {
+		subsections: outerChiasm.introduction.subsections,
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range),
+		useColor: !!root.currentChiasm
+	};
+	var subsections = new template.components.Subsections({
+		target: null,
+		_root: component._root || component,
+		data: subsections_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			subsections._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var subsections_changes = {};
+			
+			if ( 'structuredText' in changed ) subsections_changes.subsections = outerChiasm.introduction.subsections;
+			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range);
+			if ( 'currentChiasm' in changed ) subsections_changes.useColor = !!root.currentChiasm;
+			
+			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
+		},
+		
+		teardown: function ( detach ) {
+			subsections.teardown( detach );
+		}
+	};
+}
+
+function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var h1 = createElement( 'h1' );
+	setAttribute( h1, 'svelte-218225389', '' );
+	h1.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+	
+	var last_text = outerChiasm.title
+	var text = createText( last_text );
+	appendNode( text, h1 );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( h1, target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			h1.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
+			
+			if ( ( __tmp = outerChiasm.title ) !== last_text ) {
+				text.data = last_text = __tmp;
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				detachNode( h1 );
+			}
+		}
+	};
+}
+
+function revelation ( options ) {
+	options = options || {};
+	
+	this._state = Object.assign( template.data(), options.data );
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._torndown = false;
+	if ( !addedCss ) addCss();
+	this._renderHooks = [];
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+	
+	this._flush();
+}
+
+revelation.prototype = template.methods;
+
+revelation.prototype.get = function get( key ) {
+ 	return key ? this._state[ key ] : this._state;
+ };
+
+revelation.prototype.fire = function fire( eventName, data ) {
+ 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
+ 	if ( !handlers ) return;
+ 
+ 	for ( var i = 0; i < handlers.length; i += 1 ) {
+ 		handlers[i].call( this, data );
+ 	}
+ };
+
+revelation.prototype.observe = function observe( key, callback, options ) {
+ 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
+ 
+ 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
+ 
+ 	if ( !options || options.init !== false ) {
+ 		callback.__calling = true;
+ 		callback.call( this, this._state[ key ] );
+ 		callback.__calling = false;
+ 	}
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = group[ key ].indexOf( callback );
+ 			if ( ~index ) group[ key ].splice( index, 1 );
+ 		}
+ 	};
+ };
+
+revelation.prototype.on = function on( eventName, handler ) {
+ 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
+ 	handlers.push( handler );
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = handlers.indexOf( handler );
+ 			if ( ~index ) handlers.splice( index, 1 );
+ 		}
+ 	};
+ };
+
+revelation.prototype.set = function set( newState ) {
+ 	this._set( newState );
+ 	( this._root || this )._flush();
+ };
+
+revelation.prototype._flush = function _flush() {
+ 	if ( !this._renderHooks ) return;
+ 
+ 	while ( this._renderHooks.length ) {
+ 		var hook = this._renderHooks.pop();
+ 		hook.fn.call( hook.context );
+ 	}
+ };
+
+revelation.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+	
+	this._flush();
+};
+
+revelation.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+function setAttribute( node, attribute, value ) {
+	node.setAttribute ( attribute, value );
+}
+
+function createElement( name ) {
+	return document.createElement( name );
+}
+
+function detachNode( node ) {
+	node.parentNode.removeChild( node );
+}
+
+function insertNode( node, target, anchor ) {
+	target.insertBefore( node, anchor );
+}
+
+function createComment() {
+	return document.createComment( '' );
+}
+
+function appendNode( node, target ) {
+	target.appendChild( node );
+}
+
+function teardownEach( iterations, detach, start ) {
+	for ( var i = ( start || 0 ); i < iterations.length; i += 1 ) {
+		iterations[i].teardown( detach );
+	}
+}
+
+function addEventListener( node, event, handler ) {
+	node.addEventListener ( event, handler, false );
+}
+
+function removeEventListener( node, event, handler ) {
+	node.removeEventListener ( event, handler, false );
+}
+
+function createText( data ) {
+	return document.createTextNode( data );
+}
+
+module.exports = revelation;
+
+},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/chiasm-color":6,"lib/extract-range-from-verses":8}],3:[function(require,module,exports){
+'use strict';
+
+var template = (function () {
+return {
+	data() {
+		return {
+			descriptionClass: 'paragraph-margin'
+		}
+	}
+}
+}());
+
+function renderMainFragment ( root, component ) {
+	var div = createElement( 'div' );
+	div.className = "section-line";
+	
+	var div1 = createElement( 'div' );
+	div1.className = "section-text";
+	
+	appendNode( div1, div );
+	var yield_anchor = createComment();
+	appendNode( yield_anchor, div1 );
+	appendNode( createText( "\n\t" ), div );
+	
+	var div2 = createElement( 'div' );
+	div2.className = "section-description " + ( root.descriptionClass );
+	
+	appendNode( div2, div );
+	var last_text1 = root.description || ''
+	var text1 = createText( last_text1 );
+	appendNode( text1, div2 );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( div, target, anchor );
+			component._yield && component._yield.mount( div1, yield_anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			div2.className = "section-description " + ( root.descriptionClass );
+			
+			if ( ( __tmp = root.description || '' ) !== last_text1 ) {
+				text1.data = last_text1 = __tmp;
+			}
+		},
+		
+		teardown: function ( detach ) {
+			component._yield && component._yield.teardown( detach );
+			
+			if ( detach ) {
+				detachNode( div );
+			}
+		}
+	};
+}
+
+function sectionline ( options ) {
+	options = options || {};
+	
+	this._state = Object.assign( template.data(), options.data );
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._torndown = false;
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+sectionline.prototype.get = function get( key ) {
+ 	return key ? this._state[ key ] : this._state;
+ };
+
+sectionline.prototype.fire = function fire( eventName, data ) {
+ 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
+ 	if ( !handlers ) return;
+ 
+ 	for ( var i = 0; i < handlers.length; i += 1 ) {
+ 		handlers[i].call( this, data );
+ 	}
+ };
+
+sectionline.prototype.observe = function observe( key, callback, options ) {
+ 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
+ 
+ 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
+ 
+ 	if ( !options || options.init !== false ) {
+ 		callback.__calling = true;
+ 		callback.call( this, this._state[ key ] );
+ 		callback.__calling = false;
+ 	}
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = group[ key ].indexOf( callback );
+ 			if ( ~index ) group[ key ].splice( index, 1 );
+ 		}
+ 	};
+ };
+
+sectionline.prototype.on = function on( eventName, handler ) {
+ 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
+ 	handlers.push( handler );
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = handlers.indexOf( handler );
+ 			if ( ~index ) handlers.splice( index, 1 );
+ 		}
+ 	};
+ };
+
+sectionline.prototype.set = function set( newState ) {
+ 	this._set( newState );
+ 	( this._root || this )._flush();
+ };
+
+sectionline.prototype._flush = function _flush() {
+ 	if ( !this._renderHooks ) return;
+ 
+ 	while ( this._renderHooks.length ) {
+ 		var hook = this._renderHooks.pop();
+ 		hook.fn.call( hook.context );
+ 	}
+ };
+
+sectionline.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+sectionline.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+function createElement( name ) {
+	return document.createElement( name );
+}
+
+function detachNode( node ) {
+	node.parentNode.removeChild( node );
+}
+
+function insertNode( node, target, anchor ) {
+	target.insertBefore( node, anchor );
+}
+
+function appendNode( node, target ) {
+	target.appendChild( node );
+}
+
+function createComment() {
+	return document.createComment( '' );
+}
+
+function createText( data ) {
+	return document.createTextNode( data );
+}
+
+module.exports = sectionline;
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+function applyComputations ( state, newState, oldState, isInitial ) {
+	if ( isInitial || ( 'subsections' in newState && typeof state.subsections === 'object' || state.subsections !== oldState.subsections ) || ( 'verses' in newState && typeof state.verses === 'object' || state.verses !== oldState.verses ) ) {
+		state.subsectionsWithVerses = newState.subsectionsWithVerses = template.computed.subsectionsWithVerses( state.subsections, state.verses );
+	}
+}
+
+var template = (function () {
+const combineStructureAndVerses = require('lib/combine-structure-and-verses')
+const getChiasmColor = require('lib/chiasm-color')
+// const extractRangeFromVerses = require('../extract-range-from-verses')
+
+const Paragraphs = require('component/paragraphs.html')
+const SectionLine = require('component/section-line.html')
+
+return {
+	data() {
+		return {
+			useColor: false
+		}
+	},
+	components: {
+		Paragraphs,
+		SectionLine
+	},
+	computed: {
+		subsectionsWithVerses(subsections, verses) {
+			return combineStructureAndVerses(subsections, verses)
+		}
+	},
+	helpers: {
+		getChiasmColor
+	}
+}
+}());
+
+function renderMainFragment ( root, component ) {
+	var eachBlock_anchor = createComment();
+	var eachBlock_value = root.subsectionsWithVerses;
+	var eachBlock_iterations = [];
+	
+	for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+		eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+	}
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( eachBlock_anchor, target, anchor );
+			
+			for ( var i = 0; i < eachBlock_iterations.length; i += 1 ) {
+				eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+			}
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			var eachBlock_value = root.subsectionsWithVerses;
+			
+			for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+				if ( !eachBlock_iterations[i] ) {
+					eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+					eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+				} else {
+					eachBlock_iterations[i].update( changed, root, eachBlock_value, eachBlock_value[i], i );
+				}
+			}
+			
+			teardownEach( eachBlock_iterations, true, eachBlock_value.length );
+			
+			eachBlock_iterations.length = eachBlock_value.length;
+		},
+		
+		teardown: function ( detach ) {
+			teardownEach( eachBlock_iterations, detach );
+			
+			if ( detach ) {
+				detachNode( eachBlock_anchor );
+			}
+		}
+	};
+}
+
+function renderEachBlock ( root, eachBlock_value, subsection, subsection__index, component ) {
+	var sectionLine_yieldFragment = rendersectionLineYieldFragment( root, eachBlock_value, subsection, subsection__index, component );
+	
+	var sectionLine_initialData = {
+		description: subsection.title
+	};
+	var sectionLine = new template.components.SectionLine({
+		target: null,
+		_root: component._root || component,
+		_yield: sectionLine_yieldFragment,
+		data: sectionLine_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			sectionLine._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, subsection, subsection__index ) {
+			var __tmp;
+		
+			sectionLine_yieldFragment.update( changed, root, eachBlock_value, subsection, subsection__index );
+			
+			var sectionLine_changes = {};
+			
+			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.description = subsection.title;
+			
+			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
+		},
+		
+		teardown: function ( detach ) {
+			sectionLine.teardown( detach );
+		}
+	};
+}
+
+function rendersectionLineYieldFragment ( root, eachBlock_value, subsection, subsection__index, component ) {
+	var paragraphs_initialData = {
+		verses: subsection.verses,
+		color: root.useColor && subsection.identifier && template.helpers.getChiasmColor(subsection.identifier)
+	};
+	var paragraphs = new template.components.Paragraphs({
+		target: null,
+		_root: component._root || component,
+		data: paragraphs_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			paragraphs._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, subsection, subsection__index ) {
+			var __tmp;
+		
+			var paragraphs_changes = {};
+			
+			if ( 'subsectionsWithVerses' in changed ) paragraphs_changes.verses = subsection.verses;
+			if ( 'useColor' in changed||'subsectionsWithVerses' in changed||'subsectionsWithVerses' in changed ) paragraphs_changes.color = root.useColor && subsection.identifier && template.helpers.getChiasmColor(subsection.identifier);
+			
+			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
+		},
+		
+		teardown: function ( detach ) {
+			paragraphs.teardown( detach );
+		}
+	};
+}
+
+function subsections ( options ) {
+	options = options || {};
+	
+	this._state = Object.assign( template.data(), options.data );
+applyComputations( this._state, this._state, {}, true );
+
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+
+	this._handlers = Object.create( null );
+
+	this._root = options._root;
+	this._yield = options._yield;
+
+	this._torndown = false;
+	this._renderHooks = [];
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+	
+	this._flush();
+}
+
+subsections.prototype.get = function get( key ) {
+ 	return key ? this._state[ key ] : this._state;
+ };
+
+subsections.prototype.fire = function fire( eventName, data ) {
+ 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
+ 	if ( !handlers ) return;
+ 
+ 	for ( var i = 0; i < handlers.length; i += 1 ) {
+ 		handlers[i].call( this, data );
+ 	}
+ };
+
+subsections.prototype.observe = function observe( key, callback, options ) {
+ 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
+ 
+ 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
+ 
+ 	if ( !options || options.init !== false ) {
+ 		callback.__calling = true;
+ 		callback.call( this, this._state[ key ] );
+ 		callback.__calling = false;
+ 	}
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = group[ key ].indexOf( callback );
+ 			if ( ~index ) group[ key ].splice( index, 1 );
+ 		}
+ 	};
+ };
+
+subsections.prototype.on = function on( eventName, handler ) {
+ 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
+ 	handlers.push( handler );
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = handlers.indexOf( handler );
+ 			if ( ~index ) handlers.splice( index, 1 );
+ 		}
+ 	};
+ };
+
+subsections.prototype.set = function set( newState ) {
+ 	this._set( newState );
+ 	( this._root || this )._flush();
+ };
+
+subsections.prototype._flush = function _flush() {
+ 	if ( !this._renderHooks ) return;
+ 
+ 	while ( this._renderHooks.length ) {
+ 		var hook = this._renderHooks.pop();
+ 		hook.fn.call( hook.context );
+ 	}
+ };
+
+subsections.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	applyComputations( this._state, newState, oldState, false )
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+	
+	this._flush();
+};
+
+subsections.prototype.teardown = function teardown ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+function createComment() {
+	return document.createComment( '' );
+}
+
+function insertNode( node, target, anchor ) {
+	target.insertBefore( node, anchor );
+}
+
+function detachNode( node ) {
+	node.parentNode.removeChild( node );
+}
+
+function teardownEach( iterations, detach, start ) {
+	for ( var i = ( start || 0 ); i < iterations.length; i += 1 ) {
+		iterations[i].teardown( detach );
+	}
+}
+
+module.exports = subsections;
+
+},{"component/paragraphs.html":1,"component/section-line.html":3,"lib/chiasm-color":6,"lib/combine-structure-and-verses":7}],5:[function(require,module,exports){
+'use strict';
+
+var revelation = require('pickering-majority-text-revelation');
+
+var combineStructureAndVerses = require('lib/combine-structure-and-verses');
+var structure = require('lib/structure');
+
+var makeMainView = require('./view');
+
+var verses = revelation.versesNoteReferencesAndHeaders.map(function (chunk) {
+	return chunk.type === 'end paragraph' ? { type: 'paragraph break' } : chunk;
+}).filter(function (chunk) {
+	return chunk.type !== 'start paragraph';
+}).map(function (verseChunk) {
+	if (verseChunk.type !== 'verse' || /^\u2014/.test(verseChunk.text)) {
+		return verseChunk;
+	}
+
+	return Object.assign({}, verseChunk, { text: ' ' + verseChunk.text });
+});
+
+var structuredText = combineStructureAndVerses(structure, verses);
+
+console.log(structuredText);
+
+var component = makeMainView({ targetSelector: '#verses', structuredText: structuredText });
+
+},{"./view":10,"lib/combine-structure-and-verses":7,"lib/structure":9,"pickering-majority-text-revelation":13}],6:[function(require,module,exports){
+'use strict';
+
 var colors = ['#018d5d', '#ba4460', '#9ea946', '#00479f', '#c26939', '#8188df', '#ee6bd4'];
 var chiasmColors = {
 	a: 0,
@@ -19,7 +1629,7 @@ module.exports = function getChiasmColor(identifier) {
 	return colors[colorIndex];
 };
 
-},{}],2:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var oneToManyZip = require('one-to-many-array-zip');
@@ -49,7 +1659,7 @@ function verseReference(_ref3) {
 	return [chapterNumber, verseNumber, sectionNumber];
 }
 
-},{"multi-part-range-compare":5,"one-to-many-array-zip":6}],3:[function(require,module,exports){
+},{"multi-part-range-compare":11,"one-to-many-array-zip":12}],8:[function(require,module,exports){
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -89,34 +1699,153 @@ module.exports = function extractRangeFromVerses(verses, range) {
 	return matching;
 };
 
-},{"multi-part-range-compare":5}],4:[function(require,module,exports){
+},{"multi-part-range-compare":11}],9:[function(require,module,exports){
 'use strict';
 
-var combineStructureAndVerses = require('./combine-structure-and-verses');
-var revelation = require('pickering-majority-text-revelation');
-var makeMainView = require('./view');
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var verses = revelation.versesNoteReferencesAndHeaders.map(function (chunk) {
-	return chunk.type === 'end paragraph' ? { type: 'paragraph break' } : chunk;
-}).filter(function (chunk) {
-	return chunk.type !== 'start paragraph';
-}).map(function (verseChunk) {
-	if (verseChunk.type !== 'verse' || /^\u2014/.test(verseChunk.text)) {
-		return verseChunk;
+var identifiers = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+var VERSE_SECTION_RANGE_MIN = 1;
+var VERSE_SECTION_RANGE_MAX = 9999;
+
+module.exports = [{
+	identifier: 'A',
+	title: 'Prologue',
+	description: 'How to Read This Book',
+	range: r([1, 1], [1, 11])
+}, {
+	identifier: 'B',
+	title: 'First Septet – Seven Churches',
+	description: 'A Look at the Beginnings of the Church that Christ is Building',
+	range: r([2, 1], [3, 22]),
+	introduction: {
+		title: 'Introduction to the seven churches – Christ is present with His church',
+		range: r([1, 12], [1, 20])
+	},
+	subsections: makeSubsections(s('Ephesus', r([2, 1], [2, 7])), s('Smyrna', r([2, 8], [2, 11])), s('Pergamos', r([2, 12], [2, 17])), s('Thyatira', r([2, 18], [2, 29])), s('Sardis', r([3, 1], [3, 6])), s('Philadelphia', r([3, 7], [3, 13])), s('Laodicea', r([3, 14], [3, 22])))
+}, {
+	identifier: 'C',
+	title: 'Second Septet – Seven Seals',
+	description: 'Legal Judgments to be Executed Against Church’s Persecutors',
+	range: r([6, 1], [8, 1]),
+	introduction: {
+		title: 'Introduction to the seven seals – Christ is on His throne and is governing all of history',
+		range: r([4, 1], [5, 14])
+	},
+	subsections: [s('Seal 1 - the white horse', r([6, 1], [6, 2]), 'a'), s('Seal 2 - the red horse', r([6, 3], [6, 4]), 'b'), s('Seal 3 - the black horse', r([6, 5], [6, 6]), 'c'), s('Seal 4 - the yellowish-green horse', r([6, 7], [6, 8]), 'd'), s('Seal 5 - the souls under the altar', r([6, 9], [6, 11]), 'e'), s('Seal 6 - the earthquake', r([6, 12], [6, 17]), 'f'), s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([7, 1], [7, 17])), s('Seal 7 - introduces the seven trumpets and seems to comprise all of the third septet', r([8, 1], [8, 1]), 'g')]
+}, {
+	identifier: 'D',
+	title: 'Third Septet – Seven Trumpets',
+	description: 'The War Against the Church’s Persecutors',
+	range: r([8, 7], [11, 19]),
+	introduction: {
+		title: 'Introduction to the seven trumpets – God ordains victory for the church through prayer',
+		range: r([8, 2], [8, 6])
+	},
+	subsections: [s('Trumpet 1 - The land is set on fire', r([8, 7], [8, 7]), 'a'), s('Trumpet 2 - The sea is turned to blood', r([8, 8], [8, 9]), 'b'), s('Trumpet 3 - The rivers and springs become bitter', r([8, 10], [8, 12]), 'c'), s('Trumpet 4 - The heavenly bodies are dimmed', r([8, 12], [8, 13]), 'd'), s('Trumpet 5 - Demons released from the pit', r([9, 1], [9, 12]), 'e'), s('Trumpet 6 - Demons released from Euphrates', r([9, 13], [9, 21]), 'f'), s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([10, 1], [11, 14])), s('Trumpet 7 - The seventh trumpet seems to comprise all of the fourth septet', r([11, 15], [11, 19]), 'g')]
+}, {
+	identifier: 'E',
+	title: 'Fourth Septet – Seven Visions',
+	description: 'From Total Defeat to Victory',
+	range: r([13, 1], [15, 1]),
+	introduction: {
+		title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
+		range: r([12, 1], [12, 17]),
+		subsections: [s('The Bride reflecting the glory of her husband', r([12, 1], [12, 1]), 'Ea'), s('The Child of the woman', r([12, 2], [12, 2]), 'Eb'), s('The Dragon tries to devour the Child', r([12, 3], [12, 5]), 'Ec'), s('The woman flees to the wilderness', r([12, 6], [12, 6]), 'Ed'), s('Dragon war in heaven', r([12, 7], [12, 9]), 'Ee'), s('Victory of Christ & His people over the dragon', r([12, 10], [12, 11]), 'Ef'), s('Dragon war on earth', r([12, 12], [12, 13]), 'Ee'), s('The woman flees to the wilderness', r([12, 14], [12, 14]), 'Ed'), s('The Dragon\'s mouth & the earth swallows the serpents flood', r([12, 15], [12, 16]), 'Ec'), s('The rest of the offspring of the woman', r([12, 17, 1], [12, 17, 1]), 'Eb'), s('The church reflecting the word of Christ', r([12, 17, 2], [12, 17]), 'Ea')]
+	},
+	subsections: [s('The beast rising out of the sea', r([13, 1], [13, 10])), s('The beast rising out of the land', r([13, 11], [13, 18])), s('The 144,000 virgin (warriors) and the Lamb', r([14, 1], [14, 5])), s('The seven angels', r([14, 6], [14, 13])), s('The positive reaping of wheat', r([14, 14], [14, 16])), s('The negative reaping of grapes', r([14, 17], [14, 20])), s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations (15:1-4)', r([15, 1], [15, 1]))]
+}, {
+	identifier: 'D',
+	title: 'Fifth Septet – Seven Bowls of Wrath Containing the Seven Plagues',
+	range: r([16, 2], [16, 17]),
+	introduction: {
+		title: 'Introduction to the seven plagues – angels preparing for warfare; temple filled with God’s glory',
+		range: r([15, 2], [16, 1])
+	},
+	subsections: makeSubsections(s('Bowl 1 - On the land', r([16, 2], [16, 2])), s('Bowl 2 - On the sea', r([16, 3], [16, 3])), s('Bowl 3 - On the waters', r([16, 4], [16, 7])), s('Bowl 4 - On the sun', r([16, 8], [16, 9])), s('Bowl 5 - On the throne of the beast', r([16, 10], [16, 11])), s('Bowl 6 - On the Euphrates', r([16, 12], [16, 16])), s('Bowl 7 - On the air – note that this 7th bowl seems to introduce all of the next septet (cf. 16:17-21)', r([16, 17], [16, 17])))
+}, {
+	identifier: 'C',
+	title: 'Sixth Septet – Seven Condemnations of Babylon',
+	range: r([17, 1], [19, 10]),
+	introduction: {
+		title: 'Introduction to the seven condemnations – Even with Roman support, Jerusalem is no match for Christ',
+		range: r([16, 17], [16, 21])
+	},
+	subsections: makeSubsections(s('Blasphemy of the Harlot', r([17, 1], [17, 6])), s('Harlots Pagan Alliance with Rome', r([17, 7], [17, 18])), s('Spiritual fornications', r([18, 1], [18, 8])), s('Ungodly statist/commercial alliance', r([18, 9], [18, 20])), s('The finality of Babylon’s fall', r([18, 21], [18, 24])), s('All heaven agreeing with her judgment', r([19, 1], [19, 4])), s('The death of the harlot is followed by the marriage of the Lamb', r([19, 5], [19, 10])))
+}, {
+	identifier: 'B',
+	title: 'Seventh Septet – Seven visions of the victory of Christ’s Kingdom – The Church Militant & Triumphant',
+	range: r([20, 1], [22, 17]),
+	introduction: {
+		title: 'Introduction to the seven New Covenant visions – Jesus proves that He is King of kings and Lord of lords',
+		range: r([19, 11], [19, 21])
+	},
+	subsections: makeSubsections(s('Satan’s power bound', r([20, 1], [20, 3])), s('Victory over death guaranteed – reign in life and in death', r([20, 4], [20, 6])), s('Final judgment', r([20, 7], [20, 15])), s('All things made new', r([21, 1], [21, 8])), s('The New Jerusalem as the spotless bride', r([21, 9], [21, 27])), s('The river of life', r([22, 1], [22, 5])), s('Reiteration that Christ will come soon to finish the old and to continue the renewal of all things', r([22, 6], [22, 17])))
+}, {
+	identifier: 'A',
+	title: 'Epilogue: How to Read This Book',
+	range: r([22, 18], [22, 21])
+}];
+
+function makeSubsections() {
+	for (var _len = arguments.length, subsections = Array(_len), _key = 0; _key < _len; _key++) {
+		subsections[_key] = arguments[_key];
 	}
 
-	return Object.assign({}, verseChunk, { text: ' ' + verseChunk.text });
-});
+	return subsections.map(function (_ref, i) {
+		var title = _ref.title,
+		    range = _ref.range;
 
-var structure = require('./structure');
+		var identifier = identifiers[i];
+		return {
+			title: title,
+			range: range,
+			identifier: identifier
+		};
+	});
+}
 
-var structuredText = combineStructureAndVerses(structure, verses);
+function s(title, range, identifier) {
+	return { title: title, range: range, identifier: identifier };
+}
 
-console.log(structuredText);
+function r(rangeStart, randeEnd) {
+	return [guaranteeRangeSection(rangeStart, VERSE_SECTION_RANGE_MIN), guaranteeRangeSection(randeEnd, VERSE_SECTION_RANGE_MAX)];
+}
 
-var component = makeMainView({ targetSelector: '#verses', structuredText: structuredText });
+function guaranteeRangeSection(range, defaultSection) {
+	if (range.length === 3) {
+		return range;
+	} else {
+		return [].concat(_toConsumableArray(range), [defaultSection]);
+	}
+}
 
-},{"./combine-structure-and-verses":2,"./structure":11,"./view":16,"pickering-majority-text-revelation":7}],5:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+'use strict';
+
+var slugify = require('slugify');
+
+var Revelation = require('component/revelation.html');
+
+function headerToSlug(header) {
+	return 'header-' + slugify(header.toLowerCase());
+}
+
+module.exports = function makeMainView(_ref) {
+	var targetSelector = _ref.targetSelector,
+	    structuredText = _ref.structuredText;
+
+	return new Revelation({
+		target: document.querySelector(targetSelector),
+		data: {
+			structuredText: structuredText,
+			currentChiasm: null
+		}
+	});
+};
+
+},{"component/revelation.html":2,"slugify":16}],11:[function(require,module,exports){
 
 const LESS_THAN = -1
 const WITHIN = 0
@@ -167,7 +1896,7 @@ withinRange.GREATER_THAN_END = GREATER_THAN
 
 withinRange.relative = relative
 
-},{}],6:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 module.exports = function oneToManyZip(oneArray, manyArray, compareFn) {
@@ -204,7 +1933,7 @@ function assert(value, message) {
 	}
 }
 
-},{}],7:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var versesNoteReferencesAndHeaders = require('./verses-note-references-and-headers.json')
 var notes = require('./notes.json')
 
@@ -213,7 +1942,7 @@ module.exports = {
 	notes: notes
 }
 
-},{"./notes.json":8,"./verses-note-references-and-headers.json":9}],8:[function(require,module,exports){
+},{"./notes.json":14,"./verses-note-references-and-headers.json":15}],14:[function(require,module,exports){
 module.exports={
 	"1": "Both the translation and the comments are the responsibility of Wilbur N. Pickering, ThM PhD, ©, being based on his edition of the Greek New Testament, according to the only significant line of transmission, both ancient and independent, that has a demonstrable archetypal form in all 27 books. The Greek Text of which this is a translation, and articles explaining the preference, may be downloaded free from  www.prunch.org.",
 	"2": "Whose, the Father’s or the Son’s? Probably the Son’s, but in practice it makes little or no difference. Yes, the Text says “slaves”, so this book is not intended for the merely curious.",
@@ -503,7 +2232,7 @@ module.exports={
 	"286": "“Words”, plural, includes the individual words that make up the whole. Those textual critics who have wantonly removed words from the Text, on the basis of satanically inspired presuppositions, are out. Those who interpret the Text in such a way as to avoid its plain meaning, likewise. Jehovah the Son affirms that the words are “true and  faithful ”, and He expects us to interpret them that way.",
 	"287": "“The Lord Jesus Christ” is now the full name or title of Jehovah the Son."
 }
-},{}],9:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports=[
 	{
 		"type": "note reference",
@@ -6683,7 +8412,7 @@ module.exports=[
 		"type": "end paragraph"
 	}
 ]
-},{}],10:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 
 ;(function (name, root, factory) {
   if (typeof exports === 'object') {
@@ -6791,1732 +8520,4 @@ module.exports=[
   return replace
 }))
 
-},{}],11:[function(require,module,exports){
-'use strict';
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var identifiers = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-var VERSE_SECTION_RANGE_MIN = 1;
-var VERSE_SECTION_RANGE_MAX = 9999;
-
-module.exports = [{
-	identifier: 'A',
-	title: 'Prologue',
-	description: 'How to Read This Book',
-	range: r([1, 1], [1, 11])
-}, {
-	identifier: 'B',
-	title: 'First Septet – Seven Churches',
-	description: 'A Look at the Beginnings of the Church that Christ is Building',
-	range: r([2, 1], [3, 22]),
-	introduction: {
-		title: 'Introduction to the seven churches – Christ is present with His church',
-		range: r([1, 12], [1, 20])
-	},
-	subsections: makeSubsections(s('Ephesus', r([2, 1], [2, 7])), s('Smyrna', r([2, 8], [2, 11])), s('Pergamos', r([2, 12], [2, 17])), s('Thyatira', r([2, 18], [2, 29])), s('Sardis', r([3, 1], [3, 6])), s('Philadelphia', r([3, 7], [3, 13])), s('Laodicea', r([3, 14], [3, 22])))
-}, {
-	identifier: 'C',
-	title: 'Second Septet – Seven Seals',
-	description: 'Legal Judgments to be Executed Against Church’s Persecutors',
-	range: r([6, 1], [8, 1]),
-	introduction: {
-		title: 'Introduction to the seven seals – Christ is on His throne and is governing all of history',
-		range: r([4, 1], [5, 14])
-	},
-	subsections: [s('Seal 1 - the white horse', r([6, 1], [6, 2]), 'a'), s('Seal 2 - the red horse', r([6, 3], [6, 4]), 'b'), s('Seal 3 - the black horse', r([6, 5], [6, 6]), 'c'), s('Seal 4 - the yellowish-green horse', r([6, 7], [6, 8]), 'd'), s('Seal 5 - the souls under the altar', r([6, 9], [6, 11]), 'e'), s('Seal 6 - the earthquake', r([6, 12], [6, 17]), 'f'), s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([7, 1], [7, 17])), s('Seal 7 - introduces the seven trumpets and seems to comprise all of the third septet', r([8, 1], [8, 1]), 'g')]
-}, {
-	identifier: 'D',
-	title: 'Third Septet – Seven Trumpets',
-	description: 'The War Against the Church’s Persecutors',
-	range: r([8, 7], [11, 19]),
-	introduction: {
-		title: 'Introduction to the seven trumpets – God ordains victory for the church through prayer',
-		range: r([8, 2], [8, 6])
-	},
-	subsections: [s('Trumpet 1 - The land is set on fire', r([8, 7], [8, 7]), 'a'), s('Trumpet 2 - The sea is turned to blood', r([8, 8], [8, 9]), 'b'), s('Trumpet 3 - The rivers and springs become bitter', r([8, 10], [8, 12]), 'c'), s('Trumpet 4 - The heavenly bodies are dimmed', r([8, 12], [8, 13]), 'd'), s('Trumpet 5 - Demons released from the pit', r([9, 1], [9, 12]), 'e'), s('Trumpet 6 - Demons released from Euphrates', r([9, 13], [9, 21]), 'f'), s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([10, 1], [11, 14])), s('Trumpet 7 - The seventh trumpet seems to comprise all of the fourth septet', r([11, 15], [11, 19]), 'g')]
-}, {
-	identifier: 'E',
-	title: 'Fourth Septet – Seven Visions',
-	description: 'From Total Defeat to Victory',
-	range: r([13, 1], [15, 1]),
-	introduction: {
-		title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
-		range: r([12, 1], [12, 17]),
-		subsections: [s('The Bride reflecting the glory of her husband', r([12, 1], [12, 1]), 'Ea'), s('The Child of the woman', r([12, 2], [12, 2]), 'Eb'), s('The Dragon tries to devour the Child', r([12, 3], [12, 5]), 'Ec'), s('The woman flees to the wilderness', r([12, 6], [12, 6]), 'Ed'), s('Dragon war in heaven', r([12, 7], [12, 9]), 'Ee'), s('Victory of Christ & His people over the dragon', r([12, 10], [12, 11]), 'Ef'), s('Dragon war on earth', r([12, 12], [12, 13]), 'Ee'), s('The woman flees to the wilderness', r([12, 14], [12, 14]), 'Ed'), s('The Dragon\'s mouth & the earth swallows the serpents flood', r([12, 15], [12, 16]), 'Ec'), s('The rest of the offspring of the woman', r([12, 17, 1], [12, 17, 1]), 'Eb'), s('The church reflecting the word of Christ', r([12, 17, 2], [12, 17]), 'Ea')]
-	},
-	subsections: [s('The beast rising out of the sea', r([13, 1], [13, 10])), s('The beast rising out of the land', r([13, 11], [13, 18])), s('The 144,000 virgin (warriors) and the Lamb', r([14, 1], [14, 5])), s('The seven angels', r([14, 6], [14, 13])), s('The positive reaping of wheat', r([14, 14], [14, 16])), s('The negative reaping of grapes', r([14, 17], [14, 20])), s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations (15:1-4)', r([15, 1], [15, 1]))]
-}, {
-	identifier: 'D',
-	title: 'Fifth Septet – Seven Bowls of Wrath Containing the Seven Plagues',
-	range: r([16, 2], [16, 17]),
-	introduction: {
-		title: 'Introduction to the seven plagues – angels preparing for warfare; temple filled with God’s glory',
-		range: r([15, 2], [16, 1])
-	},
-	subsections: makeSubsections(s('Bowl 1 - On the land', r([16, 2], [16, 2])), s('Bowl 2 - On the sea', r([16, 3], [16, 3])), s('Bowl 3 - On the waters', r([16, 4], [16, 7])), s('Bowl 4 - On the sun', r([16, 8], [16, 9])), s('Bowl 5 - On the throne of the beast', r([16, 10], [16, 11])), s('Bowl 6 - On the Euphrates', r([16, 12], [16, 16])), s('Bowl 7 - On the air – note that this 7th bowl seems to introduce all of the next septet (cf. 16:17-21)', r([16, 17], [16, 17])))
-}, {
-	identifier: 'C',
-	title: 'Sixth Septet – Seven Condemnations of Babylon',
-	range: r([17, 1], [19, 10]),
-	introduction: {
-		title: 'Introduction to the seven condemnations – Even with Roman support, Jerusalem is no match for Christ',
-		range: r([16, 17], [16, 21])
-	},
-	subsections: makeSubsections(s('Blasphemy of the Harlot', r([17, 1], [17, 6])), s('Harlots Pagan Alliance with Rome', r([17, 7], [17, 18])), s('Spiritual fornications', r([18, 1], [18, 8])), s('Ungodly statist/commercial alliance', r([18, 9], [18, 20])), s('The finality of Babylon’s fall', r([18, 21], [18, 24])), s('All heaven agreeing with her judgment', r([19, 1], [19, 4])), s('The death of the harlot is followed by the marriage of the Lamb', r([19, 5], [19, 10])))
-}, {
-	identifier: 'B',
-	title: 'Seventh Septet – Seven visions of the victory of Christ’s Kingdom – The Church Militant & Triumphant',
-	range: r([20, 1], [22, 17]),
-	introduction: {
-		title: 'Introduction to the seven New Covenant visions – Jesus proves that He is King of kings and Lord of lords',
-		range: r([19, 11], [19, 21])
-	},
-	subsections: makeSubsections(s('Satan’s power bound', r([20, 1], [20, 3])), s('Victory over death guaranteed – reign in life and in death', r([20, 4], [20, 6])), s('Final judgment', r([20, 7], [20, 15])), s('All things made new', r([21, 1], [21, 8])), s('The New Jerusalem as the spotless bride', r([21, 9], [21, 27])), s('The river of life', r([22, 1], [22, 5])), s('Reiteration that Christ will come soon to finish the old and to continue the renewal of all things', r([22, 6], [22, 17])))
-}, {
-	identifier: 'A',
-	title: 'Epilogue: How to Read This Book',
-	range: r([22, 18], [22, 21])
-}];
-
-function makeSubsections() {
-	for (var _len = arguments.length, subsections = Array(_len), _key = 0; _key < _len; _key++) {
-		subsections[_key] = arguments[_key];
-	}
-
-	return subsections.map(function (_ref, i) {
-		var title = _ref.title,
-		    range = _ref.range;
-
-		var identifier = identifiers[i];
-		return {
-			title: title,
-			range: range,
-			identifier: identifier
-		};
-	});
-}
-
-function s(title, range, identifier) {
-	return { title: title, range: range, identifier: identifier };
-}
-
-function r(rangeStart, randeEnd) {
-	return [guaranteeRangeSection(rangeStart, VERSE_SECTION_RANGE_MIN), guaranteeRangeSection(randeEnd, VERSE_SECTION_RANGE_MAX)];
-}
-
-function guaranteeRangeSection(range, defaultSection) {
-	if (range.length === 3) {
-		return range;
-	} else {
-		return [].concat(_toConsumableArray(range), [defaultSection]);
-	}
-}
-
-},{}],12:[function(require,module,exports){
-'use strict';
-
-function applyComputations ( state, newState, oldState, isInitial ) {
-	if ( isInitial || ( 'verses' in newState && typeof state.verses === 'object' || state.verses !== oldState.verses ) ) {
-		state.paragraphs = newState.paragraphs = template.computed.paragraphs( state.verses );
-	}
-}
-
-var template = (function () {
-
-function splitIntoParagraphs(chunks) {
-	const paragraphs = []
-	let currentParagraph = []
-
-	function finishParagraph() {
-		if (currentParagraph.length > 0) {
-			paragraphs.push(currentParagraph)
-			currentParagraph = []
-		}
-	}
-
-	chunks.forEach(chunk => {
-		if (chunk.type === 'paragraph break') {
-			finishParagraph()
-		} else {
-			currentParagraph.push(chunk)
-		}
-	})
-
-	finishParagraph()
-
-	return paragraphs
-}
-
-return {
-	data() {
-		return {
-			verses: []
-		}
-	},
-	computed: {
-		paragraphs(verses) {
-			return splitIntoParagraphs(verses)
-		}
-	}
-}
-}());
-
-function renderMainFragment ( root, component ) {
-	var eachBlock_anchor = createComment();
-	var eachBlock_value = root.paragraphs;
-	var eachBlock_iterations = [];
-	
-	for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
-		eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
-	}
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( eachBlock_anchor, target, anchor );
-			
-			for ( var i = 0; i < eachBlock_iterations.length; i += 1 ) {
-				eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
-			}
-		},
-		
-		update: function ( changed, root ) {
-			var __tmp;
-		
-			var eachBlock_value = root.paragraphs;
-			
-			for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
-				if ( !eachBlock_iterations[i] ) {
-					eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
-					eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
-				} else {
-					eachBlock_iterations[i].update( changed, root, eachBlock_value, eachBlock_value[i], i );
-				}
-			}
-			
-			teardownEach( eachBlock_iterations, true, eachBlock_value.length );
-			
-			eachBlock_iterations.length = eachBlock_value.length;
-		},
-		
-		teardown: function ( detach ) {
-			teardownEach( eachBlock_iterations, detach );
-			
-			if ( detach ) {
-				detachNode( eachBlock_anchor );
-			}
-		}
-	};
-}
-
-function renderEachBlock ( root, eachBlock_value, paragraph, paragraph__index, component ) {
-	var p = createElement( 'p' );
-	var last_p_style = root.color ? 'color: ' + root.color : '';
-	p.style.cssText = last_p_style;
-	
-	var eachBlock1_anchor = createComment();
-	appendNode( eachBlock1_anchor, p );
-	var eachBlock1_value = paragraph;
-	var eachBlock1_iterations = [];
-	
-	for ( var i = 0; i < eachBlock1_value.length; i += 1 ) {
-		eachBlock1_iterations[i] = renderEachBlock1( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, eachBlock1_value[i], i, component );
-		eachBlock1_iterations[i].mount( eachBlock1_anchor.parentNode, eachBlock1_anchor );
-	}
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( p, target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, paragraph, paragraph__index ) {
-			var __tmp;
-		
-			if ( ( __tmp = root.color ? 'color: ' + root.color : '' ) !== last_p_style ) {
-				last_p_style = __tmp;
-				p.style.cssText = last_p_style;
-			}
-			
-			var eachBlock1_value = paragraph;
-			
-			for ( var i = 0; i < eachBlock1_value.length; i += 1 ) {
-				if ( !eachBlock1_iterations[i] ) {
-					eachBlock1_iterations[i] = renderEachBlock1( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, eachBlock1_value[i], i, component );
-					eachBlock1_iterations[i].mount( eachBlock1_anchor.parentNode, eachBlock1_anchor );
-				} else {
-					eachBlock1_iterations[i].update( changed, root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, eachBlock1_value[i], i );
-				}
-			}
-			
-			teardownEach( eachBlock1_iterations, true, eachBlock1_value.length );
-			
-			eachBlock1_iterations.length = eachBlock1_value.length;
-		},
-		
-		teardown: function ( detach ) {
-			teardownEach( eachBlock1_iterations, false );
-			
-			if ( detach ) {
-				detachNode( p );
-			}
-		}
-	};
-}
-
-function renderEachBlock1 ( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index, component ) {
-	var ifBlock_anchor = createComment();
-	
-	function getBlock ( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index ) {
-		if ( chunk.type === 'verse' ) return renderIfBlock_0;
-		return null;
-	}
-	
-	var currentBlock = getBlock( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index );
-	var ifBlock = currentBlock && currentBlock( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index, component );
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( ifBlock_anchor, target, anchor );
-			if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index ) {
-			var __tmp;
-		
-			var _currentBlock = currentBlock;
-			currentBlock = getBlock( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index );
-			if ( _currentBlock === currentBlock && ifBlock) {
-				ifBlock.update( changed, root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index );
-			} else {
-				if ( ifBlock ) ifBlock.teardown( true );
-				ifBlock = currentBlock && currentBlock( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index, component );
-				if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
-			}
-		},
-		
-		teardown: function ( detach ) {
-			if ( ifBlock ) ifBlock.teardown( detach );
-			
-			if ( detach ) {
-				detachNode( ifBlock_anchor );
-			}
-		}
-	};
-}
-
-function renderIfBlock_0 ( root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index, component ) {
-	var span = createElement( 'span' );
-	var last_span_data_chapter_number = chunk.chapterNumber;
-	setAttribute( span, 'data-chapter-number', last_span_data_chapter_number );
-	var last_span_data_verse_number = chunk.verseNumber;
-	setAttribute( span, 'data-verse-number', last_span_data_verse_number );
-	var last_span_data_section_number = chunk.sectionNumber;
-	setAttribute( span, 'data-section-number', last_span_data_section_number );
-	
-	var last_text = chunk.text
-	var text = createText( last_text );
-	appendNode( text, span );
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( span, target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, paragraph, paragraph__index, eachBlock1_value, chunk, chunk__index ) {
-			var __tmp;
-		
-			if ( ( __tmp = chunk.chapterNumber ) !== last_span_data_chapter_number ) {
-				last_span_data_chapter_number = __tmp;
-				setAttribute( span, 'data-chapter-number', last_span_data_chapter_number );
-			}
-			
-			if ( ( __tmp = chunk.verseNumber ) !== last_span_data_verse_number ) {
-				last_span_data_verse_number = __tmp;
-				setAttribute( span, 'data-verse-number', last_span_data_verse_number );
-			}
-			
-			if ( ( __tmp = chunk.sectionNumber ) !== last_span_data_section_number ) {
-				last_span_data_section_number = __tmp;
-				setAttribute( span, 'data-section-number', last_span_data_section_number );
-			}
-			
-			if ( ( __tmp = chunk.text ) !== last_text ) {
-				text.data = last_text = __tmp;
-			}
-		},
-		
-		teardown: function ( detach ) {
-			if ( detach ) {
-				detachNode( span );
-			}
-		}
-	};
-}
-
-function paragraphs ( options ) {
-	options = options || {};
-	
-	this._state = Object.assign( template.data(), options.data );
-applyComputations( this._state, this._state, {}, true );
-
-	this._observers = {
-		pre: Object.create( null ),
-		post: Object.create( null )
-	};
-
-	this._handlers = Object.create( null );
-
-	this._root = options._root;
-	this._yield = options._yield;
-
-	this._torndown = false;
-	
-	this._fragment = renderMainFragment( this._state, this );
-	if ( options.target ) this._fragment.mount( options.target, null );
-}
-
-paragraphs.prototype.get = function get( key ) {
- 	return key ? this._state[ key ] : this._state;
- };
-
-paragraphs.prototype.fire = function fire( eventName, data ) {
- 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
- 	if ( !handlers ) return;
- 
- 	for ( var i = 0; i < handlers.length; i += 1 ) {
- 		handlers[i].call( this, data );
- 	}
- };
-
-paragraphs.prototype.observe = function observe( key, callback, options ) {
- 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
- 
- 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
- 
- 	if ( !options || options.init !== false ) {
- 		callback.__calling = true;
- 		callback.call( this, this._state[ key ] );
- 		callback.__calling = false;
- 	}
- 
- 	return {
- 		cancel: function () {
- 			var index = group[ key ].indexOf( callback );
- 			if ( ~index ) group[ key ].splice( index, 1 );
- 		}
- 	};
- };
-
-paragraphs.prototype.on = function on( eventName, handler ) {
- 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
- 	handlers.push( handler );
- 
- 	return {
- 		cancel: function () {
- 			var index = handlers.indexOf( handler );
- 			if ( ~index ) handlers.splice( index, 1 );
- 		}
- 	};
- };
-
-paragraphs.prototype.set = function set( newState ) {
- 	this._set( newState );
- 	( this._root || this )._flush();
- };
-
-paragraphs.prototype._flush = function _flush() {
- 	if ( !this._renderHooks ) return;
- 
- 	while ( this._renderHooks.length ) {
- 		var hook = this._renderHooks.pop();
- 		hook.fn.call( hook.context );
- 	}
- };
-
-paragraphs.prototype._set = function _set ( newState ) {
-	var oldState = this._state;
-	this._state = Object.assign( {}, oldState, newState );
-	applyComputations( this._state, newState, oldState, false )
-	
-	dispatchObservers( this, this._observers.pre, newState, oldState );
-	if ( this._fragment ) this._fragment.update( newState, this._state );
-	dispatchObservers( this, this._observers.post, newState, oldState );
-};
-
-paragraphs.prototype.teardown = function teardown ( detach ) {
-	this.fire( 'teardown' );
-
-	this._fragment.teardown( detach !== false );
-	this._fragment = null;
-
-	this._state = {};
-	this._torndown = true;
-};
-
-function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
-
-function createComment() {
-	return document.createComment( '' );
-}
-
-function insertNode( node, target, anchor ) {
-	target.insertBefore( node, anchor );
-}
-
-function detachNode( node ) {
-	node.parentNode.removeChild( node );
-}
-
-function teardownEach( iterations, detach, start ) {
-	for ( var i = ( start || 0 ); i < iterations.length; i += 1 ) {
-		iterations[i].teardown( detach );
-	}
-}
-
-function createElement( name ) {
-	return document.createElement( name );
-}
-
-function appendNode( node, target ) {
-	target.appendChild( node );
-}
-
-function setAttribute( node, attribute, value ) {
-	node.setAttribute ( attribute, value );
-}
-
-function createText( data ) {
-	return document.createTextNode( data );
-}
-
-module.exports = paragraphs;
-
-},{}],13:[function(require,module,exports){
-'use strict';
-
-var template = (function () {
-const Paragraphs = require('./paragraphs.html')
-const Subsections = require('./subsections.html')
-const SectionLine = require('./section-line.html')
-
-const extractRangeFromVerses = require('../extract-range-from-verses')
-const getChiasmColor = require('../chiasm-color')
-
-return {
-	data() {
-		return {
-
-		}
-	},
-	components: {
-		Paragraphs,
-		Subsections,
-		SectionLine
-	},
-	methods: {
-		setChiasm(identifier) {
-			const currentChiasm = this.get('currentChiasm')
-
-			const newChiasm = currentChiasm === identifier ? null : identifier
-
-			this.set({ currentChiasm: newChiasm })
-		}
-	},
-	helpers: {
-		getChiasmColor,
-		extractRangeFromVerses
-	}
-}
-}());
-
-let addedCss = false;
-function addCss () {
-	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-1168587148].chiasm-section, [svelte-1168587148] .chiasm-section {\n\tdisplay: flex;\n}\n\n[svelte-1168587148].section-body, [svelte-1168587148] .section-body {\n\tdisplay: flex;\n\tflex-grow: 1;\n\tflex-direction: column;\n}\n\n[svelte-1168587148].section-color-bar, [svelte-1168587148] .section-color-bar {\n\twidth: 50px;\n\tflex-shrink: 0;\n\tcursor: pointer;\n}\n\n[svelte-1168587148][data-chiasm-selected=true] [data-is-selected=false], [svelte-1168587148] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-1168587148][data-chiasm-selected=true] [data-is-selected=true], [svelte-1168587148] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n";
-	appendNode( style, document.head );
-
-	addedCss = true;
-}
-
-function renderMainFragment ( root, component ) {
-	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-1168587148', '' );
-	var last_div_data_chiasm_selected = !!root.currentChiasm;
-	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
-	
-	var eachBlock_anchor = createComment();
-	appendNode( eachBlock_anchor, div );
-	var eachBlock_value = root.structuredText;
-	var eachBlock_iterations = [];
-	
-	for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
-		eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
-		eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
-	}
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( div, target, anchor );
-		},
-		
-		update: function ( changed, root ) {
-			var __tmp;
-		
-			if ( ( __tmp = !!root.currentChiasm ) !== last_div_data_chiasm_selected ) {
-				last_div_data_chiasm_selected = __tmp;
-				setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
-			}
-			
-			var eachBlock_value = root.structuredText;
-			
-			for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
-				if ( !eachBlock_iterations[i] ) {
-					eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
-					eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
-				} else {
-					eachBlock_iterations[i].update( changed, root, eachBlock_value, eachBlock_value[i], i );
-				}
-			}
-			
-			teardownEach( eachBlock_iterations, true, eachBlock_value.length );
-			
-			eachBlock_iterations.length = eachBlock_value.length;
-		},
-		
-		teardown: function ( detach ) {
-			teardownEach( eachBlock_iterations, false );
-			
-			if ( detach ) {
-				detachNode( div );
-			}
-		}
-	};
-}
-
-function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-1168587148', '' );
-	div.className = "chiasm-section";
-	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
-	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
-	
-	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-1168587148', '' );
-	div1.className = "section-color-bar";
-	div1.style.cssText = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
-	
-	function clickHandler ( event ) {
-		var eachBlock_value = this.__svelte.eachBlock_value, outerChiasm__index = this.__svelte.outerChiasm__index, outerChiasm = eachBlock_value[outerChiasm__index]
-		
-		component.setChiasm(outerChiasm.identifier);
-	}
-	
-	addEventListener( div1, 'click', clickHandler );
-	
-	div1.__svelte = {
-		eachBlock_value: eachBlock_value,
-		outerChiasm__index: outerChiasm__index
-	};
-	
-	appendNode( div1, div );
-	appendNode( createText( "\n\t\t\t" ), div );
-	
-	var div2 = createElement( 'div' );
-	setAttribute( div2, 'svelte-1168587148', '' );
-	div2.className = "section-body";
-	
-	appendNode( div2, div );
-	var sectionLine_yieldFragment = rendersectionLineYieldFragment( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-	
-	var sectionLine_initialData = {
-		descriptionClass: "header-margin",
-		description: outerChiasm.description
-	};
-	var sectionLine = new template.components.SectionLine({
-		target: div2,
-		_root: component._root || component,
-		_yield: sectionLine_yieldFragment,
-		data: sectionLine_initialData
-	});
-	
-	appendNode( createText( "\n\n\t\t\t\t" ), div2 );
-	var ifBlock_anchor = createComment();
-	appendNode( ifBlock_anchor, div2 );
-	
-	function getBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-		if ( outerChiasm.introduction ) return renderIfBlock_0;
-		return null;
-	}
-	
-	var currentBlock = getBlock( root, eachBlock_value, outerChiasm, outerChiasm__index );
-	var ifBlock = currentBlock && currentBlock( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-	
-	if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
-	appendNode( createText( "\n\n\t\t\t\t" ), div2 );
-	var ifBlock2_anchor = createComment();
-	appendNode( ifBlock2_anchor, div2 );
-	
-	function getBlock2 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-		if ( outerChiasm.subsections ) return renderIfBlock2_0;
-		return renderIfBlock2_1;
-	}
-	
-	var currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
-	var ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-	
-	if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( div, target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-			var __tmp;
-		
-			if ( ( __tmp = root.currentChiasm && root.currentChiasm === outerChiasm.identifier ) !== last_div_data_is_selected ) {
-				last_div_data_is_selected = __tmp;
-				setAttribute( div, 'data-is-selected', last_div_data_is_selected );
-			}
-			
-			div1.style.cssText = "background-color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
-			
-			div1.__svelte.eachBlock_value = eachBlock_value;
-			div1.__svelte.outerChiasm__index = outerChiasm__index;
-			
-			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
-			
-			var sectionLine_changes = {};
-			
-			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.description;
-			
-			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
-			
-			var _currentBlock = currentBlock;
-			currentBlock = getBlock( root, eachBlock_value, outerChiasm, outerChiasm__index );
-			if ( _currentBlock === currentBlock && ifBlock) {
-				ifBlock.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
-			} else {
-				if ( ifBlock ) ifBlock.teardown( true );
-				ifBlock = currentBlock && currentBlock( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-				if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
-			}
-			
-			var _currentBlock2 = currentBlock2;
-			currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
-			if ( _currentBlock2 === currentBlock2 && ifBlock2) {
-				ifBlock2.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
-			} else {
-				if ( ifBlock2 ) ifBlock2.teardown( true );
-				ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-				if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
-			}
-		},
-		
-		teardown: function ( detach ) {
-			removeEventListener( div1, 'click', clickHandler );
-			sectionLine.teardown( false );
-			if ( ifBlock ) ifBlock.teardown( false );
-			if ( ifBlock2 ) ifBlock2.teardown( false );
-			
-			if ( detach ) {
-				detachNode( div );
-			}
-		}
-	};
-}
-
-function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var sectionLine_yieldFragment = rendersectionLineYieldFragment2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-	
-	var sectionLine = new template.components.SectionLine({
-		target: null,
-		_root: component._root || component,
-		_yield: sectionLine_yieldFragment
-	});
-
-	return {
-		mount: function ( target, anchor ) {
-			sectionLine._fragment.mount( target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-			var __tmp;
-		
-			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
-		},
-		
-		teardown: function ( detach ) {
-			sectionLine.teardown( detach );
-		}
-	};
-}
-
-function rendersectionLineYieldFragment2 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var paragraphs_initialData = {
-		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)
-	};
-	var paragraphs = new template.components.Paragraphs({
-		target: null,
-		_root: component._root || component,
-		data: paragraphs_initialData
-	});
-
-	return {
-		mount: function ( target, anchor ) {
-			paragraphs._fragment.mount( target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-			var __tmp;
-		
-			var paragraphs_changes = {};
-			
-			if ( 'structuredText' in changed||'structuredText' in changed ) paragraphs_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range);
-			
-			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
-		},
-		
-		teardown: function ( detach ) {
-			paragraphs.teardown( detach );
-		}
-	};
-}
-
-function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var subsections_initialData = {
-		subsections: outerChiasm.subsections,
-		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range),
-		useColor: !!root.currentChiasm
-	};
-	var subsections = new template.components.Subsections({
-		target: null,
-		_root: component._root || component,
-		data: subsections_initialData
-	});
-
-	return {
-		mount: function ( target, anchor ) {
-			subsections._fragment.mount( target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-			var __tmp;
-		
-			var subsections_changes = {};
-			
-			if ( 'structuredText' in changed ) subsections_changes.subsections = outerChiasm.subsections;
-			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range);
-			if ( 'currentChiasm' in changed ) subsections_changes.useColor = !!root.currentChiasm;
-			
-			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
-		},
-		
-		teardown: function ( detach ) {
-			subsections.teardown( detach );
-		}
-	};
-}
-
-function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var ifBlock1_anchor = createComment();
-	
-	function getBlock1 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-		if ( outerChiasm.introduction.subsections ) return renderIfBlock1_0;
-		return renderIfBlock1_1;
-	}
-	
-	var currentBlock1 = getBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index );
-	var ifBlock1 = currentBlock1 && currentBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( ifBlock1_anchor, target, anchor );
-			if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-			var __tmp;
-		
-			var _currentBlock1 = currentBlock1;
-			currentBlock1 = getBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index );
-			if ( _currentBlock1 === currentBlock1 && ifBlock1) {
-				ifBlock1.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
-			} else {
-				if ( ifBlock1 ) ifBlock1.teardown( true );
-				ifBlock1 = currentBlock1 && currentBlock1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-				if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
-			}
-		},
-		
-		teardown: function ( detach ) {
-			if ( ifBlock1 ) ifBlock1.teardown( detach );
-			
-			if ( detach ) {
-				detachNode( ifBlock1_anchor );
-			}
-		}
-	};
-}
-
-function renderIfBlock1_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var sectionLine_yieldFragment = rendersectionLineYieldFragment1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-	
-	var sectionLine_initialData = {
-		description: outerChiasm.introduction.title
-	};
-	var sectionLine = new template.components.SectionLine({
-		target: null,
-		_root: component._root || component,
-		_yield: sectionLine_yieldFragment,
-		data: sectionLine_initialData
-	});
-
-	return {
-		mount: function ( target, anchor ) {
-			sectionLine._fragment.mount( target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-			var __tmp;
-		
-			sectionLine_yieldFragment.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
-			
-			var sectionLine_changes = {};
-			
-			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.introduction.title;
-			
-			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
-		},
-		
-		teardown: function ( detach ) {
-			sectionLine.teardown( detach );
-		}
-	};
-}
-
-function rendersectionLineYieldFragment1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var paragraphs_initialData = {
-		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)
-	};
-	var paragraphs = new template.components.Paragraphs({
-		target: null,
-		_root: component._root || component,
-		data: paragraphs_initialData
-	});
-
-	return {
-		mount: function ( target, anchor ) {
-			paragraphs._fragment.mount( target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-			var __tmp;
-		
-			var paragraphs_changes = {};
-			
-			if ( 'structuredText' in changed||'structuredText' in changed ) paragraphs_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range);
-			
-			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
-		},
-		
-		teardown: function ( detach ) {
-			paragraphs.teardown( detach );
-		}
-	};
-}
-
-function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var subsections_initialData = {
-		subsections: outerChiasm.introduction.subsections,
-		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range),
-		useColor: !!root.currentChiasm
-	};
-	var subsections = new template.components.Subsections({
-		target: null,
-		_root: component._root || component,
-		data: subsections_initialData
-	});
-
-	return {
-		mount: function ( target, anchor ) {
-			subsections._fragment.mount( target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-			var __tmp;
-		
-			var subsections_changes = {};
-			
-			if ( 'structuredText' in changed ) subsections_changes.subsections = outerChiasm.introduction.subsections;
-			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range);
-			if ( 'currentChiasm' in changed ) subsections_changes.useColor = !!root.currentChiasm;
-			
-			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
-		},
-		
-		teardown: function ( detach ) {
-			subsections.teardown( detach );
-		}
-	};
-}
-
-function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-1168587148', '' );
-	h1.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
-	
-	var last_text = outerChiasm.title
-	var text = createText( last_text );
-	appendNode( text, h1 );
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( h1, target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-			var __tmp;
-		
-			h1.style.cssText = "color: " + ( template.helpers.getChiasmColor(outerChiasm.identifier) );
-			
-			if ( ( __tmp = outerChiasm.title ) !== last_text ) {
-				text.data = last_text = __tmp;
-			}
-		},
-		
-		teardown: function ( detach ) {
-			if ( detach ) {
-				detachNode( h1 );
-			}
-		}
-	};
-}
-
-function revelation ( options ) {
-	options = options || {};
-	
-	this._state = Object.assign( template.data(), options.data );
-
-	this._observers = {
-		pre: Object.create( null ),
-		post: Object.create( null )
-	};
-
-	this._handlers = Object.create( null );
-
-	this._root = options._root;
-	this._yield = options._yield;
-
-	this._torndown = false;
-	if ( !addedCss ) addCss();
-	this._renderHooks = [];
-	
-	this._fragment = renderMainFragment( this._state, this );
-	if ( options.target ) this._fragment.mount( options.target, null );
-	
-	this._flush();
-}
-
-revelation.prototype = template.methods;
-
-revelation.prototype.get = function get( key ) {
- 	return key ? this._state[ key ] : this._state;
- };
-
-revelation.prototype.fire = function fire( eventName, data ) {
- 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
- 	if ( !handlers ) return;
- 
- 	for ( var i = 0; i < handlers.length; i += 1 ) {
- 		handlers[i].call( this, data );
- 	}
- };
-
-revelation.prototype.observe = function observe( key, callback, options ) {
- 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
- 
- 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
- 
- 	if ( !options || options.init !== false ) {
- 		callback.__calling = true;
- 		callback.call( this, this._state[ key ] );
- 		callback.__calling = false;
- 	}
- 
- 	return {
- 		cancel: function () {
- 			var index = group[ key ].indexOf( callback );
- 			if ( ~index ) group[ key ].splice( index, 1 );
- 		}
- 	};
- };
-
-revelation.prototype.on = function on( eventName, handler ) {
- 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
- 	handlers.push( handler );
- 
- 	return {
- 		cancel: function () {
- 			var index = handlers.indexOf( handler );
- 			if ( ~index ) handlers.splice( index, 1 );
- 		}
- 	};
- };
-
-revelation.prototype.set = function set( newState ) {
- 	this._set( newState );
- 	( this._root || this )._flush();
- };
-
-revelation.prototype._flush = function _flush() {
- 	if ( !this._renderHooks ) return;
- 
- 	while ( this._renderHooks.length ) {
- 		var hook = this._renderHooks.pop();
- 		hook.fn.call( hook.context );
- 	}
- };
-
-revelation.prototype._set = function _set ( newState ) {
-	var oldState = this._state;
-	this._state = Object.assign( {}, oldState, newState );
-	
-	dispatchObservers( this, this._observers.pre, newState, oldState );
-	if ( this._fragment ) this._fragment.update( newState, this._state );
-	dispatchObservers( this, this._observers.post, newState, oldState );
-	
-	this._flush();
-};
-
-revelation.prototype.teardown = function teardown ( detach ) {
-	this.fire( 'teardown' );
-
-	this._fragment.teardown( detach !== false );
-	this._fragment = null;
-
-	this._state = {};
-	this._torndown = true;
-};
-
-function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
-
-function setAttribute( node, attribute, value ) {
-	node.setAttribute ( attribute, value );
-}
-
-function createElement( name ) {
-	return document.createElement( name );
-}
-
-function detachNode( node ) {
-	node.parentNode.removeChild( node );
-}
-
-function insertNode( node, target, anchor ) {
-	target.insertBefore( node, anchor );
-}
-
-function createComment() {
-	return document.createComment( '' );
-}
-
-function appendNode( node, target ) {
-	target.appendChild( node );
-}
-
-function teardownEach( iterations, detach, start ) {
-	for ( var i = ( start || 0 ); i < iterations.length; i += 1 ) {
-		iterations[i].teardown( detach );
-	}
-}
-
-function addEventListener( node, event, handler ) {
-	node.addEventListener ( event, handler, false );
-}
-
-function removeEventListener( node, event, handler ) {
-	node.removeEventListener ( event, handler, false );
-}
-
-function createText( data ) {
-	return document.createTextNode( data );
-}
-
-module.exports = revelation;
-
-},{"../chiasm-color":1,"../extract-range-from-verses":3,"./paragraphs.html":12,"./section-line.html":14,"./subsections.html":15}],14:[function(require,module,exports){
-'use strict';
-
-var template = (function () {
-return {
-	data() {
-		return {
-			descriptionClass: 'paragraph-margin'
-		}
-	}
-}
-}());
-
-function renderMainFragment ( root, component ) {
-	var div = createElement( 'div' );
-	div.className = "section-line";
-	
-	var div1 = createElement( 'div' );
-	div1.className = "section-text";
-	
-	appendNode( div1, div );
-	var yield_anchor = createComment();
-	appendNode( yield_anchor, div1 );
-	appendNode( createText( "\n\t" ), div );
-	
-	var div2 = createElement( 'div' );
-	div2.className = "section-description " + ( root.descriptionClass );
-	
-	appendNode( div2, div );
-	var last_text1 = root.description || ''
-	var text1 = createText( last_text1 );
-	appendNode( text1, div2 );
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( div, target, anchor );
-			component._yield && component._yield.mount( div1, yield_anchor );
-		},
-		
-		update: function ( changed, root ) {
-			var __tmp;
-		
-			div2.className = "section-description " + ( root.descriptionClass );
-			
-			if ( ( __tmp = root.description || '' ) !== last_text1 ) {
-				text1.data = last_text1 = __tmp;
-			}
-		},
-		
-		teardown: function ( detach ) {
-			component._yield && component._yield.teardown( detach );
-			
-			if ( detach ) {
-				detachNode( div );
-			}
-		}
-	};
-}
-
-function sectionline ( options ) {
-	options = options || {};
-	
-	this._state = Object.assign( template.data(), options.data );
-
-	this._observers = {
-		pre: Object.create( null ),
-		post: Object.create( null )
-	};
-
-	this._handlers = Object.create( null );
-
-	this._root = options._root;
-	this._yield = options._yield;
-
-	this._torndown = false;
-	
-	this._fragment = renderMainFragment( this._state, this );
-	if ( options.target ) this._fragment.mount( options.target, null );
-}
-
-sectionline.prototype.get = function get( key ) {
- 	return key ? this._state[ key ] : this._state;
- };
-
-sectionline.prototype.fire = function fire( eventName, data ) {
- 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
- 	if ( !handlers ) return;
- 
- 	for ( var i = 0; i < handlers.length; i += 1 ) {
- 		handlers[i].call( this, data );
- 	}
- };
-
-sectionline.prototype.observe = function observe( key, callback, options ) {
- 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
- 
- 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
- 
- 	if ( !options || options.init !== false ) {
- 		callback.__calling = true;
- 		callback.call( this, this._state[ key ] );
- 		callback.__calling = false;
- 	}
- 
- 	return {
- 		cancel: function () {
- 			var index = group[ key ].indexOf( callback );
- 			if ( ~index ) group[ key ].splice( index, 1 );
- 		}
- 	};
- };
-
-sectionline.prototype.on = function on( eventName, handler ) {
- 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
- 	handlers.push( handler );
- 
- 	return {
- 		cancel: function () {
- 			var index = handlers.indexOf( handler );
- 			if ( ~index ) handlers.splice( index, 1 );
- 		}
- 	};
- };
-
-sectionline.prototype.set = function set( newState ) {
- 	this._set( newState );
- 	( this._root || this )._flush();
- };
-
-sectionline.prototype._flush = function _flush() {
- 	if ( !this._renderHooks ) return;
- 
- 	while ( this._renderHooks.length ) {
- 		var hook = this._renderHooks.pop();
- 		hook.fn.call( hook.context );
- 	}
- };
-
-sectionline.prototype._set = function _set ( newState ) {
-	var oldState = this._state;
-	this._state = Object.assign( {}, oldState, newState );
-	
-	dispatchObservers( this, this._observers.pre, newState, oldState );
-	if ( this._fragment ) this._fragment.update( newState, this._state );
-	dispatchObservers( this, this._observers.post, newState, oldState );
-};
-
-sectionline.prototype.teardown = function teardown ( detach ) {
-	this.fire( 'teardown' );
-
-	this._fragment.teardown( detach !== false );
-	this._fragment = null;
-
-	this._state = {};
-	this._torndown = true;
-};
-
-function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
-
-function createElement( name ) {
-	return document.createElement( name );
-}
-
-function detachNode( node ) {
-	node.parentNode.removeChild( node );
-}
-
-function insertNode( node, target, anchor ) {
-	target.insertBefore( node, anchor );
-}
-
-function appendNode( node, target ) {
-	target.appendChild( node );
-}
-
-function createComment() {
-	return document.createComment( '' );
-}
-
-function createText( data ) {
-	return document.createTextNode( data );
-}
-
-module.exports = sectionline;
-
-},{}],15:[function(require,module,exports){
-'use strict';
-
-function applyComputations ( state, newState, oldState, isInitial ) {
-	if ( isInitial || ( 'subsections' in newState && typeof state.subsections === 'object' || state.subsections !== oldState.subsections ) || ( 'verses' in newState && typeof state.verses === 'object' || state.verses !== oldState.verses ) ) {
-		state.subsectionsWithVerses = newState.subsectionsWithVerses = template.computed.subsectionsWithVerses( state.subsections, state.verses );
-	}
-}
-
-var template = (function () {
-const combineStructureAndVerses = require('../combine-structure-and-verses')
-const getChiasmColor = require('../chiasm-color')
-// const extractRangeFromVerses = require('../extract-range-from-verses')
-
-const Paragraphs = require('./paragraphs.html')
-const SectionLine = require('./section-line.html')
-
-return {
-	data() {
-		return {
-			useColor: false
-		}
-	},
-	components: {
-		Paragraphs,
-		SectionLine
-	},
-	computed: {
-		subsectionsWithVerses(subsections, verses) {
-			return combineStructureAndVerses(subsections, verses)
-		}
-	},
-	helpers: {
-		getChiasmColor
-	}
-}
-}());
-
-function renderMainFragment ( root, component ) {
-	var eachBlock_anchor = createComment();
-	var eachBlock_value = root.subsectionsWithVerses;
-	var eachBlock_iterations = [];
-	
-	for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
-		eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
-	}
-
-	return {
-		mount: function ( target, anchor ) {
-			insertNode( eachBlock_anchor, target, anchor );
-			
-			for ( var i = 0; i < eachBlock_iterations.length; i += 1 ) {
-				eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
-			}
-		},
-		
-		update: function ( changed, root ) {
-			var __tmp;
-		
-			var eachBlock_value = root.subsectionsWithVerses;
-			
-			for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
-				if ( !eachBlock_iterations[i] ) {
-					eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
-					eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
-				} else {
-					eachBlock_iterations[i].update( changed, root, eachBlock_value, eachBlock_value[i], i );
-				}
-			}
-			
-			teardownEach( eachBlock_iterations, true, eachBlock_value.length );
-			
-			eachBlock_iterations.length = eachBlock_value.length;
-		},
-		
-		teardown: function ( detach ) {
-			teardownEach( eachBlock_iterations, detach );
-			
-			if ( detach ) {
-				detachNode( eachBlock_anchor );
-			}
-		}
-	};
-}
-
-function renderEachBlock ( root, eachBlock_value, subsection, subsection__index, component ) {
-	var sectionLine_yieldFragment = rendersectionLineYieldFragment( root, eachBlock_value, subsection, subsection__index, component );
-	
-	var sectionLine_initialData = {
-		description: subsection.title
-	};
-	var sectionLine = new template.components.SectionLine({
-		target: null,
-		_root: component._root || component,
-		_yield: sectionLine_yieldFragment,
-		data: sectionLine_initialData
-	});
-
-	return {
-		mount: function ( target, anchor ) {
-			sectionLine._fragment.mount( target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, subsection, subsection__index ) {
-			var __tmp;
-		
-			sectionLine_yieldFragment.update( changed, root, eachBlock_value, subsection, subsection__index );
-			
-			var sectionLine_changes = {};
-			
-			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.description = subsection.title;
-			
-			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
-		},
-		
-		teardown: function ( detach ) {
-			sectionLine.teardown( detach );
-		}
-	};
-}
-
-function rendersectionLineYieldFragment ( root, eachBlock_value, subsection, subsection__index, component ) {
-	var paragraphs_initialData = {
-		verses: subsection.verses,
-		color: root.useColor && subsection.identifier && template.helpers.getChiasmColor(subsection.identifier)
-	};
-	var paragraphs = new template.components.Paragraphs({
-		target: null,
-		_root: component._root || component,
-		data: paragraphs_initialData
-	});
-
-	return {
-		mount: function ( target, anchor ) {
-			paragraphs._fragment.mount( target, anchor );
-		},
-		
-		update: function ( changed, root, eachBlock_value, subsection, subsection__index ) {
-			var __tmp;
-		
-			var paragraphs_changes = {};
-			
-			if ( 'subsectionsWithVerses' in changed ) paragraphs_changes.verses = subsection.verses;
-			if ( 'useColor' in changed||'subsectionsWithVerses' in changed||'subsectionsWithVerses' in changed ) paragraphs_changes.color = root.useColor && subsection.identifier && template.helpers.getChiasmColor(subsection.identifier);
-			
-			if ( Object.keys( paragraphs_changes ).length ) paragraphs.set( paragraphs_changes );
-		},
-		
-		teardown: function ( detach ) {
-			paragraphs.teardown( detach );
-		}
-	};
-}
-
-function subsections ( options ) {
-	options = options || {};
-	
-	this._state = Object.assign( template.data(), options.data );
-applyComputations( this._state, this._state, {}, true );
-
-	this._observers = {
-		pre: Object.create( null ),
-		post: Object.create( null )
-	};
-
-	this._handlers = Object.create( null );
-
-	this._root = options._root;
-	this._yield = options._yield;
-
-	this._torndown = false;
-	this._renderHooks = [];
-	
-	this._fragment = renderMainFragment( this._state, this );
-	if ( options.target ) this._fragment.mount( options.target, null );
-	
-	this._flush();
-}
-
-subsections.prototype.get = function get( key ) {
- 	return key ? this._state[ key ] : this._state;
- };
-
-subsections.prototype.fire = function fire( eventName, data ) {
- 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
- 	if ( !handlers ) return;
- 
- 	for ( var i = 0; i < handlers.length; i += 1 ) {
- 		handlers[i].call( this, data );
- 	}
- };
-
-subsections.prototype.observe = function observe( key, callback, options ) {
- 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
- 
- 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
- 
- 	if ( !options || options.init !== false ) {
- 		callback.__calling = true;
- 		callback.call( this, this._state[ key ] );
- 		callback.__calling = false;
- 	}
- 
- 	return {
- 		cancel: function () {
- 			var index = group[ key ].indexOf( callback );
- 			if ( ~index ) group[ key ].splice( index, 1 );
- 		}
- 	};
- };
-
-subsections.prototype.on = function on( eventName, handler ) {
- 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
- 	handlers.push( handler );
- 
- 	return {
- 		cancel: function () {
- 			var index = handlers.indexOf( handler );
- 			if ( ~index ) handlers.splice( index, 1 );
- 		}
- 	};
- };
-
-subsections.prototype.set = function set( newState ) {
- 	this._set( newState );
- 	( this._root || this )._flush();
- };
-
-subsections.prototype._flush = function _flush() {
- 	if ( !this._renderHooks ) return;
- 
- 	while ( this._renderHooks.length ) {
- 		var hook = this._renderHooks.pop();
- 		hook.fn.call( hook.context );
- 	}
- };
-
-subsections.prototype._set = function _set ( newState ) {
-	var oldState = this._state;
-	this._state = Object.assign( {}, oldState, newState );
-	applyComputations( this._state, newState, oldState, false )
-	
-	dispatchObservers( this, this._observers.pre, newState, oldState );
-	if ( this._fragment ) this._fragment.update( newState, this._state );
-	dispatchObservers( this, this._observers.post, newState, oldState );
-	
-	this._flush();
-};
-
-subsections.prototype.teardown = function teardown ( detach ) {
-	this.fire( 'teardown' );
-
-	this._fragment.teardown( detach !== false );
-	this._fragment = null;
-
-	this._state = {};
-	this._torndown = true;
-};
-
-function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
-
-function createComment() {
-	return document.createComment( '' );
-}
-
-function insertNode( node, target, anchor ) {
-	target.insertBefore( node, anchor );
-}
-
-function detachNode( node ) {
-	node.parentNode.removeChild( node );
-}
-
-function teardownEach( iterations, detach, start ) {
-	for ( var i = ( start || 0 ); i < iterations.length; i += 1 ) {
-		iterations[i].teardown( detach );
-	}
-}
-
-module.exports = subsections;
-
-},{"../chiasm-color":1,"../combine-structure-and-verses":2,"./paragraphs.html":12,"./section-line.html":14}],16:[function(require,module,exports){
-'use strict';
-
-var slugify = require('slugify');
-
-var Revelation = require('./template/revelation.html');
-
-function headerToSlug(header) {
-	return 'header-' + slugify(header.toLowerCase());
-}
-
-module.exports = function makeMainView(_ref) {
-	var targetSelector = _ref.targetSelector,
-	    structuredText = _ref.structuredText;
-
-	return new Revelation({
-		target: document.querySelector(targetSelector),
-		data: {
-			structuredText: structuredText,
-			currentChiasm: null
-		}
-	});
-};
-
-},{"./template/revelation.html":13,"slugify":10}]},{},[4]);
+},{}]},{},[5]);

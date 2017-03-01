@@ -2,10 +2,9 @@
   "name": "revelation-visualized",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "build": "browserify -t [ sveltify --extensions [.html] ] index.js -o build.js",
-    "watch": "watchify -t [ sveltify --extensions [.html] ] index.js -o build.js -d"
+    "build": "browserify -t [ sveltify --extensions [.html] ] client/index.js -o build.js",
+    "watch": "watchify -t [ sveltify --extensions [.html] ] client/index.js -o build.js -d"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,13 @@
+{
+  "name": "component",
+  "browserify": {
+    "transform": [
+      [
+        "sveltify"
+      ]
+    ]
+  },
+  "browser": {
+    "eventemitter": "eventemitter3"
+  }
+}

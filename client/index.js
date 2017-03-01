@@ -1,5 +1,8 @@
-const combineStructureAndVerses = require('./combine-structure-and-verses')
 const revelation = require('pickering-majority-text-revelation')
+
+const combineStructureAndVerses = require('lib/combine-structure-and-verses')
+const structure = require('lib/structure')
+
 const makeMainView = require('./view')
 
 const verses = revelation.versesNoteReferencesAndHeaders
@@ -14,8 +17,6 @@ const verses = revelation.versesNoteReferencesAndHeaders
 
 	return Object.assign({}, verseChunk, { text: ' ' + verseChunk.text })
 })
-
-const structure = require('./structure')
 
 const structuredText = combineStructureAndVerses(structure, verses)
 
