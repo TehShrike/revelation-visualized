@@ -1,4 +1,4 @@
-<div class="section-line">
+<div class="section-line" data-zoomed-in="{{zoomedIn}}">
 	{{#if sectionIdentifier && showColorBar}}
 	<Link
 		className="color-bar paragraph-margin"
@@ -17,6 +17,12 @@
 		{{description || ''}}
 	</div>
 </div>
+
+<style>
+[data-zoomed-in=true] .color-bar {
+	opacity: 0.5;
+}
+</style>
 
 <script>
 const getChiasmColor = require('lib/identifier-color')
