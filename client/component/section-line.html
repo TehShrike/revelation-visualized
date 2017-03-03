@@ -1,5 +1,5 @@
 <div class="section-line">
-	{{#if sectionIdentifier}}
+	{{#if sectionIdentifier && showColorBar}}
 	<Link
 		className="color-bar paragraph-margin"
 		style="background-color: {{getChiasmColor(sectionIdentifier)}}"
@@ -19,7 +19,7 @@
 </div>
 
 <script>
-const getChiasmColor = require('lib/chiasm-color')
+const getChiasmColor = require('lib/identifier-color')
 const { Link } = require('lib/router-instance')
 
 export default {
@@ -28,7 +28,8 @@ export default {
 			descriptionClass: 'paragraph-margin',
 			chiasmIdentifier: null,
 			sectionIdentifier: null,
-			zoomedIn: false
+			zoomedIn: false,
+			showColorBar: true,
 		}
 	},
 	components: {

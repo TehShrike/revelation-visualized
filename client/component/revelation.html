@@ -26,12 +26,15 @@
 							chiasmIdentifier="{{outerChiasm.identifier}}"
 							currentSubsection="{{currentSubsection}}"
 							verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}"
+							showColorBar="{{!!currentChiasm}}"
 						/>
 					{{elseif !currentSubsection || currentSubsection === 'introduction'}}
 						<SectionLine
 							description="{{outerChiasm.introduction.title}}"
 							chiasmIdentifier="{{outerChiasm.identifier}}"
 							sectionIdentifier="introduction"
+							zoomedIn="currentSubsection === 'introduction'"
+							showColorBar="{{!!currentChiasm}}"
 						>
 							<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}" />
 						</SectionLine>
@@ -44,6 +47,7 @@
 						chiasmIdentifier="{{outerChiasm.identifier}}"
 						currentSubsection="{{currentSubsection}}"
 						verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)}}"
+						showColorBar="{{!!currentChiasm}}"
 					/>
 				{{elseif !currentSubsection}}
 					<SectionLine>
@@ -77,7 +81,7 @@ const SectionLine = require('component/section-line.html')
 const { Link } = require('lib/router-instance')
 
 const extractRangeFromVerses = require('lib/extract-range-from-verses')
-const getChiasmColor = require('lib/chiasm-color')
+const getChiasmColor = require('lib/identifier-color')
 
 export default {
 	computed: {

@@ -449,7 +449,7 @@ const SectionLine = require('component/section-line.html')
 const { Link } = require('lib/router-instance')
 
 const extractRangeFromVerses = require('lib/extract-range-from-verses')
-const getChiasmColor = require('lib/chiasm-color')
+const getChiasmColor = require('lib/identifier-color')
 
 return {
 	computed: {
@@ -489,7 +489,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-2162856126][data-chiasm-selected=true] [data-is-selected=false], [svelte-2162856126] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2162856126][data-chiasm-selected=true] [data-is-selected=true], [svelte-2162856126] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-2162856126][data-chiasm-selected=true] .chiasm-color-bar, [svelte-2162856126] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
+	style.textContent = "\n[svelte-4152352538][data-chiasm-selected=true] [data-is-selected=false], [svelte-4152352538] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-4152352538][data-chiasm-selected=true] [data-is-selected=true], [svelte-4152352538] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-4152352538][data-chiasm-selected=true] .chiasm-color-bar, [svelte-4152352538] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -497,7 +497,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2162856126', '' );
+	setAttribute( div, 'svelte-4152352538', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -552,7 +552,7 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2162856126', '' );
+	setAttribute( div, 'svelte-4152352538', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
@@ -571,7 +571,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-2162856126', '' );
+	setAttribute( div1, 'svelte-4152352538', '' );
 	div1.className = "section-body";
 	
 	appendNode( div1, div );
@@ -741,7 +741,8 @@ function renderIfBlock3_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 		subsections: outerChiasm.subsections,
 		chiasmIdentifier: outerChiasm.identifier,
 		currentSubsection: root.currentSubsection,
-		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range),
+		showColorBar: !!root.currentChiasm
 	};
 	var subsections = new template.components.Subsections({
 		target: null,
@@ -763,6 +764,7 @@ function renderIfBlock3_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 			if ( 'structuredText' in changed ) subsections_changes.chiasmIdentifier = outerChiasm.identifier;
 			if ( 'currentSubsection' in changed ) subsections_changes.currentSubsection = root.currentSubsection;
 			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.range);
+			if ( 'currentChiasm' in changed ) subsections_changes.showColorBar = !!root.currentChiasm;
 			
 			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
 		},
@@ -820,8 +822,10 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 	
 	var sectionLine_initialData = {
 		sectionIdentifier: "introduction",
+		zoomedIn: "currentSubsection === 'introduction'",
 		description: outerChiasm.introduction.title,
-		chiasmIdentifier: outerChiasm.identifier
+		chiasmIdentifier: outerChiasm.identifier,
+		showColorBar: !!root.currentChiasm
 	};
 	var sectionLine = new template.components.SectionLine({
 		target: null,
@@ -844,6 +848,7 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 			
 			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.introduction.title;
 			if ( 'structuredText' in changed ) sectionLine_changes.chiasmIdentifier = outerChiasm.identifier;
+			if ( 'currentChiasm' in changed ) sectionLine_changes.showColorBar = !!root.currentChiasm;
 			
 			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
 		},
@@ -890,7 +895,8 @@ function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 		subsections: outerChiasm.introduction.subsections,
 		chiasmIdentifier: outerChiasm.identifier,
 		currentSubsection: root.currentSubsection,
-		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)
+		verses: template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range),
+		showColorBar: !!root.currentChiasm
 	};
 	var subsections = new template.components.Subsections({
 		target: null,
@@ -912,6 +918,7 @@ function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 			if ( 'structuredText' in changed ) subsections_changes.chiasmIdentifier = outerChiasm.identifier;
 			if ( 'currentSubsection' in changed ) subsections_changes.currentSubsection = root.currentSubsection;
 			if ( 'structuredText' in changed||'structuredText' in changed ) subsections_changes.verses = template.helpers.extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range);
+			if ( 'currentChiasm' in changed ) subsections_changes.showColorBar = !!root.currentChiasm;
 			
 			if ( Object.keys( subsections_changes ).length ) subsections.set( subsections_changes );
 		},
@@ -961,7 +968,7 @@ function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-2162856126', '' );
+	setAttribute( h1, 'svelte-4152352538', '' );
 	h1.style.cssText = "color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -1179,7 +1186,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = revelation;
 
-},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/chiasm-color":6,"lib/extract-range-from-verses":8,"lib/router-instance":9}],3:[function(require,module,exports){
+},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/extract-range-from-verses":7,"lib/identifier-color":8,"lib/router-instance":9}],3:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -1189,7 +1196,7 @@ function applyComputations ( state, newState, oldState, isInitial ) {
 }
 
 var template = (function () {
-const getChiasmColor = require('lib/chiasm-color')
+const getChiasmColor = require('lib/identifier-color')
 const { Link } = require('lib/router-instance')
 
 return {
@@ -1198,7 +1205,8 @@ return {
 			descriptionClass: 'paragraph-margin',
 			chiasmIdentifier: null,
 			sectionIdentifier: null,
-			zoomedIn: false
+			zoomedIn: false,
+			showColorBar: true,
 		}
 	},
 	components: {
@@ -1225,7 +1233,7 @@ function renderMainFragment ( root, component ) {
 	appendNode( ifBlock_anchor, div );
 	
 	function getBlock ( root ) {
-		if ( root.sectionIdentifier ) return renderIfBlock_0;
+		if ( root.sectionIdentifier && root.showColorBar ) return renderIfBlock_0;
 		return renderIfBlock_1;
 	}
 	
@@ -1520,7 +1528,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = sectionline;
 
-},{"lib/chiasm-color":6,"lib/router-instance":9}],4:[function(require,module,exports){
+},{"lib/identifier-color":8,"lib/router-instance":9}],4:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -1610,7 +1618,8 @@ function renderEachBlock ( root, eachBlock_value, subsection, subsection__index,
 		description: subsection.title,
 		chiasmIdentifier: root.chiasmIdentifier,
 		sectionIdentifier: subsection.identifier,
-		zoomedIn: !!root.currentSubsection
+		zoomedIn: !!root.currentSubsection,
+		showColorBar: root.showColorBar
 	};
 	var sectionLine = new template.components.SectionLine({
 		target: null,
@@ -1635,6 +1644,7 @@ function renderEachBlock ( root, eachBlock_value, subsection, subsection__index,
 			if ( 'chiasmIdentifier' in changed ) sectionLine_changes.chiasmIdentifier = root.chiasmIdentifier;
 			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.sectionIdentifier = subsection.identifier;
 			if ( 'currentSubsection' in changed ) sectionLine_changes.zoomedIn = !!root.currentSubsection;
+			if ( 'showColorBar' in changed ) sectionLine_changes.showColorBar = root.showColorBar;
 			
 			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
 		},
@@ -1847,7 +1857,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = subsections;
 
-},{"component/paragraphs.html":1,"component/section-line.html":3,"lib/combine-structure-and-verses":7}],5:[function(require,module,exports){
+},{"component/paragraphs.html":1,"component/section-line.html":3,"lib/combine-structure-and-verses":6}],5:[function(require,module,exports){
 'use strict';
 
 var revelation = require('pickering-majority-text-revelation');
@@ -1880,28 +1890,7 @@ var component = makeMainView({ targetSelector: '#verses', structuredText: struct
 
 mountComponent(component);
 
-},{"./view":13,"lib/combine-structure-and-verses":7,"lib/router-instance":9,"lib/structure":12,"pickering-majority-text-revelation":17}],6:[function(require,module,exports){
-const chiasmColors = {
-	a: '#018d5d',
-	b: '#ba4460',
-	c: '#9ea946',
-	d: '#00479f',
-	e: '#c26939',
-	f: '#8188df',
-	g: '#ee6bd4',
-	introduction: '#7d7d7d'
-}
-
-module.exports = function getChiasmColor(identifier) {
-	if (identifier.length < 3) {
-		const key = identifier[identifier.length - 1].toLowerCase()
-		return chiasmColors[key]
-	} else {
-		return chiasmColors[identifier]
-	}
-}
-
-},{}],7:[function(require,module,exports){
+},{"./view":13,"lib/combine-structure-and-verses":6,"lib/router-instance":9,"lib/structure":12,"pickering-majority-text-revelation":17}],6:[function(require,module,exports){
 const oneToManyZip = require('one-to-many-array-zip')
 const withinRange = require('multi-part-range-compare')
 
@@ -1918,7 +1907,7 @@ function verseReference({ chapterNumber, verseNumber, sectionNumber }) {
 	return [ chapterNumber, verseNumber, sectionNumber ]
 }
 
-},{"multi-part-range-compare":15,"one-to-many-array-zip":16}],8:[function(require,module,exports){
+},{"multi-part-range-compare":15,"one-to-many-array-zip":16}],7:[function(require,module,exports){
 const withinRange = require('multi-part-range-compare')
 
 module.exports = function extractRangeFromVerses(verses, range) {
@@ -1949,7 +1938,28 @@ module.exports = function extractRangeFromVerses(verses, range) {
 	return matching
 }
 
-},{"multi-part-range-compare":15}],9:[function(require,module,exports){
+},{"multi-part-range-compare":15}],8:[function(require,module,exports){
+const chiasmColors = {
+	a: '#018d5d',
+	b: '#ba4460',
+	c: '#9ea946',
+	d: '#00479f',
+	e: '#c26939',
+	f: '#8188df',
+	g: '#ee6bd4',
+	introduction: '#7d7d7d'
+}
+
+module.exports = function getChiasmColor(identifier) {
+	if (identifier.length < 3) {
+		const key = identifier[identifier.length - 1].toLowerCase()
+		return chiasmColors[key]
+	} else {
+		return chiasmColors[identifier]
+	}
+}
+
+},{}],9:[function(require,module,exports){
 const createRouterInstance = require('lib/router')
 
 module.exports = createRouterInstance()
