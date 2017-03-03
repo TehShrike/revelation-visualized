@@ -468,7 +468,7 @@ return {
 		},
 		chiasmColorBarColor(currentChiasm) {
 			if (currentChiasm) {
-				return () => '#7d7d7d'
+				return () => '#d8d8d8'
 			} else {
 				return getChiasmColor
 			}
@@ -489,7 +489,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-523941980][data-chiasm-selected=true] [data-is-selected=false], [svelte-523941980] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-523941980][data-chiasm-selected=true] [data-is-selected=true], [svelte-523941980] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-523941980][data-chiasm-selected=true] .chiasm-color-bar, [svelte-523941980] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
+	style.textContent = "\n[svelte-2162856126][data-chiasm-selected=true] [data-is-selected=false], [svelte-2162856126] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2162856126][data-chiasm-selected=true] [data-is-selected=true], [svelte-2162856126] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-2162856126][data-chiasm-selected=true] .chiasm-color-bar, [svelte-2162856126] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -497,7 +497,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-523941980', '' );
+	setAttribute( div, 'svelte-2162856126', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -552,7 +552,7 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-523941980', '' );
+	setAttribute( div, 'svelte-2162856126', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
@@ -571,7 +571,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-523941980', '' );
+	setAttribute( div1, 'svelte-2162856126', '' );
 	div1.className = "section-body";
 	
 	appendNode( div1, div );
@@ -778,7 +778,7 @@ function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 	
 	function getBlock2 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
 		if ( outerChiasm.introduction.subsections ) return renderIfBlock2_0;
-		if ( !root.currentSubsection ) return renderIfBlock2_1;
+		if ( !root.currentSubsection || root.currentSubsection === 'introduction' ) return renderIfBlock2_1;
 		return null;
 	}
 	
@@ -819,7 +819,9 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 	var sectionLine_yieldFragment = rendersectionLineYieldFragment1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
 	var sectionLine_initialData = {
-		description: outerChiasm.introduction.title
+		sectionIdentifier: "introduction",
+		description: outerChiasm.introduction.title,
+		chiasmIdentifier: outerChiasm.identifier
 	};
 	var sectionLine = new template.components.SectionLine({
 		target: null,
@@ -841,6 +843,7 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 			var sectionLine_changes = {};
 			
 			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.introduction.title;
+			if ( 'structuredText' in changed ) sectionLine_changes.chiasmIdentifier = outerChiasm.identifier;
 			
 			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
 		},
@@ -958,7 +961,7 @@ function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-523941980', '' );
+	setAttribute( h1, 'svelte-2162856126', '' );
 	h1.style.cssText = "color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -1230,7 +1233,7 @@ function renderMainFragment ( root, component ) {
 	var ifBlock = currentBlock && currentBlock( root, component );
 	
 	if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
-	appendNode( createText( "\n\t" ), div );
+	appendNode( createText( "\n\n\t" ), div );
 	
 	var div1 = createElement( 'div' );
 	div1.className = "section-text";
@@ -1288,7 +1291,6 @@ function renderMainFragment ( root, component ) {
 function renderIfBlock_1 ( root, component ) {
 	var div = createElement( 'div' );
 	div.className = "color-bar paragraph-margin";
-	div.style.cssText = "background-color: #7d7d7d";
 
 	return {
 		mount: function ( target, anchor ) {
@@ -1879,30 +1881,24 @@ var component = makeMainView({ targetSelector: '#verses', structuredText: struct
 mountComponent(component);
 
 },{"./view":13,"lib/combine-structure-and-verses":7,"lib/router-instance":9,"lib/structure":12,"pickering-majority-text-revelation":17}],6:[function(require,module,exports){
-const colors = [
-	'#018d5d',
-	'#ba4460',
-	'#9ea946',
-	'#00479f',
-	'#c26939',
-	'#8188df',
-	'#ee6bd4'
-]
 const chiasmColors = {
-	a: 0,
-	b: 1,
-	c: 2,
-	d: 3,
-	e: 4,
-	f: 5,
-	g: 6,
-	h: 7
+	a: '#018d5d',
+	b: '#ba4460',
+	c: '#9ea946',
+	d: '#00479f',
+	e: '#c26939',
+	f: '#8188df',
+	g: '#ee6bd4',
+	introduction: '#7d7d7d'
 }
 
 module.exports = function getChiasmColor(identifier) {
-	const key = identifier[identifier.length - 1].toLowerCase()
-	const colorIndex = chiasmColors[key]
-	return colors[colorIndex]
+	if (identifier.length < 3) {
+		const key = identifier[identifier.length - 1].toLowerCase()
+		return chiasmColors[key]
+	} else {
+		return chiasmColors[identifier]
+	}
 }
 
 },{}],7:[function(require,module,exports){

@@ -1,25 +1,19 @@
-const colors = [
-	'#018d5d',
-	'#ba4460',
-	'#9ea946',
-	'#00479f',
-	'#c26939',
-	'#8188df',
-	'#ee6bd4'
-]
 const chiasmColors = {
-	a: 0,
-	b: 1,
-	c: 2,
-	d: 3,
-	e: 4,
-	f: 5,
-	g: 6,
-	h: 7
+	a: '#018d5d',
+	b: '#ba4460',
+	c: '#9ea946',
+	d: '#00479f',
+	e: '#c26939',
+	f: '#8188df',
+	g: '#ee6bd4',
+	introduction: '#7d7d7d'
 }
 
 module.exports = function getChiasmColor(identifier) {
-	const key = identifier[identifier.length - 1].toLowerCase()
-	const colorIndex = chiasmColors[key]
-	return colors[colorIndex]
+	if (identifier.length < 3) {
+		const key = identifier[identifier.length - 1].toLowerCase()
+		return chiasmColors[key]
+	} else {
+		return chiasmColors[identifier]
+	}
 }

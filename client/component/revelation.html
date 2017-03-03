@@ -27,8 +27,12 @@
 							currentSubsection="{{currentSubsection}}"
 							verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}"
 						/>
-					{{elseif !currentSubsection}}
-						<SectionLine description="{{outerChiasm.introduction.title}}">
+					{{elseif !currentSubsection || currentSubsection === 'introduction'}}
+						<SectionLine
+							description="{{outerChiasm.introduction.title}}"
+							chiasmIdentifier="{{outerChiasm.identifier}}"
+							sectionIdentifier="introduction"
+						>
 							<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}" />
 						</SectionLine>
 					{{/if}}
@@ -92,7 +96,7 @@ export default {
 		},
 		chiasmColorBarColor(currentChiasm) {
 			if (currentChiasm) {
-				return () => '#7d7d7d'
+				return () => '#d8d8d8'
 			} else {
 				return getChiasmColor
 			}
