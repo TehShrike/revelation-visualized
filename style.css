@@ -11,9 +11,24 @@ h1, .header-margin {
 	margin: 25px 0;
 }
 
+.chiasm-section {
+	display: flex;
+}
+
+.section-body {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: column;
+}
+
 .section-line {
 	display: flex;
 	flex-direction: row;
+}
+
+.color-bar {
+	width: 50px;
+	flex-shrink: 0;
 }
 
 .section-text {

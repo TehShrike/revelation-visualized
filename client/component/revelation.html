@@ -5,26 +5,29 @@
 			data-is-selected="{{currentChiasm && currentChiasm === outerChiasm.identifier}}"
 		>
 			<Link
-				className="section-color-bar"
-				style="background-color: {{getChiasmColor(outerChiasm.identifier)}}"
+				className="color-bar chiasm-color-bar"
+				style="background-color: {{chiasmColorBarColor(outerChiasm.identifier)}}"
 				parameters="{{ getLinkParameters(outerChiasm.identifier) }}"
 			>
 			</Link>
 			<div class="section-body">
+				{{#if !currentSubsection}}
 				<SectionLine description="{{outerChiasm.description}}" descriptionClass="header-margin">
-					<h1 style="color: {{getChiasmColor(outerChiasm.identifier)}}">
+					<h1 style="color: {{chiasmColorBarColor(outerChiasm.identifier)}}">
 						{{outerChiasm.title}}
 					</h1>
 				</SectionLine>
+				{{/if}}
 
 				{{#if outerChiasm.introduction}}
 					{{#if outerChiasm.introduction.subsections}}
 						<Subsections
 							subsections="{{outerChiasm.introduction.subsections}}"
+							chiasmIdentifier="{{outerChiasm.identifier}}"
+							currentSubsection="{{currentSubsection}}"
 							verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}"
-							useColor="{{!!currentChiasm}}"
 						/>
-					{{else}}
+					{{elseif !currentSubsection}}
 						<SectionLine description="{{outerChiasm.introduction.title}}">
 							<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}" />
 						</SectionLine>
@@ -34,10 +37,11 @@
 				{{#if outerChiasm.subsections}}
 					<Subsections
 						subsections="{{outerChiasm.subsections}}"
+						chiasmIdentifier="{{outerChiasm.identifier}}"
+						currentSubsection="{{currentSubsection}}"
 						verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)}}"
-						useColor="{{!!currentChiasm}}"
 					/>
-				{{else}}
+				{{elseif !currentSubsection}}
 					<SectionLine>
 						<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)}}" />
 					</SectionLine>
@@ -48,28 +52,16 @@
 </div>
 
 <style>
-.chiasm-section {
-	display: flex;
-}
-
-.section-body {
-	display: flex;
-	flex-grow: 1;
-	flex-direction: column;
-}
-
-.section-color-bar {
-	width: 50px;
-	flex-shrink: 0;
-	cursor: pointer;
-}
-
 [data-chiasm-selected=true] [data-is-selected=false] {
 	display: none;
 }
 
 [data-chiasm-selected=true] [data-is-selected=true] {
 	margin-bottom: 20px;
+}
+
+[data-chiasm-selected=true] .chiasm-color-bar {
+	color: #7d7d7d;
 }
 </style>
 
@@ -88,11 +80,21 @@ export default {
 		currentChiasm: querystringParameters => {
 			return querystringParameters && querystringParameters.chiasm
 		},
+		currentSubsection: querystringParameters => {
+			return querystringParameters && querystringParameters.section
+		},
 		getLinkParameters: currentChiasm => {
 			return chiasmIdentifier => {
 				return currentChiasm === chiasmIdentifier
 					? {}
 					: { chiasm: chiasmIdentifier }
+			}
+		},
+		chiasmColorBarColor(currentChiasm) {
+			if (currentChiasm) {
+				return () => '#7d7d7d'
+			} else {
+				return getChiasmColor
 			}
 		}
 	},
@@ -103,7 +105,6 @@ export default {
 		Link
 	},
 	helpers: {
-		getChiasmColor,
 		extractRangeFromVerses
 	}
 }

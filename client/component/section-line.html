@@ -1,4 +1,18 @@
 <div class="section-line">
+	{{#if sectionIdentifier}}
+	<Link
+		className="color-bar paragraph-margin"
+		style="background-color: {{getChiasmColor(sectionIdentifier)}}"
+		parameters="{{ linkParameters }}"
+	>
+	</Link>
+	{{else}}
+	<div
+		class="color-bar paragraph-margin"
+		style="background-color: #7d7d7d"
+	>
+	</div>
+	{{/if}}
 	<div class="section-text">
 		{{yield}}
 	</div>
@@ -8,11 +22,30 @@
 </div>
 
 <script>
+const getChiasmColor = require('lib/chiasm-color')
+const { Link } = require('lib/router-instance')
+
 export default {
 	data() {
 		return {
-			descriptionClass: 'paragraph-margin'
+			descriptionClass: 'paragraph-margin',
+			chiasmIdentifier: null,
+			sectionIdentifier: null,
+			zoomedIn: false
 		}
+	},
+	components: {
+		Link
+	},
+	computed: {
+		linkParameters: (chiasmIdentifier, sectionIdentifier, zoomedIn) => {
+			return zoomedIn
+				? { chiasm: chiasmIdentifier }
+				: { chiasm: chiasmIdentifier, section: sectionIdentifier }
+		}
+	},
+	helpers: {
+		getChiasmColor
 	}
 }
 </script>
