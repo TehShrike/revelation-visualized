@@ -22,9 +22,22 @@ function defaultCurrentQuerystring() {
 	}
 }
 
-module.exports = function createRouterInstance(pushState = defaultPushState, currentQuerystring = defaultCurrentQuerystring) {
+function defaultOnPopState(listener) {
+	window.addEventListener('popstate', listener)
+}
+
+module.exports = function createRouterInstance(
+		pushState = defaultPushState,
+		currentQuerystring = defaultCurrentQuerystring,
+		onPopState = defaultOnPopState) {
+
 	const emitter = new EventEmitter()
 	let current = currentQuerystring()
+
+	onPopState(() => {
+		const { querystring, parameters } = currentQuerystring()
+		emitter.emit('navigate', { querystring, parameters })
+	})
 
 	return {
 		Link: function linkProxy(options) {
