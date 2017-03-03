@@ -3,9 +3,10 @@ const revelation = require('pickering-majority-text-revelation')
 const combineStructureAndVerses = require('lib/combine-structure-and-verses')
 const structure = require('lib/structure')
 
-const makeMainView = require('./view')
+const Revelation = require('component/revelation.html')
+const Title = require('component/title.html')
 
-const { mountComponent } = require('lib/router-instance')
+const { attachQuerystringData } = require('lib/router-instance')
 
 const verses = revelation.versesNoteReferencesAndHeaders
 .map(chunk => {
@@ -24,6 +25,13 @@ const structuredText = combineStructureAndVerses(structure, verses)
 
 console.log(structuredText)
 
-const component = makeMainView({ targetSelector: '#verses', structuredText })
+attachQuerystringData(new Revelation({
+	target: document.querySelector('#verses'),
+	data: {
+		structuredText
+	}
+}))
 
-mountComponent(component)
+attachQuerystringData(new Title({
+	target: document.querySelector('title')
+}))

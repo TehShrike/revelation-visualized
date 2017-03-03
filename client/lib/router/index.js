@@ -51,7 +51,7 @@ module.exports = function createRouterInstance(
 
 			return linkComponent
 		},
-		mountComponent(component) {
+		attachQuerystringData(component) {
 			function navigateListener({ parameters }) {
 				component.set({
 					querystringParameters: parameters
