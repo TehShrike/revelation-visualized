@@ -18,13 +18,12 @@
   },
   "homepage": "https://github.com/TehShrike/revelation-visualized#readme",
   "dependencies": {
-    "browserify": "13.0.0",
+    "browserify": "14.1.0",
     "eventemitter3": "2.0.2",
     "multi-part-range-compare": "1.0.1",
     "one-to-many-array-zip": "~1.0.2",
     "pickering-majority-text-revelation": "~1.2.1",
-    "slugify": "1.1.0",
-    "svelte": "1.8.0",
+    "svelte": "1.9.1",
     "sveltify": "1.0.3"
   },
   "devDependencies": {
