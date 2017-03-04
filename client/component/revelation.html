@@ -4,12 +4,15 @@
 			class="chiasm-section"
 			data-is-selected="{{currentChiasm && currentChiasm === outerChiasm.identifier}}"
 		>
+			{{#if subsectionIsSelected}}
+				<div class="color-bar"></div>
+			{{else}}
 			<Link
 				className="color-bar chiasm-color-bar"
 				style="background-color: {{chiasmColorBarColor(outerChiasm.identifier)}}"
 				parameters="{{ getLinkParameters(outerChiasm.identifier) }}"
-			>
-			</Link>
+			/>
+			{{/if}}
 			<div class="section-body">
 				{{#if !currentSubsection}}
 				<SectionLine
@@ -39,7 +42,7 @@
 							description="{{outerChiasm.introduction.title}}"
 							chiasmIdentifier="{{outerChiasm.identifier}}"
 							sectionIdentifier="introduction"
-							zoomedIn="{{!!currentSubsection}}"
+							zoomedIn="{{subsectionIsSelected}}"
 							showColorBar="{{!!currentChiasm}}"
 							anchor="{{outerChiasm.introduction.anchor}}"
 							siblingAnchor="{{outerChiasm.introduction.siblingAnchor}}"
@@ -101,6 +104,7 @@ export default {
 		currentSubsection: querystringParameters => {
 			return querystringParameters && querystringParameters.section
 		},
+		subsectionIsSelected: currentSubsection => !!currentSubsection,
 		getLinkParameters: currentChiasm => {
 			return chiasmIdentifier => {
 				return currentChiasm === chiasmIdentifier

@@ -431,6 +431,10 @@ function applyComputations ( state, newState, oldState, isInitial ) {
 		state.currentSubsection = newState.currentSubsection = template.computed.currentSubsection( state.querystringParameters );
 	}
 	
+	if ( isInitial || ( 'currentSubsection' in newState && typeof state.currentSubsection === 'object' || state.currentSubsection !== oldState.currentSubsection ) ) {
+		state.subsectionIsSelected = newState.subsectionIsSelected = template.computed.subsectionIsSelected( state.currentSubsection );
+	}
+	
 	if ( isInitial || ( 'currentChiasm' in newState && typeof state.currentChiasm === 'object' || state.currentChiasm !== oldState.currentChiasm ) ) {
 		state.getLinkParameters = newState.getLinkParameters = template.computed.getLinkParameters( state.currentChiasm );
 	}
@@ -458,6 +462,7 @@ return {
 		currentSubsection: querystringParameters => {
 			return querystringParameters && querystringParameters.section
 		},
+		subsectionIsSelected: currentSubsection => !!currentSubsection,
 		getLinkParameters: currentChiasm => {
 			return chiasmIdentifier => {
 				return currentChiasm === chiasmIdentifier
@@ -488,7 +493,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-4029957262][data-chiasm-selected=true] [data-is-selected=false], [svelte-4029957262] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-4029957262][data-chiasm-selected=true] [data-is-selected=true], [svelte-4029957262] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-4029957262][data-chiasm-selected=true] .chiasm-color-bar, [svelte-4029957262] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
+	style.textContent = "\n[svelte-2399739693][data-chiasm-selected=true] [data-is-selected=false], [svelte-2399739693] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2399739693][data-chiasm-selected=true] [data-is-selected=true], [svelte-2399739693] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-2399739693][data-chiasm-selected=true] .chiasm-color-bar, [svelte-2399739693] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -496,7 +501,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-4029957262', '' );
+	setAttribute( div, 'svelte-2399739693', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -551,47 +556,35 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-4029957262', '' );
+	setAttribute( div, 'svelte-2399739693', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
 	
-	var link_initialData = {
-		className: "color-bar chiasm-color-bar",
-		style: "background-color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) ),
-		parameters: root.getLinkParameters(outerChiasm.identifier)
-	};
-	var link = new template.components.Link({
-		target: div,
-		_root: component._root || component,
-		data: link_initialData
-	});
-	
-	appendNode( createText( "\n\t\t\t" ), div );
-	
-	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-4029957262', '' );
-	div1.className = "section-body";
-	
-	appendNode( div1, div );
 	var ifBlock_anchor = createComment();
-	appendNode( ifBlock_anchor, div1 );
+	appendNode( ifBlock_anchor, div );
 	
 	function getBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-		if ( !root.currentSubsection ) return renderIfBlock_0;
-		return null;
+		if ( root.subsectionIsSelected ) return renderIfBlock_0;
+		return renderIfBlock_1;
 	}
 	
 	var currentBlock = getBlock( root, eachBlock_value, outerChiasm, outerChiasm__index );
 	var ifBlock = currentBlock && currentBlock( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
 	if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
-	appendNode( createText( "\n\n\t\t\t\t" ), div1 );
+	appendNode( createText( "\n\t\t\t" ), div );
+	
+	var div1 = createElement( 'div' );
+	setAttribute( div1, 'svelte-2399739693', '' );
+	div1.className = "section-body";
+	
+	appendNode( div1, div );
 	var ifBlock1_anchor = createComment();
 	appendNode( ifBlock1_anchor, div1 );
 	
 	function getBlock1 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-		if ( outerChiasm.introduction ) return renderIfBlock1_0;
+		if ( !root.currentSubsection ) return renderIfBlock1_0;
 		return null;
 	}
 	
@@ -600,19 +593,32 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	
 	if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
 	appendNode( createText( "\n\n\t\t\t\t" ), div1 );
-	var ifBlock3_anchor = createComment();
-	appendNode( ifBlock3_anchor, div1 );
+	var ifBlock2_anchor = createComment();
+	appendNode( ifBlock2_anchor, div1 );
 	
-	function getBlock3 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-		if ( outerChiasm.subsections ) return renderIfBlock3_0;
-		if ( !root.currentSubsection ) return renderIfBlock3_1;
+	function getBlock2 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+		if ( outerChiasm.introduction ) return renderIfBlock2_0;
 		return null;
 	}
 	
-	var currentBlock3 = getBlock3( root, eachBlock_value, outerChiasm, outerChiasm__index );
-	var ifBlock3 = currentBlock3 && currentBlock3( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	var currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
+	var ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
-	if ( ifBlock3 ) ifBlock3.mount( ifBlock3_anchor.parentNode, ifBlock3_anchor );
+	if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+	appendNode( createText( "\n\n\t\t\t\t" ), div1 );
+	var ifBlock4_anchor = createComment();
+	appendNode( ifBlock4_anchor, div1 );
+	
+	function getBlock4 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+		if ( outerChiasm.subsections ) return renderIfBlock4_0;
+		if ( !root.currentSubsection ) return renderIfBlock4_1;
+		return null;
+	}
+	
+	var currentBlock4 = getBlock4( root, eachBlock_value, outerChiasm, outerChiasm__index );
+	var ifBlock4 = currentBlock4 && currentBlock4( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	
+	if ( ifBlock4 ) ifBlock4.mount( ifBlock4_anchor.parentNode, ifBlock4_anchor );
 
 	return {
 		mount: function ( target, anchor ) {
@@ -626,13 +632,6 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 				last_div_data_is_selected = __tmp;
 				setAttribute( div, 'data-is-selected', last_div_data_is_selected );
 			}
-			
-			var link_changes = {};
-			
-			if ( 'chiasmColorBarColor' in changed||'structuredText' in changed ) link_changes.style = "background-color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
-			if ( 'getLinkParameters' in changed||'structuredText' in changed ) link_changes.parameters = root.getLinkParameters(outerChiasm.identifier);
-			
-			if ( Object.keys( link_changes ).length ) link.set( link_changes );
 			
 			var _currentBlock = currentBlock;
 			currentBlock = getBlock( root, eachBlock_value, outerChiasm, outerChiasm__index );
@@ -654,22 +653,32 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 				if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
 			}
 			
-			var _currentBlock3 = currentBlock3;
-			currentBlock3 = getBlock3( root, eachBlock_value, outerChiasm, outerChiasm__index );
-			if ( _currentBlock3 === currentBlock3 && ifBlock3) {
-				ifBlock3.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			var _currentBlock2 = currentBlock2;
+			currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
+			if ( _currentBlock2 === currentBlock2 && ifBlock2) {
+				ifBlock2.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
 			} else {
-				if ( ifBlock3 ) ifBlock3.teardown( true );
-				ifBlock3 = currentBlock3 && currentBlock3( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-				if ( ifBlock3 ) ifBlock3.mount( ifBlock3_anchor.parentNode, ifBlock3_anchor );
+				if ( ifBlock2 ) ifBlock2.teardown( true );
+				ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+				if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+			}
+			
+			var _currentBlock4 = currentBlock4;
+			currentBlock4 = getBlock4( root, eachBlock_value, outerChiasm, outerChiasm__index );
+			if ( _currentBlock4 === currentBlock4 && ifBlock4) {
+				ifBlock4.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			} else {
+				if ( ifBlock4 ) ifBlock4.teardown( true );
+				ifBlock4 = currentBlock4 && currentBlock4( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+				if ( ifBlock4 ) ifBlock4.mount( ifBlock4_anchor.parentNode, ifBlock4_anchor );
 			}
 		},
 		
 		teardown: function ( detach ) {
-			link.destroy( false );
 			if ( ifBlock ) ifBlock.teardown( false );
 			if ( ifBlock1 ) ifBlock1.teardown( false );
-			if ( ifBlock3 ) ifBlock3.teardown( false );
+			if ( ifBlock2 ) ifBlock2.teardown( false );
+			if ( ifBlock4 ) ifBlock4.teardown( false );
 			
 			if ( detach ) {
 				detachNode( div );
@@ -678,7 +687,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	};
 }
 
-function renderIfBlock3_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+function renderIfBlock4_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var sectionLine_yieldFragment = rendersectionLineYieldFragment2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
 	var sectionLine_initialData = {
@@ -745,7 +754,7 @@ function rendersectionLineYieldFragment2 ( root, eachBlock_value, outerChiasm, o
 	};
 }
 
-function renderIfBlock3_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+function renderIfBlock4_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var subsections_initialData = {
 		subsections: outerChiasm.subsections,
 		chiasmIdentifier: outerChiasm.identifier,
@@ -784,56 +793,56 @@ function renderIfBlock3_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 	};
 }
 
-function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
-	var ifBlock2_anchor = createComment();
+function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var ifBlock3_anchor = createComment();
 	
-	function getBlock2 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
-		if ( outerChiasm.introduction.subsections ) return renderIfBlock2_0;
-		if ( !root.currentSubsection || root.currentSubsection === 'introduction' ) return renderIfBlock2_1;
+	function getBlock3 ( root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+		if ( outerChiasm.introduction.subsections ) return renderIfBlock3_0;
+		if ( !root.currentSubsection || root.currentSubsection === 'introduction' ) return renderIfBlock3_1;
 		return null;
 	}
 	
-	var currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
-	var ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+	var currentBlock3 = getBlock3( root, eachBlock_value, outerChiasm, outerChiasm__index );
+	var ifBlock3 = currentBlock3 && currentBlock3( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 
 	return {
 		mount: function ( target, anchor ) {
-			insertNode( ifBlock2_anchor, target, anchor );
-			if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+			insertNode( ifBlock3_anchor, target, anchor );
+			if ( ifBlock3 ) ifBlock3.mount( ifBlock3_anchor.parentNode, ifBlock3_anchor );
 		},
 		
 		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
 			var __tmp;
 		
-			var _currentBlock2 = currentBlock2;
-			currentBlock2 = getBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index );
-			if ( _currentBlock2 === currentBlock2 && ifBlock2) {
-				ifBlock2.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
+			var _currentBlock3 = currentBlock3;
+			currentBlock3 = getBlock3( root, eachBlock_value, outerChiasm, outerChiasm__index );
+			if ( _currentBlock3 === currentBlock3 && ifBlock3) {
+				ifBlock3.update( changed, root, eachBlock_value, outerChiasm, outerChiasm__index );
 			} else {
-				if ( ifBlock2 ) ifBlock2.teardown( true );
-				ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
-				if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+				if ( ifBlock3 ) ifBlock3.teardown( true );
+				ifBlock3 = currentBlock3 && currentBlock3( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
+				if ( ifBlock3 ) ifBlock3.mount( ifBlock3_anchor.parentNode, ifBlock3_anchor );
 			}
 		},
 		
 		teardown: function ( detach ) {
-			if ( ifBlock2 ) ifBlock2.teardown( detach );
+			if ( ifBlock3 ) ifBlock3.teardown( detach );
 			
 			if ( detach ) {
-				detachNode( ifBlock2_anchor );
+				detachNode( ifBlock3_anchor );
 			}
 		}
 	};
 }
 
-function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+function renderIfBlock3_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var sectionLine_yieldFragment = rendersectionLineYieldFragment1( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
 	var sectionLine_initialData = {
 		sectionIdentifier: "introduction",
 		description: outerChiasm.introduction.title,
 		chiasmIdentifier: outerChiasm.identifier,
-		zoomedIn: !!root.currentSubsection,
+		zoomedIn: root.subsectionIsSelected,
 		showColorBar: !!root.currentChiasm,
 		anchor: outerChiasm.introduction.anchor,
 		siblingAnchor: outerChiasm.introduction.siblingAnchor,
@@ -861,7 +870,7 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 			
 			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.introduction.title;
 			if ( 'structuredText' in changed ) sectionLine_changes.chiasmIdentifier = outerChiasm.identifier;
-			if ( 'currentSubsection' in changed ) sectionLine_changes.zoomedIn = !!root.currentSubsection;
+			if ( 'subsectionIsSelected' in changed ) sectionLine_changes.zoomedIn = root.subsectionIsSelected;
 			if ( 'currentChiasm' in changed ) sectionLine_changes.showColorBar = !!root.currentChiasm;
 			if ( 'structuredText' in changed ) sectionLine_changes.anchor = outerChiasm.introduction.anchor;
 			if ( 'structuredText' in changed ) sectionLine_changes.siblingAnchor = outerChiasm.introduction.siblingAnchor;
@@ -908,7 +917,7 @@ function rendersectionLineYieldFragment1 ( root, eachBlock_value, outerChiasm, o
 	};
 }
 
-function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+function renderIfBlock3_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var subsections_initialData = {
 		subsections: outerChiasm.introduction.subsections,
 		chiasmIdentifier: outerChiasm.identifier,
@@ -947,7 +956,7 @@ function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 	};
 }
 
-function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var sectionLine_yieldFragment = rendersectionLineYieldFragment( root, eachBlock_value, outerChiasm, outerChiasm__index, component );
 	
 	var sectionLine_initialData = {
@@ -992,7 +1001,7 @@ function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-4029957262', '' );
+	setAttribute( h1, 'svelte-2399739693', '' );
 	h1.style.cssText = "color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -1017,6 +1026,60 @@ function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, ou
 		teardown: function ( detach ) {
 			if ( detach ) {
 				detachNode( h1 );
+			}
+		}
+	};
+}
+
+function renderIfBlock_1 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var link_initialData = {
+		className: "color-bar chiasm-color-bar",
+		style: "background-color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) ),
+		parameters: root.getLinkParameters(outerChiasm.identifier)
+	};
+	var link = new template.components.Link({
+		target: null,
+		_root: component._root || component,
+		data: link_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			link._fragment.mount( target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, outerChiasm, outerChiasm__index ) {
+			var __tmp;
+		
+			var link_changes = {};
+			
+			if ( 'chiasmColorBarColor' in changed||'structuredText' in changed ) link_changes.style = "background-color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
+			if ( 'getLinkParameters' in changed||'structuredText' in changed ) link_changes.parameters = root.getLinkParameters(outerChiasm.identifier);
+			
+			if ( Object.keys( link_changes ).length ) link.set( link_changes );
+		},
+		
+		teardown: function ( detach ) {
+			link.destroy( detach );
+		}
+	};
+}
+
+function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
+	var div = createElement( 'div' );
+	setAttribute( div, 'svelte-2399739693', '' );
+	div.className = "color-bar";
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( div, target, anchor );
+		},
+		
+		update: noop,
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				detachNode( div );
 			}
 		}
 	};
@@ -1179,6 +1242,8 @@ function teardownEach( iterations, detach, start ) {
 		iterations[i].teardown( detach );
 	}
 }
+
+function noop() {}
 
 function createText( data ) {
 	return document.createTextNode( data );
