@@ -46,15 +46,21 @@ module.exports = function createRouterInstance(
 			linkComponent.on('navigate', ({ querystring, parameters }) => {
 				current = { querystring, parameters }
 
-				emitter.emit('navigate', { querystring, parameters })
+				function emit(event) {
+					emitter.emit(event, {
+						querystring,
+						parameters,
+						element: linkComponent.refs.link
+					})
+				}
+
+				emit('before navigate')
+
+				emit('navigate')
 
 				pushState(parameters, '', querystring)
 
-				emitter.emit('after navigate', {
-					querystring,
-					parameters,
-					element: linkComponent.refs.link
-				})
+				emit('after navigate')
 			})
 
 			return linkComponent

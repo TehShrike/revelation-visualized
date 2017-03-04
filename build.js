@@ -488,7 +488,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-2132924350][data-chiasm-selected=true] [data-is-selected=false], [svelte-2132924350] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2132924350][data-chiasm-selected=true] [data-is-selected=true], [svelte-2132924350] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-2132924350][data-chiasm-selected=true] .chiasm-color-bar, [svelte-2132924350] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
+	style.textContent = "\n[svelte-506149091][data-chiasm-selected=true] [data-is-selected=false], [svelte-506149091] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-506149091][data-chiasm-selected=true] [data-is-selected=true], [svelte-506149091] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-506149091][data-chiasm-selected=true] .chiasm-color-bar, [svelte-506149091] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -496,10 +496,9 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2132924350', '' );
+	setAttribute( div, 'svelte-506149091', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
-	component.refs.main = div;
 	
 	var eachBlock_anchor = createComment();
 	appendNode( eachBlock_anchor, div );
@@ -541,8 +540,6 @@ function renderMainFragment ( root, component ) {
 		},
 		
 		teardown: function ( detach ) {
-			if ( component.refs.main === div ) component.refs.main = null;
-			
 			teardownEach( eachBlock_iterations, false );
 			
 			if ( detach ) {
@@ -554,7 +551,7 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2132924350', '' );
+	setAttribute( div, 'svelte-506149091', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
@@ -573,7 +570,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-2132924350', '' );
+	setAttribute( div1, 'svelte-506149091', '' );
 	div1.className = "section-body";
 	
 	appendNode( div1, div );
@@ -824,9 +821,9 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 	
 	var sectionLine_initialData = {
 		sectionIdentifier: "introduction",
-		zoomedIn: "currentSubsection === 'introduction'",
 		description: outerChiasm.introduction.title,
 		chiasmIdentifier: outerChiasm.identifier,
+		zoomedIn: !!root.currentSubsection,
 		showColorBar: !!root.currentChiasm,
 		anchor: outerChiasm.introduction.anchor,
 		siblingAnchor: outerChiasm.introduction.siblingAnchor,
@@ -853,6 +850,7 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 			
 			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.introduction.title;
 			if ( 'structuredText' in changed ) sectionLine_changes.chiasmIdentifier = outerChiasm.identifier;
+			if ( 'currentSubsection' in changed ) sectionLine_changes.zoomedIn = !!root.currentSubsection;
 			if ( 'currentChiasm' in changed ) sectionLine_changes.showColorBar = !!root.currentChiasm;
 			if ( 'structuredText' in changed ) sectionLine_changes.anchor = outerChiasm.introduction.anchor;
 			if ( 'structuredText' in changed ) sectionLine_changes.siblingAnchor = outerChiasm.introduction.siblingAnchor;
@@ -982,7 +980,7 @@ function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-2132924350', '' );
+	setAttribute( h1, 'svelte-506149091', '' );
 	h1.style.cssText = "color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -1014,7 +1012,6 @@ function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, ou
 
 function revelation ( options ) {
 	options = options || {};
-	this.refs = {};
 	this._state = options.data || {};
 	applyComputations( this._state, this._state, {}, true );
 	
@@ -1200,7 +1197,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = revelation;
 
-},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/extract-range-from-verses":8,"lib/identifier-color":9,"lib/router-instance":10}],3:[function(require,module,exports){
+},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/extract-range-from-verses":8,"lib/identifier-color":9,"lib/router-instance":11}],3:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -1740,7 +1737,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = sectionline;
 
-},{"lib/identifier-color":9,"lib/router-instance":10}],4:[function(require,module,exports){
+},{"lib/identifier-color":9,"lib/router-instance":11}],4:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -2336,7 +2333,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = title;
 
-},{"lib/structure":13}],6:[function(require,module,exports){
+},{"lib/structure":14}],6:[function(require,module,exports){
 'use strict';
 
 var revelation = require('pickering-majority-text-revelation');
@@ -2348,6 +2345,7 @@ var Revelation = require('component/revelation.html');
 var Title = require('component/title.html');
 
 var router = require('lib/router-instance');
+var positionPreserver = require('lib/position-preserver');
 
 var verses = revelation.versesNoteReferencesAndHeaders.map(function (chunk) {
 	return chunk.type === 'end paragraph' ? { type: 'paragraph break' } : chunk;
@@ -2365,27 +2363,20 @@ var structuredText = combineStructureAndVerses(structure, verses);
 
 console.log(structuredText);
 
-var revelationComponent = new Revelation({
+router.attachQuerystringData(new Revelation({
 	target: document.querySelector('#verses'),
 	data: {
 		structuredText: structuredText
 	}
-});
-router.attachQuerystringData(revelationComponent);
+}));
 
 router.attachQuerystringData(new Title({
 	target: document.querySelector('title')
 }));
 
-router.on('after navigate', function (_ref) {
-	var element = _ref.element;
+positionPreserver(router);
 
-	console.log('navigated because', element);
-});
-
-console.log(revelationComponent);
-
-},{"component/revelation.html":2,"component/title.html":5,"lib/combine-structure-and-verses":7,"lib/router-instance":10,"lib/structure":13,"pickering-majority-text-revelation":17}],7:[function(require,module,exports){
+},{"component/revelation.html":2,"component/title.html":5,"lib/combine-structure-and-verses":7,"lib/position-preserver":10,"lib/router-instance":11,"lib/structure":14,"pickering-majority-text-revelation":18}],7:[function(require,module,exports){
 const oneToManyZip = require('one-to-many-array-zip')
 const withinRange = require('multi-part-range-compare')
 
@@ -2402,7 +2393,7 @@ function verseReference({ chapterNumber, verseNumber, sectionNumber }) {
 	return [ chapterNumber, verseNumber, sectionNumber ]
 }
 
-},{"multi-part-range-compare":15,"one-to-many-array-zip":16}],8:[function(require,module,exports){
+},{"multi-part-range-compare":16,"one-to-many-array-zip":17}],8:[function(require,module,exports){
 const withinRange = require('multi-part-range-compare')
 
 module.exports = function extractRangeFromVerses(verses, range) {
@@ -2433,7 +2424,7 @@ module.exports = function extractRangeFromVerses(verses, range) {
 	return matching
 }
 
-},{"multi-part-range-compare":15}],9:[function(require,module,exports){
+},{"multi-part-range-compare":16}],9:[function(require,module,exports){
 const chiasmColors = {
 	a: '#018d5d',
 	b: '#ba4460',
@@ -2455,11 +2446,62 @@ module.exports = function getChiasmColor(identifier) {
 }
 
 },{}],10:[function(require,module,exports){
+(function (global){
+// Heavily inspired by https://github.com/vvo/in-viewport/blob/f1bd60ba41bbaccff22ea7e9232dacbef260340b/in-viewport.js#L132-L173
+
+module.exports = function positionPreserver(router, options = defaultOptions()) {
+	onNavigateByElement(router, element => {
+		const originalViewport = getViewport(options)
+		const originalRelationshipToViewport = originalViewport.top - element.getBoundingClientRect().top
+
+		router.once('after navigate', ({ element }) => {
+			const destination = element.offsetTop + originalRelationshipToViewport
+			window.scrollTo(originalViewport.left, destination)
+		})
+	})
+}
+
+function onNavigateByElement(router, callback) {
+	router.on('before navigate', ({ element }) => {
+		if (element) {
+			callback(element)
+		}
+	})
+}
+
+function getViewport({ container, offset }) {
+	if (container === global.document.body) {
+		return {
+			top: -offset,
+			left: -offset,
+			right: global.document.documentElement.clientWidth + offset,
+			bottom: global.document.documentElement.clientHeight + offset
+		}
+	} else {
+		var containerRect = container.getBoundingClientRect()
+		return {
+			top: containerRect.top - offset,
+			left: containerRect.left - offset,
+			right: containerRect.right + offset,
+			bottom: containerRect.bottom + offset
+		}
+	}
+}
+
+function defaultOptions() {
+	return {
+		container: global.document.body,
+		offset: 0
+	}
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],11:[function(require,module,exports){
 const createRouterInstance = require('lib/router')
 
 module.exports = createRouterInstance()
 
-},{"lib/router":11}],11:[function(require,module,exports){
+},{"lib/router":12}],12:[function(require,module,exports){
 const Link = require('./link.html')
 const EventEmitter = require('eventemitter3')
 
@@ -2505,11 +2547,24 @@ module.exports = function createRouterInstance(
 		Link: function linkProxy(options) {
 			const linkComponent = new Link(options)
 
-			linkComponent.on('navigate', ({ querystring, parameters, element }) => {
+			linkComponent.on('navigate', ({ querystring, parameters }) => {
 				current = { querystring, parameters }
-				emitter.emit('navigate', { querystring, parameters })
+
+				function emit(event) {
+					emitter.emit(event, {
+						querystring,
+						parameters,
+						element: linkComponent.refs.link
+					})
+				}
+
+				emit('before navigate')
+
+				emit('navigate')
+
 				pushState(parameters, '', querystring)
-				emitter.emit('after navigate', { querystring, parameters, element })
+
+				emit('after navigate')
 			})
 
 			return linkComponent
@@ -2537,7 +2592,7 @@ module.exports = function createRouterInstance(
 	}
 }
 
-},{"./link.html":12,"eventemitter3":14}],12:[function(require,module,exports){
+},{"./link.html":13,"eventemitter3":15}],13:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -2572,8 +2627,7 @@ return {
 
 			this.fire('navigate', {
 				querystring: this.get('querystring'),
-				parameters: this.get('parameters'),
-				element: event.target
+				parameters: this.get('parameters')
 			})
 		}
 	}
@@ -2676,6 +2730,8 @@ function renderIfBlock_0 ( root, component ) {
 	
 	addEventListener( a, 'click', clickHandler );
 	
+	component.refs.link = a;
+	
 	var yield_anchor = createComment();
 	appendNode( yield_anchor, a );
 
@@ -2706,6 +2762,7 @@ function renderIfBlock_0 ( root, component ) {
 		
 		teardown: function ( detach ) {
 			removeEventListener( a, 'click', clickHandler );
+			if ( component.refs.link === a ) component.refs.link = null;
 			component._yield && component._yield.teardown( detach );
 			
 			if ( detach ) {
@@ -2717,6 +2774,7 @@ function renderIfBlock_0 ( root, component ) {
 
 function link ( options ) {
 	options = options || {};
+	this.refs = {};
 	this._state = Object.assign( template.data(), options.data );
 	applyComputations( this._state, this._state, {}, true );
 	
@@ -2892,7 +2950,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = link;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
 const VERSE_SECTION_RANGE_MIN = 1
 const VERSE_SECTION_RANGE_MAX = 9999
@@ -3141,7 +3199,7 @@ function giveIntroductionsAnchors(sections) {
 	})
 }
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -3454,7 +3512,7 @@ if ('undefined' !== typeof module) {
   module.exports = EventEmitter;
 }
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 
 const LESS_THAN = -1
 const WITHIN = 0
@@ -3505,7 +3563,7 @@ withinRange.GREATER_THAN_END = GREATER_THAN
 
 withinRange.relative = relative
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 module.exports = function oneToManyZip(oneArray, manyArray, compareFn) {
@@ -3542,7 +3600,7 @@ function assert(value, message) {
 	}
 }
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var versesNoteReferencesAndHeaders = require('./verses-note-references-and-headers.json')
 var notes = require('./notes.json')
 
@@ -3551,7 +3609,7 @@ module.exports = {
 	notes: notes
 }
 
-},{"./notes.json":18,"./verses-note-references-and-headers.json":19}],18:[function(require,module,exports){
+},{"./notes.json":19,"./verses-note-references-and-headers.json":20}],19:[function(require,module,exports){
 module.exports={
 	"1": "Both the translation and the comments are the responsibility of Wilbur N. Pickering, ThM PhD, ©, being based on his edition of the Greek New Testament, according to the only significant line of transmission, both ancient and independent, that has a demonstrable archetypal form in all 27 books. The Greek Text of which this is a translation, and articles explaining the preference, may be downloaded free from  www.prunch.org.",
 	"2": "Whose, the Father’s or the Son’s? Probably the Son’s, but in practice it makes little or no difference. Yes, the Text says “slaves”, so this book is not intended for the merely curious.",
@@ -3841,7 +3899,7 @@ module.exports={
 	"286": "“Words”, plural, includes the individual words that make up the whole. Those textual critics who have wantonly removed words from the Text, on the basis of satanically inspired presuppositions, are out. Those who interpret the Text in such a way as to avoid its plain meaning, likewise. Jehovah the Son affirms that the words are “true and  faithful ”, and He expects us to interpret them that way.",
 	"287": "“The Lord Jesus Christ” is now the full name or title of Jehovah the Son."
 }
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports=[
 	{
 		"type": "note reference",

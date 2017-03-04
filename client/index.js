@@ -7,6 +7,7 @@ const Revelation = require('component/revelation.html')
 const Title = require('component/title.html')
 
 const router = require('lib/router-instance')
+const positionPreserver = require('lib/position-preserver')
 
 const verses = revelation.versesNoteReferencesAndHeaders
 .map(chunk => {
@@ -36,6 +37,4 @@ router.attachQuerystringData(new Title({
 	target: document.querySelector('title')
 }))
 
-router.on('after navigate', ({ element }) => {
-	console.log('navigated because', element)
-})
+positionPreserver(router)
