@@ -488,7 +488,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-4152352538][data-chiasm-selected=true] [data-is-selected=false], [svelte-4152352538] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-4152352538][data-chiasm-selected=true] [data-is-selected=true], [svelte-4152352538] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-4152352538][data-chiasm-selected=true] .chiasm-color-bar, [svelte-4152352538] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
+	style.textContent = "\n[svelte-2831561952][data-chiasm-selected=true] [data-is-selected=false], [svelte-2831561952] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2831561952][data-chiasm-selected=true] [data-is-selected=true], [svelte-2831561952] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-2831561952][data-chiasm-selected=true] .chiasm-color-bar, [svelte-2831561952] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -496,7 +496,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-4152352538', '' );
+	setAttribute( div, 'svelte-2831561952', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -551,7 +551,7 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-4152352538', '' );
+	setAttribute( div, 'svelte-2831561952', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
@@ -570,7 +570,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-4152352538', '' );
+	setAttribute( div1, 'svelte-2831561952', '' );
 	div1.className = "section-body";
 	
 	appendNode( div1, div );
@@ -824,7 +824,10 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 		zoomedIn: "currentSubsection === 'introduction'",
 		description: outerChiasm.introduction.title,
 		chiasmIdentifier: outerChiasm.identifier,
-		showColorBar: !!root.currentChiasm
+		showColorBar: !!root.currentChiasm,
+		anchor: outerChiasm.introduction.anchor,
+		siblingAnchor: outerChiasm.introduction.siblingAnchor,
+		siblingIsDown: outerChiasm.introduction.siblingIsDown
 	};
 	var sectionLine = new template.components.SectionLine({
 		target: null,
@@ -848,6 +851,9 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 			if ( 'structuredText' in changed ) sectionLine_changes.description = outerChiasm.introduction.title;
 			if ( 'structuredText' in changed ) sectionLine_changes.chiasmIdentifier = outerChiasm.identifier;
 			if ( 'currentChiasm' in changed ) sectionLine_changes.showColorBar = !!root.currentChiasm;
+			if ( 'structuredText' in changed ) sectionLine_changes.anchor = outerChiasm.introduction.anchor;
+			if ( 'structuredText' in changed ) sectionLine_changes.siblingAnchor = outerChiasm.introduction.siblingAnchor;
+			if ( 'structuredText' in changed ) sectionLine_changes.siblingIsDown = outerChiasm.introduction.siblingIsDown;
 			
 			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
 		},
@@ -967,7 +973,7 @@ function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-4152352538', '' );
+	setAttribute( h1, 'svelte-2831561952', '' );
 	h1.style.cssText = "color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -1226,35 +1232,47 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-4065365783][data-zoomed-in=true] .color-bar, [svelte-4065365783] [data-zoomed-in=true] .color-bar {\n\topacity: 0.5;\n}\n";
+	style.textContent = "\n[svelte-3807038121][data-zoomed-in=true] .color-bar, [svelte-3807038121] [data-zoomed-in=true] .color-bar {\n\topacity: 0.5;\n}\n\n[svelte-3807038121].sibling-link, [svelte-3807038121] .sibling-link {\n\ttext-decoration: none;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
 }
 
 function renderMainFragment ( root, component ) {
-	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-4065365783', '' );
-	div.className = "section-line";
-	var last_div_data_zoomed_in = root.zoomedIn;
-	setAttribute( div, 'data-zoomed-in', last_div_data_zoomed_in );
-	
 	var ifBlock_anchor = createComment();
-	appendNode( ifBlock_anchor, div );
 	
 	function getBlock ( root ) {
-		if ( root.sectionIdentifier && root.showColorBar ) return renderIfBlock_0;
-		return renderIfBlock_1;
+		if ( root.anchor ) return renderIfBlock_0;
+		return null;
 	}
 	
 	var currentBlock = getBlock( root );
 	var ifBlock = currentBlock && currentBlock( root, component );
 	
-	if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+	var text = createText( "\n" );
+	
+	var div = createElement( 'div' );
+	setAttribute( div, 'svelte-3807038121', '' );
+	div.className = "section-line";
+	var last_div_data_zoomed_in = root.zoomedIn;
+	setAttribute( div, 'data-zoomed-in', last_div_data_zoomed_in );
+	
+	var ifBlock1_anchor = createComment();
+	appendNode( ifBlock1_anchor, div );
+	
+	function getBlock1 ( root ) {
+		if ( root.sectionIdentifier && root.showColorBar ) return renderIfBlock1_0;
+		return renderIfBlock1_1;
+	}
+	
+	var currentBlock1 = getBlock1( root );
+	var ifBlock1 = currentBlock1 && currentBlock1( root, component );
+	
+	if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
 	appendNode( createText( "\n\n\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-4065365783', '' );
+	setAttribute( div1, 'svelte-3807038121', '' );
 	div1.className = "section-text";
 	
 	appendNode( div1, div );
@@ -1263,16 +1281,32 @@ function renderMainFragment ( root, component ) {
 	appendNode( createText( "\n\t" ), div );
 	
 	var div2 = createElement( 'div' );
-	setAttribute( div2, 'svelte-4065365783', '' );
+	setAttribute( div2, 'svelte-3807038121', '' );
 	div2.className = "section-description " + ( root.descriptionClass );
 	
 	appendNode( div2, div );
-	var last_text2 = root.description || ''
-	var text2 = createText( last_text2 );
-	appendNode( text2, div2 );
+	var ifBlock2_anchor = createComment();
+	appendNode( ifBlock2_anchor, div2 );
+	
+	function getBlock2 ( root ) {
+		if ( root.siblingAnchor ) return renderIfBlock2_0;
+		return null;
+	}
+	
+	var currentBlock2 = getBlock2( root );
+	var ifBlock2 = currentBlock2 && currentBlock2( root, component );
+	
+	if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+	appendNode( createText( "\n\t\t" ), div2 );
+	var last_text4 = root.description || ''
+	var text4 = createText( last_text4 );
+	appendNode( text4, div2 );
 
 	return {
 		mount: function ( target, anchor ) {
+			insertNode( ifBlock_anchor, target, anchor );
+			if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+			insertNode( text, target, anchor );
 			insertNode( div, target, anchor );
 			component._yield && component._yield.mount( div1, yield_anchor );
 		},
@@ -1280,11 +1314,6 @@ function renderMainFragment ( root, component ) {
 		update: function ( changed, root ) {
 			var __tmp;
 		
-			if ( ( __tmp = root.zoomedIn ) !== last_div_data_zoomed_in ) {
-				last_div_data_zoomed_in = __tmp;
-				setAttribute( div, 'data-zoomed-in', last_div_data_zoomed_in );
-			}
-			
 			var _currentBlock = currentBlock;
 			currentBlock = getBlock( root );
 			if ( _currentBlock === currentBlock && ifBlock) {
@@ -1295,27 +1324,142 @@ function renderMainFragment ( root, component ) {
 				if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
 			}
 			
+			if ( ( __tmp = root.zoomedIn ) !== last_div_data_zoomed_in ) {
+				last_div_data_zoomed_in = __tmp;
+				setAttribute( div, 'data-zoomed-in', last_div_data_zoomed_in );
+			}
+			
+			var _currentBlock1 = currentBlock1;
+			currentBlock1 = getBlock1( root );
+			if ( _currentBlock1 === currentBlock1 && ifBlock1) {
+				ifBlock1.update( changed, root );
+			} else {
+				if ( ifBlock1 ) ifBlock1.teardown( true );
+				ifBlock1 = currentBlock1 && currentBlock1( root, component );
+				if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
+			}
+			
 			div2.className = "section-description " + ( root.descriptionClass );
 			
-			if ( ( __tmp = root.description || '' ) !== last_text2 ) {
-				text2.data = last_text2 = __tmp;
+			var _currentBlock2 = currentBlock2;
+			currentBlock2 = getBlock2( root );
+			if ( _currentBlock2 === currentBlock2 && ifBlock2) {
+				ifBlock2.update( changed, root );
+			} else {
+				if ( ifBlock2 ) ifBlock2.teardown( true );
+				ifBlock2 = currentBlock2 && currentBlock2( root, component );
+				if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+			}
+			
+			if ( ( __tmp = root.description || '' ) !== last_text4 ) {
+				text4.data = last_text4 = __tmp;
 			}
 		},
 		
 		teardown: function ( detach ) {
-			if ( ifBlock ) ifBlock.teardown( false );
+			if ( ifBlock ) ifBlock.teardown( detach );
+			if ( ifBlock1 ) ifBlock1.teardown( false );
 			component._yield && component._yield.teardown( detach );
+			if ( ifBlock2 ) ifBlock2.teardown( false );
 			
 			if ( detach ) {
+				detachNode( ifBlock_anchor );
+				detachNode( text );
 				detachNode( div );
 			}
 		}
 	};
 }
 
-function renderIfBlock_1 ( root, component ) {
+function renderIfBlock2_0 ( root, component ) {
+	var a = createElement( 'a' );
+	setAttribute( a, 'svelte-3807038121', '' );
+	a.href = "#" + ( root.siblingAnchor );
+	a.className = "sibling-link";
+	
+	var ifBlock3_anchor = createComment();
+	appendNode( ifBlock3_anchor, a );
+	
+	function getBlock3 ( root ) {
+		if ( root.siblingIsDown ) return renderIfBlock3_0;
+		return renderIfBlock3_1;
+	}
+	
+	var currentBlock3 = getBlock3( root );
+	var ifBlock3 = currentBlock3 && currentBlock3( root, component );
+	
+	if ( ifBlock3 ) ifBlock3.mount( ifBlock3_anchor.parentNode, ifBlock3_anchor );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( a, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			a.href = "#" + ( root.siblingAnchor );
+			
+			var _currentBlock3 = currentBlock3;
+			currentBlock3 = getBlock3( root );
+			if ( _currentBlock3 === currentBlock3 && ifBlock3) {
+				ifBlock3.update( changed, root );
+			} else {
+				if ( ifBlock3 ) ifBlock3.teardown( true );
+				ifBlock3 = currentBlock3 && currentBlock3( root, component );
+				if ( ifBlock3 ) ifBlock3.mount( ifBlock3_anchor.parentNode, ifBlock3_anchor );
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( ifBlock3 ) ifBlock3.teardown( false );
+			
+			if ( detach ) {
+				detachNode( a );
+			}
+		}
+	};
+}
+
+function renderIfBlock3_1 ( root, component ) {
+	var text = createText( "↟" );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( text, target, anchor );
+		},
+		
+		update: noop,
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				detachNode( text );
+			}
+		}
+	};
+}
+
+function renderIfBlock3_0 ( root, component ) {
+	var text = createText( "↡" );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( text, target, anchor );
+		},
+		
+		update: noop,
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				detachNode( text );
+			}
+		}
+	};
+}
+
+function renderIfBlock1_1 ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-4065365783', '' );
+	setAttribute( div, 'svelte-3807038121', '' );
 	div.className = "color-bar paragraph-margin";
 
 	return {
@@ -1333,7 +1477,7 @@ function renderIfBlock_1 ( root, component ) {
 	};
 }
 
-function renderIfBlock_0 ( root, component ) {
+function renderIfBlock1_0 ( root, component ) {
 	var link_initialData = {
 		className: "color-bar paragraph-margin",
 		style: "background-color: " + ( template.helpers.getChiasmColor(root.sectionIdentifier) ),
@@ -1363,6 +1507,34 @@ function renderIfBlock_0 ( root, component ) {
 		
 		teardown: function ( detach ) {
 			link.destroy( detach );
+		}
+	};
+}
+
+function renderIfBlock_0 ( root, component ) {
+	var a = createElement( 'a' );
+	setAttribute( a, 'svelte-3807038121', '' );
+	var last_a_id = root.anchor;
+	a.id = last_a_id;
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( a, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			if ( ( __tmp = root.anchor ) !== last_a_id ) {
+				last_a_id = __tmp;
+				a.id = last_a_id;
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				detachNode( a );
+			}
 		}
 	};
 }
@@ -1495,12 +1667,12 @@ var dispatchObservers = function dispatchObservers( component, group, newState, 
 	}
 }
 
-function setAttribute( node, attribute, value ) {
-	node.setAttribute ( attribute, value );
-}
-
 function createElement( name ) {
 	return document.createElement( name );
+}
+
+function setAttribute( node, attribute, value ) {
+	node.setAttribute ( attribute, value );
 }
 
 function detachNode( node ) {
@@ -1511,18 +1683,18 @@ function insertNode( node, target, anchor ) {
 	target.insertBefore( node, anchor );
 }
 
-function noop() {}
-
 function createComment() {
 	return document.createComment( '' );
 }
 
-function appendNode( node, target ) {
-	target.appendChild( node );
-}
-
 function createText( data ) {
 	return document.createTextNode( data );
+}
+
+function noop() {}
+
+function appendNode( node, target ) {
+	target.appendChild( node );
 }
 
 function dispatchObservers( component, group, newState, oldState ) {
@@ -1641,7 +1813,10 @@ function renderEachBlock ( root, eachBlock_value, subsection, subsection__index,
 		chiasmIdentifier: root.chiasmIdentifier,
 		sectionIdentifier: subsection.identifier,
 		zoomedIn: !!root.currentSubsection,
-		showColorBar: root.showColorBar
+		showColorBar: root.showColorBar,
+		anchor: subsection.anchor,
+		siblingAnchor: subsection.siblingAnchor,
+		siblingIsDown: subsection.siblingIsDown
 	};
 	var sectionLine = new template.components.SectionLine({
 		target: null,
@@ -1667,6 +1842,9 @@ function renderEachBlock ( root, eachBlock_value, subsection, subsection__index,
 			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.sectionIdentifier = subsection.identifier;
 			if ( 'currentSubsection' in changed ) sectionLine_changes.zoomedIn = !!root.currentSubsection;
 			if ( 'showColorBar' in changed ) sectionLine_changes.showColorBar = root.showColorBar;
+			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.anchor = subsection.anchor;
+			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.siblingAnchor = subsection.siblingAnchor;
+			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.siblingIsDown = subsection.siblingIsDown;
 			
 			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
 		},
@@ -2884,7 +3062,8 @@ function giveSectionsChiasmAnchors(sections) {
 
 		return Object.assign({
 			anchor: index < pivotIndex ? section.identifier : primeAnchor,
-			siblingAnchor: index < pivotIndex ? primeAnchor : section.identifier
+			siblingAnchor: index < pivotIndex ? primeAnchor : section.identifier,
+			siblingIsDown: index < pivotIndex
 		}, section)
 	})
 }
@@ -2903,7 +3082,8 @@ function giveSubsectionsAnchors(sections) {
 
 				return Object.assign({
 					anchor: `${section.anchor}-${subsection.identifier}`,
-					siblingAnchor: `${section.siblingAnchor}-${subsection.identifier}`
+					siblingAnchor: `${section.siblingAnchor}-${subsection.identifier}`,
+					siblingIsDown: section.siblingIsDown
 				}, subsection)
 			})
 		})
@@ -2919,7 +3099,8 @@ function giveIntroductionsAnchors(sections) {
 		return Object.assign({}, section, {
 			introduction: Object.assign({
 				anchor: `${section.anchor}-introduction`,
-				siblingAnchor: `${section.siblingAnchor}-introduction`
+				siblingAnchor: `${section.siblingAnchor}-introduction`,
+				siblingIsDown: section.siblingIsDown
 			}, section.introduction)
 		})
 	})

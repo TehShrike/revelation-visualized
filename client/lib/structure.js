@@ -202,7 +202,8 @@ function giveSectionsChiasmAnchors(sections) {
 
 		return Object.assign({
 			anchor: index < pivotIndex ? section.identifier : primeAnchor,
-			siblingAnchor: index < pivotIndex ? primeAnchor : section.identifier
+			siblingAnchor: index < pivotIndex ? primeAnchor : section.identifier,
+			siblingIsDown: index < pivotIndex
 		}, section)
 	})
 }
@@ -221,7 +222,8 @@ function giveSubsectionsAnchors(sections) {
 
 				return Object.assign({
 					anchor: `${section.anchor}-${subsection.identifier}`,
-					siblingAnchor: `${section.siblingAnchor}-${subsection.identifier}`
+					siblingAnchor: `${section.siblingAnchor}-${subsection.identifier}`,
+					siblingIsDown: section.siblingIsDown
 				}, subsection)
 			})
 		})
@@ -237,7 +239,8 @@ function giveIntroductionsAnchors(sections) {
 		return Object.assign({}, section, {
 			introduction: Object.assign({
 				anchor: `${section.anchor}-introduction`,
-				siblingAnchor: `${section.siblingAnchor}-introduction`
+				siblingAnchor: `${section.siblingAnchor}-introduction`,
+				siblingIsDown: section.siblingIsDown
 			}, section.introduction)
 		})
 	})

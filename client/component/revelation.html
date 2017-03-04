@@ -35,6 +35,9 @@
 							sectionIdentifier="introduction"
 							zoomedIn="currentSubsection === 'introduction'"
 							showColorBar="{{!!currentChiasm}}"
+							anchor="{{outerChiasm.introduction.anchor}}"
+							siblingAnchor="{{outerChiasm.introduction.siblingAnchor}}"
+							siblingIsDown="{{outerChiasm.introduction.siblingIsDown}}"
 						>
 							<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}" />
 						</SectionLine>
