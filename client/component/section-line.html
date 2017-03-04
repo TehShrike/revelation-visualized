@@ -24,6 +24,8 @@
 			</a>
 		{{/if}}
 		{{description || ''}}
+
+		{{#if range}}<small><VerseRange range="{{range}}" /></small>{{/if}}
 	</div>
 </div>
 
@@ -40,11 +42,18 @@
 	display: none;
 }
 
+small {
+	font-size: small;
+	color: #a9a9a9;
+	display: block;
+}
+
 </style>
 
 <script>
 const getChiasmColor = require('lib/identifier-color')
 const { Link } = require('lib/router-instance')
+const VerseRange = require('component/verse-range.html')
 
 export default {
 	data() {
@@ -58,7 +67,8 @@ export default {
 		}
 	},
 	components: {
-		Link
+		Link,
+		VerseRange
 	},
 	computed: {
 		linkParameters: (chiasmIdentifier, sectionIdentifier, zoomedIn) => {

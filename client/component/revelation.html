@@ -44,6 +44,7 @@
 							anchor="{{outerChiasm.introduction.anchor}}"
 							siblingAnchor="{{outerChiasm.introduction.siblingAnchor}}"
 							siblingIsDown="{{outerChiasm.introduction.siblingIsDown}}"
+							range="{{outerChiasm.introduction.range}}"
 						>
 							<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}" />
 						</SectionLine>
@@ -59,7 +60,7 @@
 						showColorBar="{{!!currentChiasm}}"
 					/>
 				{{elseif !currentSubsection}}
-					<SectionLine>
+					<SectionLine range="{{outerChiasm.range}}">
 						<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)}}" />
 					</SectionLine>
 				{{/if}}
