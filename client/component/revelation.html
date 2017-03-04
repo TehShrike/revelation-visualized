@@ -12,7 +12,13 @@
 			</Link>
 			<div class="section-body">
 				{{#if !currentSubsection}}
-				<SectionLine description="{{outerChiasm.description}}" descriptionClass="header-margin">
+				<SectionLine
+					description="{{outerChiasm.description}}"
+					descriptionClass="header-margin"
+					anchor="{{outerChiasm.anchor}}"
+					siblingAnchor="{{outerChiasm.siblingAnchor}}"
+					siblingIsDown="{{outerChiasm.siblingIsDown}}"
+				>
 					<h1 style="color: {{chiasmColorBarColor(outerChiasm.identifier)}}">
 						{{outerChiasm.title}}
 					</h1>
