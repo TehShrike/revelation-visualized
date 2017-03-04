@@ -2,7 +2,11 @@ const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
 const VERSE_SECTION_RANGE_MIN = 1
 const VERSE_SECTION_RANGE_MAX = 9999
 
-module.exports = [
+function pipe(input, ...fns) {
+	return fns.reduce((lastResult, fn) => fn(lastResult), input)
+}
+
+module.exports = pipe([
 	{
 		identifier: 'A',
 		title: 'Prologue',
@@ -72,7 +76,7 @@ module.exports = [
 		introduction: {
 			title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
 			range: r([ 12, 1 ], [ 12, 17 ]),
-			subsections: [
+			subsections: giveSectionsChiasmAnchors([
 				s('The Bride reflecting the glory of her husband', r([ 12, 1 ], [ 12, 1 ]), 'Ea'),
 				s('The Child of the woman', r([ 12, 2 ], [ 12, 2 ]), 'Eb'),
 				s('The Dragon tries to devour the Child', r([ 12, 3 ], [ 12, 5 ]), 'Ec'),
@@ -84,7 +88,7 @@ module.exports = [
 				s(`The Dragon's mouth & the earth swallows the serpents flood`, r([ 12, 15 ], [ 12, 16 ]), 'Ec'),
 				s('The rest of the offspring of the woman', r([ 12, 17, 1 ], [ 12, 17, 1 ]), 'Eb'),
 				s('The church reflecting the word of Christ', r([ 12, 17, 2 ], [ 12, 17 ]), 'Ea'),
-			]
+			])
 		},
 		subsections: [
 			s('The beast rising out of the sea', r([ 13, 1 ], [ 13, 10 ])),
@@ -151,7 +155,10 @@ module.exports = [
 		title: 'Epilogue: How to Read This Book',
 		range: r([ 22, 18 ], [ 22, 21 ])
 	}
-]
+],
+giveSectionsChiasmAnchors,
+giveSubsectionsAnchors,
+giveIntroductionsAnchors)
 
 function makeSubsections(...subsections) {
 	return subsections.map(({ title, range }, i) => {
@@ -181,4 +188,57 @@ function guaranteeRangeSection(range, defaultSection) {
 	} else {
 		return [ ...range, defaultSection ]
 	}
+}
+
+function giveSectionsChiasmAnchors(sections) {
+	const pivotIndex = Math.floor(sections.length / 2)
+
+	return sections.map((section, index) => {
+		if (index === pivotIndex) {
+			return section
+		}
+
+		const primeAnchor = `${section.identifier}prime`
+
+		return Object.assign({
+			anchor: index < pivotIndex ? section.identifier : primeAnchor,
+			siblingAnchor: index < pivotIndex ? primeAnchor : section.identifier
+		}, section)
+	})
+}
+
+function giveSubsectionsAnchors(sections) {
+	return sections.map(section => {
+		if (!section.subsections) {
+			return section
+		}
+
+		return Object.assign({}, section, {
+			subsections: section.subsections.map(subsection => {
+				if (!subsection.identifier) {
+					return subsection
+				}
+
+				return Object.assign({
+					anchor: `${section.anchor}-${subsection.identifier}`,
+					siblingAnchor: `${section.siblingAnchor}-${subsection.identifier}`
+				}, subsection)
+			})
+		})
+	})
+}
+
+function giveIntroductionsAnchors(sections) {
+	return sections.map(section => {
+		if (!section.introduction) {
+			return section
+		}
+
+		return Object.assign({}, section, {
+			introduction: Object.assign({
+				anchor: `${section.anchor}-introduction`,
+				siblingAnchor: `${section.siblingAnchor}-introduction`
+			}, section.introduction)
+		})
+	})
 }

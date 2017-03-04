@@ -240,20 +240,19 @@ function renderIfBlock_0 ( root, eachBlock_value, paragraph, paragraph__index, e
 
 function paragraphs ( options ) {
 	options = options || {};
-	
 	this._state = Object.assign( template.data(), options.data );
-applyComputations( this._state, this._state, {}, true );
-
+	applyComputations( this._state, this._state, {}, true );
+	
 	this._observers = {
 		pre: Object.create( null ),
 		post: Object.create( null )
 	};
-
+	
 	this._handlers = Object.create( null );
-
+	
 	this._root = options._root;
 	this._yield = options._yield;
-
+	
 	this._torndown = false;
 	
 	this._fragment = renderMainFragment( this._state, this );
@@ -328,7 +327,7 @@ paragraphs.prototype._set = function _set ( newState ) {
 	dispatchObservers( this, this._observers.post, newState, oldState );
 };
 
-paragraphs.prototype.teardown = function teardown ( detach ) {
+paragraphs.prototype.teardown = paragraphs.prototype.destroy = function destroy ( detach ) {
 	this.fire( 'teardown' );
 
 	this._fragment.teardown( detach !== false );
@@ -667,7 +666,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 		},
 		
 		teardown: function ( detach ) {
-			link.teardown( false );
+			link.destroy( false );
 			if ( ifBlock ) ifBlock.teardown( false );
 			if ( ifBlock1 ) ifBlock1.teardown( false );
 			if ( ifBlock3 ) ifBlock3.teardown( false );
@@ -700,7 +699,7 @@ function renderIfBlock3_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 		},
 		
 		teardown: function ( detach ) {
-			sectionLine.teardown( detach );
+			sectionLine.destroy( detach );
 		}
 	};
 }
@@ -731,7 +730,7 @@ function rendersectionLineYieldFragment2 ( root, eachBlock_value, outerChiasm, o
 		},
 		
 		teardown: function ( detach ) {
-			paragraphs.teardown( detach );
+			paragraphs.destroy( detach );
 		}
 	};
 }
@@ -770,7 +769,7 @@ function renderIfBlock3_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 		},
 		
 		teardown: function ( detach ) {
-			subsections.teardown( detach );
+			subsections.destroy( detach );
 		}
 	};
 }
@@ -854,7 +853,7 @@ function renderIfBlock2_1 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 		},
 		
 		teardown: function ( detach ) {
-			sectionLine.teardown( detach );
+			sectionLine.destroy( detach );
 		}
 	};
 }
@@ -885,7 +884,7 @@ function rendersectionLineYieldFragment1 ( root, eachBlock_value, outerChiasm, o
 		},
 		
 		teardown: function ( detach ) {
-			paragraphs.teardown( detach );
+			paragraphs.destroy( detach );
 		}
 	};
 }
@@ -924,7 +923,7 @@ function renderIfBlock2_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 		},
 		
 		teardown: function ( detach ) {
-			subsections.teardown( detach );
+			subsections.destroy( detach );
 		}
 	};
 }
@@ -961,7 +960,7 @@ function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 		},
 		
 		teardown: function ( detach ) {
-			sectionLine.teardown( detach );
+			sectionLine.destroy( detach );
 		}
 	};
 }
@@ -1000,20 +999,19 @@ function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, ou
 
 function revelation ( options ) {
 	options = options || {};
-	
 	this._state = options.data || {};
-applyComputations( this._state, this._state, {}, true );
-
+	applyComputations( this._state, this._state, {}, true );
+	
 	this._observers = {
 		pre: Object.create( null ),
 		post: Object.create( null )
 	};
-
+	
 	this._handlers = Object.create( null );
-
+	
 	this._root = options._root;
 	this._yield = options._yield;
-
+	
 	this._torndown = false;
 	if ( !addedCss ) addCss();
 	this._renderHooks = [];
@@ -1094,7 +1092,7 @@ revelation.prototype._set = function _set ( newState ) {
 	this._flush();
 };
 
-revelation.prototype.teardown = function teardown ( detach ) {
+revelation.prototype.teardown = revelation.prototype.destroy = function destroy ( detach ) {
 	this.fire( 'teardown' );
 
 	this._fragment.teardown( detach !== false );
@@ -1186,7 +1184,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = revelation;
 
-},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/extract-range-from-verses":7,"lib/identifier-color":8,"lib/router-instance":9}],3:[function(require,module,exports){
+},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/extract-range-from-verses":8,"lib/identifier-color":9,"lib/router-instance":10}],3:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -1225,9 +1223,21 @@ return {
 }
 }());
 
+let addedCss = false;
+function addCss () {
+	var style = createElement( 'style' );
+	style.textContent = "\n[svelte-4065365783][data-zoomed-in=true] .color-bar, [svelte-4065365783] [data-zoomed-in=true] .color-bar {\n\topacity: 0.5;\n}\n";
+	appendNode( style, document.head );
+
+	addedCss = true;
+}
+
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
+	setAttribute( div, 'svelte-4065365783', '' );
 	div.className = "section-line";
+	var last_div_data_zoomed_in = root.zoomedIn;
+	setAttribute( div, 'data-zoomed-in', last_div_data_zoomed_in );
 	
 	var ifBlock_anchor = createComment();
 	appendNode( ifBlock_anchor, div );
@@ -1244,6 +1254,7 @@ function renderMainFragment ( root, component ) {
 	appendNode( createText( "\n\n\t" ), div );
 	
 	var div1 = createElement( 'div' );
+	setAttribute( div1, 'svelte-4065365783', '' );
 	div1.className = "section-text";
 	
 	appendNode( div1, div );
@@ -1252,6 +1263,7 @@ function renderMainFragment ( root, component ) {
 	appendNode( createText( "\n\t" ), div );
 	
 	var div2 = createElement( 'div' );
+	setAttribute( div2, 'svelte-4065365783', '' );
 	div2.className = "section-description " + ( root.descriptionClass );
 	
 	appendNode( div2, div );
@@ -1268,6 +1280,11 @@ function renderMainFragment ( root, component ) {
 		update: function ( changed, root ) {
 			var __tmp;
 		
+			if ( ( __tmp = root.zoomedIn ) !== last_div_data_zoomed_in ) {
+				last_div_data_zoomed_in = __tmp;
+				setAttribute( div, 'data-zoomed-in', last_div_data_zoomed_in );
+			}
+			
 			var _currentBlock = currentBlock;
 			currentBlock = getBlock( root );
 			if ( _currentBlock === currentBlock && ifBlock) {
@@ -1298,6 +1315,7 @@ function renderMainFragment ( root, component ) {
 
 function renderIfBlock_1 ( root, component ) {
 	var div = createElement( 'div' );
+	setAttribute( div, 'svelte-4065365783', '' );
 	div.className = "color-bar paragraph-margin";
 
 	return {
@@ -1344,28 +1362,28 @@ function renderIfBlock_0 ( root, component ) {
 		},
 		
 		teardown: function ( detach ) {
-			link.teardown( detach );
+			link.destroy( detach );
 		}
 	};
 }
 
 function sectionline ( options ) {
 	options = options || {};
-	
 	this._state = Object.assign( template.data(), options.data );
-applyComputations( this._state, this._state, {}, true );
-
+	applyComputations( this._state, this._state, {}, true );
+	
 	this._observers = {
 		pre: Object.create( null ),
 		post: Object.create( null )
 	};
-
+	
 	this._handlers = Object.create( null );
-
+	
 	this._root = options._root;
 	this._yield = options._yield;
-
+	
 	this._torndown = false;
+	if ( !addedCss ) addCss();
 	this._renderHooks = [];
 	
 	this._fragment = renderMainFragment( this._state, this );
@@ -1444,7 +1462,7 @@ sectionline.prototype._set = function _set ( newState ) {
 	this._flush();
 };
 
-sectionline.prototype.teardown = function teardown ( detach ) {
+sectionline.prototype.teardown = sectionline.prototype.destroy = function destroy ( detach ) {
 	this.fire( 'teardown' );
 
 	this._fragment.teardown( detach !== false );
@@ -1475,6 +1493,10 @@ var dispatchObservers = function dispatchObservers( component, group, newState, 
 			callback.__calling = false;
 		}
 	}
+}
+
+function setAttribute( node, attribute, value ) {
+	node.setAttribute ( attribute, value );
 }
 
 function createElement( name ) {
@@ -1528,7 +1550,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = sectionline;
 
-},{"lib/identifier-color":8,"lib/router-instance":9}],4:[function(require,module,exports){
+},{"lib/identifier-color":9,"lib/router-instance":10}],4:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -1650,7 +1672,7 @@ function renderEachBlock ( root, eachBlock_value, subsection, subsection__index,
 		},
 		
 		teardown: function ( detach ) {
-			sectionLine.teardown( detach );
+			sectionLine.destroy( detach );
 		}
 	};
 }
@@ -1681,27 +1703,26 @@ function rendersectionLineYieldFragment ( root, eachBlock_value, subsection, sub
 		},
 		
 		teardown: function ( detach ) {
-			paragraphs.teardown( detach );
+			paragraphs.destroy( detach );
 		}
 	};
 }
 
 function subsections ( options ) {
 	options = options || {};
-	
 	this._state = options.data || {};
-applyComputations( this._state, this._state, {}, true );
-
+	applyComputations( this._state, this._state, {}, true );
+	
 	this._observers = {
 		pre: Object.create( null ),
 		post: Object.create( null )
 	};
-
+	
 	this._handlers = Object.create( null );
-
+	
 	this._root = options._root;
 	this._yield = options._yield;
-
+	
 	this._torndown = false;
 	this._renderHooks = [];
 	
@@ -1781,7 +1802,7 @@ subsections.prototype._set = function _set ( newState ) {
 	this._flush();
 };
 
-subsections.prototype.teardown = function teardown ( detach ) {
+subsections.prototype.teardown = subsections.prototype.destroy = function destroy ( detach ) {
 	this.fire( 'teardown' );
 
 	this._fragment.teardown( detach !== false );
@@ -1857,7 +1878,270 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = subsections;
 
-},{"component/paragraphs.html":1,"component/section-line.html":3,"lib/combine-structure-and-verses":6}],5:[function(require,module,exports){
+},{"component/paragraphs.html":1,"component/section-line.html":3,"lib/combine-structure-and-verses":7}],5:[function(require,module,exports){
+'use strict';
+
+function applyComputations ( state, newState, oldState, isInitial ) {
+	if ( isInitial || ( 'querystringParameters' in newState && typeof state.querystringParameters === 'object' || state.querystringParameters !== oldState.querystringParameters ) ) {
+		state.sectionName = newState.sectionName = template.computed.sectionName( state.querystringParameters );
+	}
+}
+
+var template = (function () {
+const structure = require('lib/structure')
+
+return {
+	computed: {
+		sectionName: querystringParameters => {
+			if (!querystringParameters || !querystringParameters.chiasm) {
+				return null
+			}
+
+			const matchingSections = structure.filter(section => {
+				return section.identifier === querystringParameters.chiasm
+			}).map(section => section.title)
+
+			return matchingSections.length > 0
+				? matchingSections.join(' / ')
+				: null
+		}
+	}
+}
+}());
+
+function renderMainFragment ( root, component ) {
+	var ifBlock_anchor = createComment();
+	
+	function getBlock ( root ) {
+		if ( root.sectionName ) return renderIfBlock_0;
+		return null;
+	}
+	
+	var currentBlock = getBlock( root );
+	var ifBlock = currentBlock && currentBlock( root, component );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( ifBlock_anchor, target, anchor );
+			if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			var _currentBlock = currentBlock;
+			currentBlock = getBlock( root );
+			if ( _currentBlock === currentBlock && ifBlock) {
+				ifBlock.update( changed, root );
+			} else {
+				if ( ifBlock ) ifBlock.teardown( true );
+				ifBlock = currentBlock && currentBlock( root, component );
+				if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( ifBlock ) ifBlock.teardown( detach );
+			
+			if ( detach ) {
+				detachNode( ifBlock_anchor );
+			}
+		}
+	};
+}
+
+function renderIfBlock_0 ( root, component ) {
+	var text = createText( ": " );
+	var last_text1 = root.sectionName
+	var text1 = createText( last_text1 );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( text, target, anchor );
+			insertNode( text1, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			if ( ( __tmp = root.sectionName ) !== last_text1 ) {
+				text1.data = last_text1 = __tmp;
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( detach ) {
+				detachNode( text );
+				detachNode( text1 );
+			}
+		}
+	};
+}
+
+function title ( options ) {
+	options = options || {};
+	this._state = options.data || {};
+	applyComputations( this._state, this._state, {}, true );
+	
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+	
+	this._handlers = Object.create( null );
+	
+	this._root = options._root;
+	this._yield = options._yield;
+	
+	this._torndown = false;
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+}
+
+title.prototype.get = function get( key ) {
+ 	return key ? this._state[ key ] : this._state;
+ };
+
+title.prototype.fire = function fire( eventName, data ) {
+ 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
+ 	if ( !handlers ) return;
+ 
+ 	for ( var i = 0; i < handlers.length; i += 1 ) {
+ 		handlers[i].call( this, data );
+ 	}
+ };
+
+title.prototype.observe = function observe( key, callback, options ) {
+ 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
+ 
+ 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
+ 
+ 	if ( !options || options.init !== false ) {
+ 		callback.__calling = true;
+ 		callback.call( this, this._state[ key ] );
+ 		callback.__calling = false;
+ 	}
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = group[ key ].indexOf( callback );
+ 			if ( ~index ) group[ key ].splice( index, 1 );
+ 		}
+ 	};
+ };
+
+title.prototype.on = function on( eventName, handler ) {
+ 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
+ 	handlers.push( handler );
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = handlers.indexOf( handler );
+ 			if ( ~index ) handlers.splice( index, 1 );
+ 		}
+ 	};
+ };
+
+title.prototype.set = function set( newState ) {
+ 	this._set( newState );
+ 	( this._root || this )._flush();
+ };
+
+title.prototype._flush = function _flush() {
+ 	if ( !this._renderHooks ) return;
+ 
+ 	while ( this._renderHooks.length ) {
+ 		var hook = this._renderHooks.pop();
+ 		hook.fn.call( hook.context );
+ 	}
+ };
+
+title.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	applyComputations( this._state, newState, oldState, false )
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+};
+
+title.prototype.teardown = title.prototype.destroy = function destroy ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
+
+var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+function createText( data ) {
+	return document.createTextNode( data );
+}
+
+function insertNode( node, target, anchor ) {
+	target.insertBefore( node, anchor );
+}
+
+function detachNode( node ) {
+	node.parentNode.removeChild( node );
+}
+
+function createComment() {
+	return document.createComment( '' );
+}
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+module.exports = title;
+
+},{"lib/structure":13}],6:[function(require,module,exports){
 'use strict';
 
 var revelation = require('pickering-majority-text-revelation');
@@ -1865,10 +2149,11 @@ var revelation = require('pickering-majority-text-revelation');
 var combineStructureAndVerses = require('lib/combine-structure-and-verses');
 var structure = require('lib/structure');
 
-var makeMainView = require('./view');
+var Revelation = require('component/revelation.html');
+var Title = require('component/title.html');
 
 var _require = require('lib/router-instance'),
-    mountComponent = _require.mountComponent;
+    attachQuerystringData = _require.attachQuerystringData;
 
 var verses = revelation.versesNoteReferencesAndHeaders.map(function (chunk) {
 	return chunk.type === 'end paragraph' ? { type: 'paragraph break' } : chunk;
@@ -1886,11 +2171,18 @@ var structuredText = combineStructureAndVerses(structure, verses);
 
 console.log(structuredText);
 
-var component = makeMainView({ targetSelector: '#verses', structuredText: structuredText });
+attachQuerystringData(new Revelation({
+	target: document.querySelector('#verses'),
+	data: {
+		structuredText: structuredText
+	}
+}));
 
-mountComponent(component);
+attachQuerystringData(new Title({
+	target: document.querySelector('title')
+}));
 
-},{"./view":13,"lib/combine-structure-and-verses":6,"lib/router-instance":9,"lib/structure":12,"pickering-majority-text-revelation":17}],6:[function(require,module,exports){
+},{"component/revelation.html":2,"component/title.html":5,"lib/combine-structure-and-verses":7,"lib/router-instance":10,"lib/structure":13,"pickering-majority-text-revelation":17}],7:[function(require,module,exports){
 const oneToManyZip = require('one-to-many-array-zip')
 const withinRange = require('multi-part-range-compare')
 
@@ -1907,7 +2199,7 @@ function verseReference({ chapterNumber, verseNumber, sectionNumber }) {
 	return [ chapterNumber, verseNumber, sectionNumber ]
 }
 
-},{"multi-part-range-compare":15,"one-to-many-array-zip":16}],7:[function(require,module,exports){
+},{"multi-part-range-compare":15,"one-to-many-array-zip":16}],8:[function(require,module,exports){
 const withinRange = require('multi-part-range-compare')
 
 module.exports = function extractRangeFromVerses(verses, range) {
@@ -1938,7 +2230,7 @@ module.exports = function extractRangeFromVerses(verses, range) {
 	return matching
 }
 
-},{"multi-part-range-compare":15}],8:[function(require,module,exports){
+},{"multi-part-range-compare":15}],9:[function(require,module,exports){
 const chiasmColors = {
 	a: '#018d5d',
 	b: '#ba4460',
@@ -1959,12 +2251,12 @@ module.exports = function getChiasmColor(identifier) {
 	}
 }
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 const createRouterInstance = require('lib/router')
 
 module.exports = createRouterInstance()
 
-},{"lib/router":10}],10:[function(require,module,exports){
+},{"lib/router":11}],11:[function(require,module,exports){
 const Link = require('./link.html')
 const EventEmitter = require('eventemitter3')
 
@@ -2018,7 +2310,7 @@ module.exports = function createRouterInstance(
 
 			return linkComponent
 		},
-		mountComponent(component) {
+		attachQuerystringData(component) {
 			function navigateListener({ parameters }) {
 				component.set({
 					querystringParameters: parameters
@@ -2033,7 +2325,7 @@ module.exports = function createRouterInstance(
 	}
 }
 
-},{"./link.html":11,"eventemitter3":14}],11:[function(require,module,exports){
+},{"./link.html":12,"eventemitter3":14}],12:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -2212,20 +2504,19 @@ function renderIfBlock_0 ( root, component ) {
 
 function link ( options ) {
 	options = options || {};
-	
 	this._state = Object.assign( template.data(), options.data );
-applyComputations( this._state, this._state, {}, true );
-
+	applyComputations( this._state, this._state, {}, true );
+	
 	this._observers = {
 		pre: Object.create( null ),
 		post: Object.create( null )
 	};
-
+	
 	this._handlers = Object.create( null );
-
+	
 	this._root = options._root;
 	this._yield = options._yield;
-
+	
 	this._torndown = false;
 	
 	this._fragment = renderMainFragment( this._state, this );
@@ -2302,7 +2593,7 @@ link.prototype._set = function _set ( newState ) {
 	dispatchObservers( this, this._observers.post, newState, oldState );
 };
 
-link.prototype.teardown = function teardown ( detach ) {
+link.prototype.teardown = link.prototype.destroy = function destroy ( detach ) {
 	this.fire( 'teardown' );
 
 	this._fragment.teardown( detach !== false );
@@ -2388,12 +2679,16 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = link;
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
 const VERSE_SECTION_RANGE_MIN = 1
 const VERSE_SECTION_RANGE_MAX = 9999
 
-module.exports = [
+function pipe(input, ...fns) {
+	return fns.reduce((lastResult, fn) => fn(lastResult), input)
+}
+
+module.exports = pipe([
 	{
 		identifier: 'A',
 		title: 'Prologue',
@@ -2463,7 +2758,7 @@ module.exports = [
 		introduction: {
 			title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
 			range: r([ 12, 1 ], [ 12, 17 ]),
-			subsections: [
+			subsections: giveSectionsChiasmAnchors([
 				s('The Bride reflecting the glory of her husband', r([ 12, 1 ], [ 12, 1 ]), 'Ea'),
 				s('The Child of the woman', r([ 12, 2 ], [ 12, 2 ]), 'Eb'),
 				s('The Dragon tries to devour the Child', r([ 12, 3 ], [ 12, 5 ]), 'Ec'),
@@ -2475,7 +2770,7 @@ module.exports = [
 				s(`The Dragon's mouth & the earth swallows the serpents flood`, r([ 12, 15 ], [ 12, 16 ]), 'Ec'),
 				s('The rest of the offspring of the woman', r([ 12, 17, 1 ], [ 12, 17, 1 ]), 'Eb'),
 				s('The church reflecting the word of Christ', r([ 12, 17, 2 ], [ 12, 17 ]), 'Ea'),
-			]
+			])
 		},
 		subsections: [
 			s('The beast rising out of the sea', r([ 13, 1 ], [ 13, 10 ])),
@@ -2542,7 +2837,10 @@ module.exports = [
 		title: 'Epilogue: How to Read This Book',
 		range: r([ 22, 18 ], [ 22, 21 ])
 	}
-]
+],
+giveSectionsChiasmAnchors,
+giveSubsectionsAnchors,
+giveIntroductionsAnchors)
 
 function makeSubsections(...subsections) {
 	return subsections.map(({ title, range }, i) => {
@@ -2574,31 +2872,60 @@ function guaranteeRangeSection(range, defaultSection) {
 	}
 }
 
-},{}],13:[function(require,module,exports){
-'use strict';
+function giveSectionsChiasmAnchors(sections) {
+	const pivotIndex = Math.floor(sections.length / 2)
 
-var slugify = require('slugify');
+	return sections.map((section, index) => {
+		if (index === pivotIndex) {
+			return section
+		}
 
-var Revelation = require('component/revelation.html');
+		const primeAnchor = `${section.identifier}prime`
 
-function headerToSlug(header) {
-	return 'header-' + slugify(header.toLowerCase());
+		return Object.assign({
+			anchor: index < pivotIndex ? section.identifier : primeAnchor,
+			siblingAnchor: index < pivotIndex ? primeAnchor : section.identifier
+		}, section)
+	})
 }
 
-module.exports = function makeMainView(_ref) {
-	var targetSelector = _ref.targetSelector,
-	    structuredText = _ref.structuredText;
-
-	return new Revelation({
-		target: document.querySelector(targetSelector),
-		data: {
-			structuredText: structuredText,
-			currentChiasm: null
+function giveSubsectionsAnchors(sections) {
+	return sections.map(section => {
+		if (!section.subsections) {
+			return section
 		}
-	});
-};
 
-},{"component/revelation.html":2,"slugify":20}],14:[function(require,module,exports){
+		return Object.assign({}, section, {
+			subsections: section.subsections.map(subsection => {
+				if (!subsection.identifier) {
+					return subsection
+				}
+
+				return Object.assign({
+					anchor: `${section.anchor}-${subsection.identifier}`,
+					siblingAnchor: `${section.siblingAnchor}-${subsection.identifier}`
+				}, subsection)
+			})
+		})
+	})
+}
+
+function giveIntroductionsAnchors(sections) {
+	return sections.map(section => {
+		if (!section.introduction) {
+			return section
+		}
+
+		return Object.assign({}, section, {
+			introduction: Object.assign({
+				anchor: `${section.anchor}-introduction`,
+				siblingAnchor: `${section.siblingAnchor}-introduction`
+			}, section.introduction)
+		})
+	})
+}
+
+},{}],14:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -9478,112 +9805,4 @@ module.exports=[
 		"type": "end paragraph"
 	}
 ]
-},{}],20:[function(require,module,exports){
-
-;(function (name, root, factory) {
-  if (typeof exports === 'object') {
-    module.exports = factory()
-  }
-  /* istanbul ignore next */
-  else if (typeof define === 'function' && define.amd) {
-    define(factory)
-  }
-  else {
-    root[name] = factory()
-  }
-}('slugify', this, function () {
-  var charMap = {
-    // latin
-    'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'AE',
-    'Ç': 'C', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I',
-    'Î': 'I', 'Ï': 'I', 'Ð': 'D', 'Ñ': 'N', 'Ò': 'O', 'Ó': 'O', 'Ô': 'O',
-    'Õ': 'O', 'Ö': 'O', 'Ő': 'O', 'Ø': 'O', 'Ù': 'U', 'Ú': 'U', 'Û': 'U',
-    'Ü': 'U', 'Ű': 'U', 'Ý': 'Y', 'Þ': 'TH', 'ß': 'ss', 'à': 'a', 'á': 'a',
-    'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae', 'ç': 'c', 'è': 'e',
-    'é': 'e', 'ê': 'e', 'ë': 'e', 'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
-    'ð': 'd', 'ñ': 'n', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o',
-    'ő': 'o', 'ø': 'o', 'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u', 'ű': 'u',
-    'ý': 'y', 'þ': 'th', 'ÿ': 'y', 'ẞ': 'SS',
-    // greek
-    'α': 'a', 'β': 'b', 'γ': 'g', 'δ': 'd', 'ε': 'e', 'ζ': 'z', 'η': 'h', 'θ': '8',
-    'ι': 'i', 'κ': 'k', 'λ': 'l', 'μ': 'm', 'ν': 'n', 'ξ': '3', 'ο': 'o', 'π': 'p',
-    'ρ': 'r', 'σ': 's', 'τ': 't', 'υ': 'y', 'φ': 'f', 'χ': 'x', 'ψ': 'ps', 'ω': 'w',
-    'ά': 'a', 'έ': 'e', 'ί': 'i', 'ό': 'o', 'ύ': 'y', 'ή': 'h', 'ώ': 'w', 'ς': 's',
-    'ϊ': 'i', 'ΰ': 'y', 'ϋ': 'y', 'ΐ': 'i',
-    'Α': 'A', 'Β': 'B', 'Γ': 'G', 'Δ': 'D', 'Ε': 'E', 'Ζ': 'Z', 'Η': 'H', 'Θ': '8',
-    'Ι': 'I', 'Κ': 'K', 'Λ': 'L', 'Μ': 'M', 'Ν': 'N', 'Ξ': '3', 'Ο': 'O', 'Π': 'P',
-    'Ρ': 'R', 'Σ': 'S', 'Τ': 'T', 'Υ': 'Y', 'Φ': 'F', 'Χ': 'X', 'Ψ': 'PS', 'Ω': 'W',
-    'Ά': 'A', 'Έ': 'E', 'Ί': 'I', 'Ό': 'O', 'Ύ': 'Y', 'Ή': 'H', 'Ώ': 'W', 'Ϊ': 'I',
-    'Ϋ': 'Y',
-    // turkish
-    'ş': 's', 'Ş': 'S', 'ı': 'i', 'İ': 'I', 'ç': 'c', 'Ç': 'C', 'ü': 'u', 'Ü': 'U',
-    'ö': 'o', 'Ö': 'O', 'ğ': 'g', 'Ğ': 'G',
-    // russian
-    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
-    'з': 'z', 'и': 'i', 'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
-    'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'c',
-    'ч': 'ch', 'ш': 'sh', 'щ': 'sh', 'ъ': 'u', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu',
-    'я': 'ya',
-    'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'Yo', 'Ж': 'Zh',
-    'З': 'Z', 'И': 'I', 'Й': 'J', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O',
-    'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T', 'У': 'U', 'Ф': 'F', 'Х': 'H', 'Ц': 'C',
-    'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Sh', 'Ъ': 'U', 'Ы': 'Y', 'Ь': '', 'Э': 'E', 'Ю': 'Yu',
-    'Я': 'Ya',
-    // ukranian
-    'Є': 'Ye', 'І': 'I', 'Ї': 'Yi', 'Ґ': 'G', 'є': 'ye', 'і': 'i', 'ї': 'yi', 'ґ': 'g',
-    // czech
-    'č': 'c', 'ď': 'd', 'ě': 'e', 'ň': 'n', 'ř': 'r', 'š': 's', 'ť': 't', 'ů': 'u',
-    'ž': 'z', 'Č': 'C', 'Ď': 'D', 'Ě': 'E', 'Ň': 'N', 'Ř': 'R', 'Š': 'S', 'Ť': 'T',
-    'Ů': 'U', 'Ž': 'Z',
-    // polish
-    'ą': 'a', 'ć': 'c', 'ę': 'e', 'ł': 'l', 'ń': 'n', 'ó': 'o', 'ś': 's', 'ź': 'z',
-    'ż': 'z', 'Ą': 'A', 'Ć': 'C', 'Ę': 'e', 'Ł': 'L', 'Ń': 'N', 'Ś': 'S',
-    'Ź': 'Z', 'Ż': 'Z',
-    // latvian
-    'ā': 'a', 'č': 'c', 'ē': 'e', 'ģ': 'g', 'ī': 'i', 'ķ': 'k', 'ļ': 'l', 'ņ': 'n',
-    'š': 's', 'ū': 'u', 'ž': 'z', 'Ā': 'A', 'Č': 'C', 'Ē': 'E', 'Ģ': 'G', 'Ī': 'i',
-    'Ķ': 'k', 'Ļ': 'L', 'Ņ': 'N', 'Š': 'S', 'Ū': 'u', 'Ž': 'Z',
-    // currency
-    '€': 'euro', '₢': 'cruzeiro', '₣': 'french franc', '£': 'pound',
-    '₤': 'lira', '₥': 'mill', '₦': 'naira', '₧': 'peseta', '₨': 'rupee',
-    '₩': 'won', '₪': 'new shequel', '₫': 'dong', '₭': 'kip', '₮': 'tugrik',
-    '₯': 'drachma', '₰': 'penny', '₱': 'peso', '₲': 'guarani', '₳': 'austral',
-    '₴': 'hryvnia', '₵': 'cedi', '¢': 'cent', '¥': 'yen', '元': 'yuan',
-    '円': 'yen', '﷼': 'rial', '₠': 'ecu', '¤': 'currency', '฿': 'baht',
-    '$': 'dollar',
-    // symbols
-    '©': '(c)', 'œ': 'oe', 'Œ': 'OE', '∑': 'sum', '®': '(r)', '†': '+',
-    '“': '"', '”': '"', '‘': "'", '’': "'", '∂': 'd', 'ƒ': 'f', '™': 'tm',
-    '℠': 'sm', '…': '...', '˚': 'o', 'º': 'o', 'ª': 'a', '•': '*',
-    '∆': 'delta', '∞': 'infinity', '♥': 'love', '&': 'and', '|': 'or',
-    '<': 'less', '>': 'greater'
-  }
-
-  function replace (string, replacement) {
-    return string.split('').reduce(function (result, ch) {
-      if (charMap[ch]) {
-        ch = charMap[ch]
-      }
-      // allowed
-      ch = ch.replace(/[^\w\s$*_+~.()'"!\-:@]/g, '')
-      result += ch
-      return result
-    }, '')
-      // trim leading/trailing spaces
-      .replace(/^\s+|\s+$/g, '')
-      // convert spaces
-      .replace(/[-\s]+/g, replacement || '-')
-      // remove trailing separator
-      .replace('#{replacement}$', '')
-  }
-
-  replace.extend = function (customMap) {
-    for (var key in customMap) {
-      charMap[key] = customMap[key]
-    }
-  }
-
-  return replace
-}))
-
-},{}]},{},[5]);
+},{}]},{},[6]);
