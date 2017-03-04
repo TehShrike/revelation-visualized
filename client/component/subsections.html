@@ -8,6 +8,7 @@
 	anchor="{{subsection.anchor}}"
 	siblingAnchor="{{subsection.siblingAnchor}}"
 	siblingIsDown="{{subsection.siblingIsDown}}"
+	visible="{{subsectionIsVisible(subsection)}}"
 >
 	<Paragraphs
 		verses="{{subsection.verses}}"
@@ -27,17 +28,10 @@ export default {
 		SectionLine
 	},
 	computed: {
-		subsectionsWithVerses(subsections, verses, currentSubsection) {
-			const displaySubsections = combineStructureAndVerses(subsections, verses)
-
-			if (currentSubsection) {
-				return displaySubsections.filter(subsection => {
-					return subsection.identifier === currentSubsection
-				})
-			}
-
-			return displaySubsections
-		}
+		subsectionIsVisible: currentSubsection => {
+			return subsection => !currentSubsection || subsection.identifier === currentSubsection
+		},
+		subsectionsWithVerses: (subsections, verses) => combineStructureAndVerses(subsections, verses)
 	}
 }
 </script>

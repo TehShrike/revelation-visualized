@@ -1,5 +1,5 @@
 {{#if anchor}}<a id="{{anchor}}"></a>{{/if}}
-<div class="section-line" data-zoomed-in="{{zoomedIn}}">
+<div class="section-line" data-zoomed-in="{{zoomedIn}}" data-visible="{{visible}}">
 	{{#if sectionIdentifier && showColorBar}}
 	<Link
 		className="color-bar paragraph-margin"
@@ -35,6 +35,11 @@
 .sibling-link {
 	text-decoration: none;
 }
+
+[data-visible=false] {
+	display: none;
+}
+
 </style>
 
 <script>
@@ -49,6 +54,7 @@ export default {
 			sectionIdentifier: null,
 			zoomedIn: false,
 			showColorBar: true,
+			visible: true,
 		}
 	},
 	components: {

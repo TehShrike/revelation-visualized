@@ -6,7 +6,7 @@ const structure = require('lib/structure')
 const Revelation = require('component/revelation.html')
 const Title = require('component/title.html')
 
-const { attachQuerystringData } = require('lib/router-instance')
+const router = require('lib/router-instance')
 
 const verses = revelation.versesNoteReferencesAndHeaders
 .map(chunk => {
@@ -25,13 +25,17 @@ const structuredText = combineStructureAndVerses(structure, verses)
 
 console.log(structuredText)
 
-attachQuerystringData(new Revelation({
+router.attachQuerystringData(new Revelation({
 	target: document.querySelector('#verses'),
 	data: {
 		structuredText
 	}
 }))
 
-attachQuerystringData(new Title({
+router.attachQuerystringData(new Title({
 	target: document.querySelector('title')
 }))
+
+router.on('after navigate', ({ element }) => {
+	console.log('navigated because', element)
+})

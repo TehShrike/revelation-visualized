@@ -45,8 +45,16 @@ module.exports = function createRouterInstance(
 
 			linkComponent.on('navigate', ({ querystring, parameters }) => {
 				current = { querystring, parameters }
+
 				emitter.emit('navigate', { querystring, parameters })
+
 				pushState(parameters, '', querystring)
+
+				emitter.emit('after navigate', {
+					querystring,
+					parameters,
+					element: linkComponent.refs.link
+				})
 			})
 
 			return linkComponent
@@ -62,6 +70,14 @@ module.exports = function createRouterInstance(
 			component.set({
 				querystringParameters: current.parameters
 			})
+		},
+		on(event, listener) {
+			emitter.on(event, listener)
+			return () => emitter.removeListener(event, listener)
+		},
+		once(event, listener) {
+			emitter.once(event, listener)
+			return () => emitter.removeListener(event, listener)
 		}
 	}
 }

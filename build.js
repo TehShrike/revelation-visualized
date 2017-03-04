@@ -488,7 +488,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-1151957278][data-chiasm-selected=true] [data-is-selected=false], [svelte-1151957278] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-1151957278][data-chiasm-selected=true] [data-is-selected=true], [svelte-1151957278] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-1151957278][data-chiasm-selected=true] .chiasm-color-bar, [svelte-1151957278] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
+	style.textContent = "\n[svelte-2132924350][data-chiasm-selected=true] [data-is-selected=false], [svelte-2132924350] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2132924350][data-chiasm-selected=true] [data-is-selected=true], [svelte-2132924350] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-2132924350][data-chiasm-selected=true] .chiasm-color-bar, [svelte-2132924350] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -496,9 +496,10 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-1151957278', '' );
+	setAttribute( div, 'svelte-2132924350', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
+	component.refs.main = div;
 	
 	var eachBlock_anchor = createComment();
 	appendNode( eachBlock_anchor, div );
@@ -540,6 +541,8 @@ function renderMainFragment ( root, component ) {
 		},
 		
 		teardown: function ( detach ) {
+			if ( component.refs.main === div ) component.refs.main = null;
+			
 			teardownEach( eachBlock_iterations, false );
 			
 			if ( detach ) {
@@ -551,7 +554,7 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-1151957278', '' );
+	setAttribute( div, 'svelte-2132924350', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
@@ -570,7 +573,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-1151957278', '' );
+	setAttribute( div1, 'svelte-2132924350', '' );
 	div1.className = "section-body";
 	
 	appendNode( div1, div );
@@ -979,7 +982,7 @@ function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-1151957278', '' );
+	setAttribute( h1, 'svelte-2132924350', '' );
 	h1.style.cssText = "color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -1011,6 +1014,7 @@ function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, ou
 
 function revelation ( options ) {
 	options = options || {};
+	this.refs = {};
 	this._state = options.data || {};
 	applyComputations( this._state, this._state, {}, true );
 	
@@ -1217,6 +1221,7 @@ return {
 			sectionIdentifier: null,
 			zoomedIn: false,
 			showColorBar: true,
+			visible: true,
 		}
 	},
 	components: {
@@ -1238,7 +1243,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-3807038121][data-zoomed-in=true] .color-bar, [svelte-3807038121] [data-zoomed-in=true] .color-bar {\n\topacity: 0.5;\n}\n\n[svelte-3807038121].sibling-link, [svelte-3807038121] .sibling-link {\n\ttext-decoration: none;\n}\n";
+	style.textContent = "\n[svelte-354506213][data-zoomed-in=true] .color-bar, [svelte-354506213] [data-zoomed-in=true] .color-bar {\n\topacity: 0.5;\n}\n\n[svelte-354506213].sibling-link, [svelte-354506213] .sibling-link {\n\ttext-decoration: none;\n}\n\n[svelte-354506213][data-visible=false], [svelte-354506213] [data-visible=false] {\n\tdisplay: none;\n}\n\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -1258,10 +1263,12 @@ function renderMainFragment ( root, component ) {
 	var text = createText( "\n" );
 	
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-3807038121', '' );
+	setAttribute( div, 'svelte-354506213', '' );
 	div.className = "section-line";
 	var last_div_data_zoomed_in = root.zoomedIn;
 	setAttribute( div, 'data-zoomed-in', last_div_data_zoomed_in );
+	var last_div_data_visible = root.visible;
+	setAttribute( div, 'data-visible', last_div_data_visible );
 	
 	var ifBlock1_anchor = createComment();
 	appendNode( ifBlock1_anchor, div );
@@ -1278,7 +1285,7 @@ function renderMainFragment ( root, component ) {
 	appendNode( createText( "\n\n\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-3807038121', '' );
+	setAttribute( div1, 'svelte-354506213', '' );
 	div1.className = "section-text";
 	
 	appendNode( div1, div );
@@ -1287,7 +1294,7 @@ function renderMainFragment ( root, component ) {
 	appendNode( createText( "\n\t" ), div );
 	
 	var div2 = createElement( 'div' );
-	setAttribute( div2, 'svelte-3807038121', '' );
+	setAttribute( div2, 'svelte-354506213', '' );
 	div2.className = "section-description " + ( root.descriptionClass );
 	
 	appendNode( div2, div );
@@ -1335,6 +1342,11 @@ function renderMainFragment ( root, component ) {
 				setAttribute( div, 'data-zoomed-in', last_div_data_zoomed_in );
 			}
 			
+			if ( ( __tmp = root.visible ) !== last_div_data_visible ) {
+				last_div_data_visible = __tmp;
+				setAttribute( div, 'data-visible', last_div_data_visible );
+			}
+			
 			var _currentBlock1 = currentBlock1;
 			currentBlock1 = getBlock1( root );
 			if ( _currentBlock1 === currentBlock1 && ifBlock1) {
@@ -1379,7 +1391,7 @@ function renderMainFragment ( root, component ) {
 
 function renderIfBlock2_0 ( root, component ) {
 	var a = createElement( 'a' );
-	setAttribute( a, 'svelte-3807038121', '' );
+	setAttribute( a, 'svelte-354506213', '' );
 	a.href = "#" + ( root.siblingAnchor );
 	a.className = "sibling-link";
 	
@@ -1465,7 +1477,7 @@ function renderIfBlock3_0 ( root, component ) {
 
 function renderIfBlock1_1 ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-3807038121', '' );
+	setAttribute( div, 'svelte-354506213', '' );
 	div.className = "color-bar paragraph-margin";
 
 	return {
@@ -1519,7 +1531,7 @@ function renderIfBlock1_0 ( root, component ) {
 
 function renderIfBlock_0 ( root, component ) {
 	var a = createElement( 'a' );
-	setAttribute( a, 'svelte-3807038121', '' );
+	setAttribute( a, 'svelte-354506213', '' );
 	var last_a_id = root.anchor;
 	a.id = last_a_id;
 
@@ -1732,8 +1744,12 @@ module.exports = sectionline;
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
-	if ( isInitial || ( 'subsections' in newState && typeof state.subsections === 'object' || state.subsections !== oldState.subsections ) || ( 'verses' in newState && typeof state.verses === 'object' || state.verses !== oldState.verses ) || ( 'currentSubsection' in newState && typeof state.currentSubsection === 'object' || state.currentSubsection !== oldState.currentSubsection ) ) {
-		state.subsectionsWithVerses = newState.subsectionsWithVerses = template.computed.subsectionsWithVerses( state.subsections, state.verses, state.currentSubsection );
+	if ( isInitial || ( 'currentSubsection' in newState && typeof state.currentSubsection === 'object' || state.currentSubsection !== oldState.currentSubsection ) ) {
+		state.subsectionIsVisible = newState.subsectionIsVisible = template.computed.subsectionIsVisible( state.currentSubsection );
+	}
+	
+	if ( isInitial || ( 'subsections' in newState && typeof state.subsections === 'object' || state.subsections !== oldState.subsections ) || ( 'verses' in newState && typeof state.verses === 'object' || state.verses !== oldState.verses ) ) {
+		state.subsectionsWithVerses = newState.subsectionsWithVerses = template.computed.subsectionsWithVerses( state.subsections, state.verses );
 	}
 }
 
@@ -1749,17 +1765,10 @@ return {
 		SectionLine
 	},
 	computed: {
-		subsectionsWithVerses(subsections, verses, currentSubsection) {
-			const displaySubsections = combineStructureAndVerses(subsections, verses)
-
-			if (currentSubsection) {
-				return displaySubsections.filter(subsection => {
-					return subsection.identifier === currentSubsection
-				})
-			}
-
-			return displaySubsections
-		}
+		subsectionIsVisible: currentSubsection => {
+			return subsection => !currentSubsection || subsection.identifier === currentSubsection
+		},
+		subsectionsWithVerses: (subsections, verses) => combineStructureAndVerses(subsections, verses)
 	}
 }
 }());
@@ -1822,7 +1831,8 @@ function renderEachBlock ( root, eachBlock_value, subsection, subsection__index,
 		showColorBar: root.showColorBar,
 		anchor: subsection.anchor,
 		siblingAnchor: subsection.siblingAnchor,
-		siblingIsDown: subsection.siblingIsDown
+		siblingIsDown: subsection.siblingIsDown,
+		visible: root.subsectionIsVisible(subsection)
 	};
 	var sectionLine = new template.components.SectionLine({
 		target: null,
@@ -1851,6 +1861,7 @@ function renderEachBlock ( root, eachBlock_value, subsection, subsection__index,
 			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.anchor = subsection.anchor;
 			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.siblingAnchor = subsection.siblingAnchor;
 			if ( 'subsectionsWithVerses' in changed ) sectionLine_changes.siblingIsDown = subsection.siblingIsDown;
+			if ( 'subsectionIsVisible' in changed||'subsectionsWithVerses' in changed ) sectionLine_changes.visible = root.subsectionIsVisible(subsection);
 			
 			if ( Object.keys( sectionLine_changes ).length ) sectionLine.set( sectionLine_changes );
 		},
@@ -2336,8 +2347,7 @@ var structure = require('lib/structure');
 var Revelation = require('component/revelation.html');
 var Title = require('component/title.html');
 
-var _require = require('lib/router-instance'),
-    attachQuerystringData = _require.attachQuerystringData;
+var router = require('lib/router-instance');
 
 var verses = revelation.versesNoteReferencesAndHeaders.map(function (chunk) {
 	return chunk.type === 'end paragraph' ? { type: 'paragraph break' } : chunk;
@@ -2355,16 +2365,25 @@ var structuredText = combineStructureAndVerses(structure, verses);
 
 console.log(structuredText);
 
-attachQuerystringData(new Revelation({
+var revelationComponent = new Revelation({
 	target: document.querySelector('#verses'),
 	data: {
 		structuredText: structuredText
 	}
-}));
+});
+router.attachQuerystringData(revelationComponent);
 
-attachQuerystringData(new Title({
+router.attachQuerystringData(new Title({
 	target: document.querySelector('title')
 }));
+
+router.on('after navigate', function (_ref) {
+	var element = _ref.element;
+
+	console.log('navigated because', element);
+});
+
+console.log(revelationComponent);
 
 },{"component/revelation.html":2,"component/title.html":5,"lib/combine-structure-and-verses":7,"lib/router-instance":10,"lib/structure":13,"pickering-majority-text-revelation":17}],7:[function(require,module,exports){
 const oneToManyZip = require('one-to-many-array-zip')
@@ -2486,10 +2505,11 @@ module.exports = function createRouterInstance(
 		Link: function linkProxy(options) {
 			const linkComponent = new Link(options)
 
-			linkComponent.on('navigate', ({ querystring, parameters }) => {
+			linkComponent.on('navigate', ({ querystring, parameters, element }) => {
 				current = { querystring, parameters }
 				emitter.emit('navigate', { querystring, parameters })
 				pushState(parameters, '', querystring)
+				emitter.emit('after navigate', { querystring, parameters, element })
 			})
 
 			return linkComponent
@@ -2505,6 +2525,14 @@ module.exports = function createRouterInstance(
 			component.set({
 				querystringParameters: current.parameters
 			})
+		},
+		on(event, listener) {
+			emitter.on(event, listener)
+			return () => emitter.removeListener(event, listener)
+		},
+		once(event, listener) {
+			emitter.once(event, listener)
+			return () => emitter.removeListener(event, listener)
 		}
 	}
 }
@@ -2544,7 +2572,8 @@ return {
 
 			this.fire('navigate', {
 				querystring: this.get('querystring'),
-				parameters: this.get('parameters')
+				parameters: this.get('parameters'),
+				element: event.target
 			})
 		}
 	}
