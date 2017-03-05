@@ -97,7 +97,7 @@ module.exports = pipe([
 			s('The seven angels', r([ 14, 6 ], [ 14, 13 ])),
 			s('The positive reaping of wheat', r([ 14, 14 ], [ 14, 16 ])),
 			s('The negative reaping of grapes', r([ 14, 17 ], [ 14, 20 ])),
-			s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations (15:1-4)', r([ 15, 1 ], [ 15, 1 ])),
+			s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations', r([ 15, 1 ], [ 15, 1 ])),
 		]
 	}, {
 		identifier: 'D',
@@ -114,7 +114,7 @@ module.exports = pipe([
 			s('Bowl 4 - On the sun', r([ 16, 8 ], [ 16, 9 ])),
 			s('Bowl 5 - On the throne of the beast', r([ 16, 10 ], [ 16, 11 ])),
 			s('Bowl 6 - On the Euphrates', r([ 16, 12 ], [ 16, 16 ])),
-			s('Bowl 7 - On the air – note that this 7th bowl seems to introduce all of the next septet (cf. 16:17-21)', r([ 16, 17 ], [ 16, 17 ]))
+			s('Bowl 7 - On the air – note that this 7th bowl seems to introduce all of the next septet', r([ 16, 17 ], [ 16, 17 ]))
 		)
 	}, {
 		identifier: 'C',
