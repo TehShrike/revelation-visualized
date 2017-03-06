@@ -122,7 +122,7 @@ module.exports = pipe([
 		range: r([ 17, 1 ], [ 19, 10 ]),
 		introduction: {
 			title: 'Introduction to the seven condemnations – Even with Roman support, Jerusalem is no match for Christ',
-			range: r([ 16, 17 ], [ 16, 21 ])
+			range: r([ 16, 18 ], [ 16, 21 ])
 		},
 		subsections: makeSubsections(
 			s('Blasphemy of the Harlot', r([ 17, 1 ], [ 17, 6 ])),
