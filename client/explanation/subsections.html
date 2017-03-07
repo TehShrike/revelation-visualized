@@ -20,7 +20,9 @@
 					style="background-color: {{getColor('introduction')}}"
 				>
 				</span>
-				<strong class="subsection-label">Intro. </strong>
+				<strong class="subsection-label">
+					<a href="./#{{section.introduction.anchor}}">Intro.</a>
+				</strong>
 				{{section.introduction.title}} <small><VerseRange range="{{section.introduction.range}}" /></small>
 			</li>
 			{{/if}}
@@ -33,7 +35,11 @@
 					style="background-color: {{subsection.identifier ? getColor(subsection.identifier) : 'inherit'}}"
 				>
 				</span>
-				<strong class="subsection-label">{{septetLabel(subsection.identifier)}}. </strong>
+				<strong class="subsection-label">
+					<a href="./#{{subsection.anchor}}">
+						{{septetLabel(subsection.identifier)}}.
+					</a>
+				</strong>
 				{{subsection.title}} <small><VerseRange range="{{subsection.range}}" /></small>
 			</li>
 			{{/each}}

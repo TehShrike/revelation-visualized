@@ -1228,7 +1228,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = revelation;
 
-},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/extract-range-from-verses":9,"lib/identifier-color":10,"lib/router-instance":12}],3:[function(require,module,exports){
+},{"component/paragraphs.html":1,"component/section-line.html":3,"component/subsections.html":4,"lib/extract-range-from-verses":10,"lib/identifier-color":11,"lib/router-instance":13}],3:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -1809,7 +1809,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = sectionline;
 
-},{"component/verse-range.html":6,"lib/identifier-color":10,"lib/router-instance":12}],4:[function(require,module,exports){
+},{"component/verse-range.html":6,"lib/identifier-color":11,"lib/router-instance":13}],4:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -2361,7 +2361,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = title;
 
-},{"lib/structure":15}],6:[function(require,module,exports){
+},{"lib/structure":16}],6:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -2380,9 +2380,7 @@ function applyComputations ( state, newState, oldState, isInitial ) {
 
 var template = (function () {
 
-// copied from structure.js.  Shame, shame...
-const VERSE_SECTION_RANGE_MIN = 1
-const VERSE_SECTION_RANGE_MAX = 9999
+const { VERSE_SECTION_RANGE_MIN, VERSE_SECTION_RANGE_MAX } = require('lib/constants')
 
 const verseSectionFriendlyNames = ['a', 'b', 'c', 'd', 'e']
 function friendlyName(sectionNumber) {
@@ -2434,7 +2432,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-3020860973].verse-range, [svelte-3020860973] .verse-range {\n\twhite-space: nowrap;\n}\n";
+	style.textContent = "\n[svelte-2315928459].verse-range, [svelte-2315928459] .verse-range {\n\twhite-space: nowrap;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -2442,7 +2440,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var span = createElement( 'span' );
-	setAttribute( span, 'svelte-3020860973', '' );
+	setAttribute( span, 'svelte-2315928459', '' );
 	span.className = "verse-range";
 	
 	var last_text = root.readableRange
@@ -2619,7 +2617,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = verserange;
 
-},{}],7:[function(require,module,exports){
+},{"lib/constants":9}],7:[function(require,module,exports){
 'use strict';
 
 var revelation = require('pickering-majority-text-revelation');
@@ -2662,7 +2660,7 @@ router.attachQuerystringData(new Title({
 
 positionPreserver(router);
 
-},{"component/revelation.html":2,"component/title.html":5,"lib/combine-structure-and-verses":8,"lib/position-preserver":11,"lib/router-instance":12,"lib/structure":15,"pickering-majority-text-revelation":19}],8:[function(require,module,exports){
+},{"component/revelation.html":2,"component/title.html":5,"lib/combine-structure-and-verses":8,"lib/position-preserver":12,"lib/router-instance":13,"lib/structure":16,"pickering-majority-text-revelation":20}],8:[function(require,module,exports){
 const oneToManyZip = require('one-to-many-array-zip')
 const withinRange = require('multi-part-range-compare')
 
@@ -2679,7 +2677,13 @@ function verseReference({ chapterNumber, verseNumber, sectionNumber }) {
 	return [ chapterNumber, verseNumber, sectionNumber ]
 }
 
-},{"multi-part-range-compare":17,"one-to-many-array-zip":18}],9:[function(require,module,exports){
+},{"multi-part-range-compare":18,"one-to-many-array-zip":19}],9:[function(require,module,exports){
+module.exports.VERSE_SECTION_RANGE_MIN = 1
+module.exports.VERSE_SECTION_RANGE_MAX = 9999
+
+module.exports.MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH = 3
+
+},{}],10:[function(require,module,exports){
 const withinRange = require('multi-part-range-compare')
 
 module.exports = function extractRangeFromVerses(verses, range) {
@@ -2710,7 +2714,9 @@ module.exports = function extractRangeFromVerses(verses, range) {
 	return matching
 }
 
-},{"multi-part-range-compare":17}],10:[function(require,module,exports){
+},{"multi-part-range-compare":18}],11:[function(require,module,exports){
+const { MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH } = require('lib/constants')
+
 const chiasmColors = {
 	a: '#018d5d',
 	b: '#ba4460',
@@ -2722,10 +2728,8 @@ const chiasmColors = {
 	introduction: '#7d7d7d'
 }
 
-const minimumMeaningfulIdentifierLength = 3
-
 module.exports = function getChiasmColor(identifier) {
-	if (identifier.length < minimumMeaningfulIdentifierLength) {
+	if (identifier.length < MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH) {
 		const key = identifier[identifier.length - 1].toLowerCase()
 		return chiasmColors[key]
 	} else {
@@ -2733,7 +2737,7 @@ module.exports = function getChiasmColor(identifier) {
 	}
 }
 
-},{}],11:[function(require,module,exports){
+},{"lib/constants":9}],12:[function(require,module,exports){
 (function (global){
 // Heavily inspired by https://github.com/vvo/in-viewport/blob/f1bd60ba41bbaccff22ea7e9232dacbef260340b/in-viewport.js#L132-L173
 
@@ -2784,12 +2788,12 @@ function defaultOptions() {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 const createRouterInstance = require('lib/router')
 
 module.exports = createRouterInstance()
 
-},{"lib/router":13}],13:[function(require,module,exports){
+},{"lib/router":14}],14:[function(require,module,exports){
 const Link = require('./link.html')
 const EventEmitter = require('eventemitter3')
 
@@ -2880,7 +2884,7 @@ module.exports = function createRouterInstance(
 	}
 }
 
-},{"./link.html":14,"eventemitter3":16}],14:[function(require,module,exports){
+},{"./link.html":15,"eventemitter3":17}],15:[function(require,module,exports){
 'use strict';
 
 function applyComputations ( state, newState, oldState, isInitial ) {
@@ -3215,10 +3219,13 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = link;
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
-const VERSE_SECTION_RANGE_MIN = 1
-const VERSE_SECTION_RANGE_MAX = 9999
+const {
+	VERSE_SECTION_RANGE_MIN,
+	VERSE_SECTION_RANGE_MAX,
+	MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH
+} = require('lib/constants')
 
 function pipe(input, ...fns) {
 	return fns.reduce((lastResult, fn) => fn(lastResult), input)
@@ -3264,7 +3271,7 @@ module.exports = pipe([
 			s('Seal 4 - the yellowish-green horse', r([ 6, 7 ], [ 6, 8 ]), 'd'),
 			s('Seal 5 - the souls under the altar', r([ 6, 9 ], [ 6, 11 ]), 'e'),
 			s('Seal 6 - the earthquake', r([ 6, 12 ], [ 6, 17 ]), 'f'),
-			s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([ 7, 1 ], [ 7, 17 ])),
+			s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([ 7, 1 ], [ 7, 17 ]), 'interlude'),
 			s('Seal 7 - introduces the seven trumpets and seems to comprise all of the third septet', r([ 8, 1 ], [ 8, 1 ]), 'g')
 		]
 	}, {
@@ -3283,7 +3290,7 @@ module.exports = pipe([
 			s('Trumpet 4 - The heavenly bodies are dimmed', r([ 8, 12 ], [ 8, 13 ]), 'd'),
 			s('Trumpet 5 - Demons released from the pit', r([ 9, 1 ], [ 9, 12 ]), 'e'),
 			s('Trumpet 6 - Demons released from Euphrates', r([ 9, 13 ], [ 9, 21 ]), 'f'),
-			s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([ 10, 1 ], [ 11, 14 ])),
+			s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([ 10, 1 ], [ 11, 14 ]), 'interlude'),
 			s('Trumpet 7 - The seventh trumpet seems to comprise all of the fourth septet', r([ 11, 15 ], [ 11, 19 ]), 'g'),
 		]
 	}, {
@@ -3448,6 +3455,10 @@ function giveSubsectionsAnchors(sections) {
 			subsections: section.subsections.map(subsection => {
 				if (!subsection.identifier) {
 					return subsection
+				} else if (subsection.identifier === 'interlude') {
+					return Object.assign({
+						anchor: `${section.anchor}-${subsection.identifier}`
+					}, subsection)
 				}
 
 				return Object.assign({
@@ -3476,7 +3487,7 @@ function giveIntroductionsAnchors(sections) {
 	})
 }
 
-},{}],16:[function(require,module,exports){
+},{"lib/constants":9}],17:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -3789,7 +3800,7 @@ if ('undefined' !== typeof module) {
   module.exports = EventEmitter;
 }
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 
 const LESS_THAN = -1
 const WITHIN = 0
@@ -3840,7 +3851,7 @@ withinRange.GREATER_THAN_END = GREATER_THAN
 
 withinRange.relative = relative
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 module.exports = function oneToManyZip(oneArray, manyArray, compareFn) {
@@ -3877,7 +3888,7 @@ function assert(value, message) {
 	}
 }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 var versesNoteReferencesAndHeaders = require('./verses-note-references-and-headers.json')
 var notes = require('./notes.json')
 
@@ -3886,7 +3897,7 @@ module.exports = {
 	notes: notes
 }
 
-},{"./notes.json":20,"./verses-note-references-and-headers.json":21}],20:[function(require,module,exports){
+},{"./notes.json":21,"./verses-note-references-and-headers.json":22}],21:[function(require,module,exports){
 module.exports={
 	"1": "Both the translation and the comments are the responsibility of Wilbur N. Pickering, ThM PhD, ©, being based on his edition of the Greek New Testament, according to the only significant line of transmission, both ancient and independent, that has a demonstrable archetypal form in all 27 books. The Greek Text of which this is a translation, and articles explaining the preference, may be downloaded free from  www.prunch.org.",
 	"2": "Whose, the Father’s or the Son’s? Probably the Son’s, but in practice it makes little or no difference. Yes, the Text says “slaves”, so this book is not intended for the merely curious.",
@@ -4176,7 +4187,7 @@ module.exports={
 	"286": "“Words”, plural, includes the individual words that make up the whole. Those textual critics who have wantonly removed words from the Text, on the basis of satanically inspired presuppositions, are out. Those who interpret the Text in such a way as to avoid its plain meaning, likewise. Jehovah the Son affirms that the words are “true and  faithful ”, and He expects us to interpret them that way.",
 	"287": "“The Lord Jesus Christ” is now the full name or title of Jehovah the Son."
 }
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports=[
 	{
 		"type": "note reference",

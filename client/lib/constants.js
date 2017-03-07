@@ -1,0 +1,4 @@
+module.exports.VERSE_SECTION_RANGE_MIN = 1
+module.exports.VERSE_SECTION_RANGE_MAX = 9999
+
+module.exports.MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH = 3

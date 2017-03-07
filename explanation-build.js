@@ -17,9 +17,7 @@ function applyComputations ( state, newState, oldState, isInitial ) {
 
 var template = (function () {
 
-// copied from structure.js.  Shame, shame...
-const VERSE_SECTION_RANGE_MIN = 1
-const VERSE_SECTION_RANGE_MAX = 9999
+const { VERSE_SECTION_RANGE_MIN, VERSE_SECTION_RANGE_MAX } = require('lib/constants')
 
 const verseSectionFriendlyNames = ['a', 'b', 'c', 'd', 'e']
 function friendlyName(sectionNumber) {
@@ -71,7 +69,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-3020860973].verse-range, [svelte-3020860973] .verse-range {\n\twhite-space: nowrap;\n}\n";
+	style.textContent = "\n[svelte-2315928459].verse-range, [svelte-2315928459] .verse-range {\n\twhite-space: nowrap;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -79,7 +77,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var span = createElement( 'span' );
-	setAttribute( span, 'svelte-3020860973', '' );
+	setAttribute( span, 'svelte-2315928459', '' );
 	span.className = "verse-range";
 	
 	var last_text = root.readableRange
@@ -256,7 +254,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = verserange;
 
-},{}],2:[function(require,module,exports){
+},{"lib/constants":6}],2:[function(require,module,exports){
 'use strict';
 
 var Outline = require('./explanation/outline.html');
@@ -598,7 +596,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = innerchiasm;
 
-},{"component/verse-range.html":1,"lib/identifier-color":6,"lib/structure":7}],4:[function(require,module,exports){
+},{"component/verse-range.html":1,"lib/identifier-color":7,"lib/structure":8}],4:[function(require,module,exports){
 'use strict';
 
 var template = (function () {
@@ -918,7 +916,7 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = outline;
 
-},{"component/verse-range.html":1,"lib/identifier-color":6,"lib/structure":7}],5:[function(require,module,exports){
+},{"component/verse-range.html":1,"lib/identifier-color":7,"lib/structure":8}],5:[function(require,module,exports){
 'use strict';
 
 var template = (function () {
@@ -958,7 +956,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-800127266].subsection-label, [svelte-800127266] .subsection-label {\n\tmin-width: 5em;\n\tdisplay: inline-block;\n}\n[svelte-800127266].section-label, [svelte-800127266] .section-label {\n\tfont-size: larger;\n}\n";
+	style.textContent = "\n[svelte-2353846945].subsection-label, [svelte-2353846945] .subsection-label {\n\tmin-width: 5em;\n\tdisplay: inline-block;\n}\n[svelte-2353846945].section-label, [svelte-2353846945] .section-label {\n\tfont-size: larger;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -966,7 +964,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var ol = createElement( 'ol' );
-	setAttribute( ol, 'svelte-800127266', '' );
+	setAttribute( ol, 'svelte-2353846945', '' );
 	
 	var eachBlock_anchor = createComment();
 	appendNode( eachBlock_anchor, ol );
@@ -1014,10 +1012,10 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, section, section__index, component ) {
 	var li = createElement( 'li' );
-	setAttribute( li, 'svelte-800127266', '' );
+	setAttribute( li, 'svelte-2353846945', '' );
 	
 	var strong = createElement( 'strong' );
-	setAttribute( strong, 'svelte-800127266', '' );
+	setAttribute( strong, 'svelte-2353846945', '' );
 	strong.className = "section-label";
 	
 	appendNode( strong, li );
@@ -1027,7 +1025,7 @@ function renderEachBlock ( root, eachBlock_value, section, section__index, compo
 	appendNode( createText( "\n\t\t" ), li );
 	
 	var ol = createElement( 'ol' );
-	setAttribute( ol, 'svelte-800127266', '' );
+	setAttribute( ol, 'svelte-2353846945', '' );
 	
 	appendNode( ol, li );
 	var ifBlock_anchor = createComment();
@@ -1173,10 +1171,10 @@ function renderIfBlock2_0 ( root, eachBlock_value, section, section__index, comp
 
 function renderEachBlock1 ( root, eachBlock_value, section, section__index, eachBlock1_value, subsection, subsection__index, component ) {
 	var li = createElement( 'li' );
-	setAttribute( li, 'svelte-800127266', '' );
+	setAttribute( li, 'svelte-2353846945', '' );
 	
 	var span = createElement( 'span' );
-	setAttribute( span, 'svelte-800127266', '' );
+	setAttribute( span, 'svelte-2353846945', '' );
 	span.className = "tiny-color-bar";
 	span.style.cssText = "background-color: " + ( subsection.identifier ? template.helpers.getColor(subsection.identifier) : 'inherit' );
 	
@@ -1184,14 +1182,20 @@ function renderEachBlock1 ( root, eachBlock_value, section, section__index, each
 	appendNode( createText( "\n\t\t\t\t" ), li );
 	
 	var strong = createElement( 'strong' );
-	setAttribute( strong, 'svelte-800127266', '' );
+	setAttribute( strong, 'svelte-2353846945', '' );
 	strong.className = "subsection-label";
 	
 	appendNode( strong, li );
+	
+	var a = createElement( 'a' );
+	setAttribute( a, 'svelte-2353846945', '' );
+	a.href = "./#" + ( subsection.anchor );
+	
+	appendNode( a, strong );
 	var last_text1 = template.helpers.septetLabel(subsection.identifier)
 	var text1 = createText( last_text1 );
-	appendNode( text1, strong );
-	appendNode( createText( "." ), strong );
+	appendNode( text1, a );
+	appendNode( createText( "." ), a );
 	appendNode( createText( "\n\t\t\t\t" ), li );
 	var last_text4 = subsection.title
 	var text4 = createText( last_text4 );
@@ -1199,7 +1203,7 @@ function renderEachBlock1 ( root, eachBlock_value, section, section__index, each
 	appendNode( createText( " " ), li );
 	
 	var small = createElement( 'small' );
-	setAttribute( small, 'svelte-800127266', '' );
+	setAttribute( small, 'svelte-2353846945', '' );
 	
 	appendNode( small, li );
 	
@@ -1221,6 +1225,8 @@ function renderEachBlock1 ( root, eachBlock_value, section, section__index, each
 			var __tmp;
 		
 			span.style.cssText = "background-color: " + ( subsection.identifier ? template.helpers.getColor(subsection.identifier) : 'inherit' );
+			
+			a.href = "./#" + ( subsection.anchor );
 			
 			if ( ( __tmp = template.helpers.septetLabel(subsection.identifier) ) !== last_text1 ) {
 				text1.data = last_text1 = __tmp;
@@ -1249,10 +1255,10 @@ function renderEachBlock1 ( root, eachBlock_value, section, section__index, each
 
 function renderIfBlock1_0 ( root, eachBlock_value, section, section__index, component ) {
 	var li = createElement( 'li' );
-	setAttribute( li, 'svelte-800127266', '' );
+	setAttribute( li, 'svelte-2353846945', '' );
 	
 	var span = createElement( 'span' );
-	setAttribute( span, 'svelte-800127266', '' );
+	setAttribute( span, 'svelte-2353846945', '' );
 	span.className = "tiny-color-bar";
 	span.style.cssText = "background-color: " + ( template.helpers.getColor('introduction') );
 	
@@ -1260,11 +1266,17 @@ function renderIfBlock1_0 ( root, eachBlock_value, section, section__index, comp
 	appendNode( createText( "\n\t\t\t\t" ), li );
 	
 	var strong = createElement( 'strong' );
-	setAttribute( strong, 'svelte-800127266', '' );
+	setAttribute( strong, 'svelte-2353846945', '' );
 	strong.className = "subsection-label";
 	
 	appendNode( strong, li );
-	appendNode( createText( "Intro." ), strong );
+	
+	var a = createElement( 'a' );
+	setAttribute( a, 'svelte-2353846945', '' );
+	a.href = "./#" + ( section.introduction.anchor );
+	
+	appendNode( a, strong );
+	appendNode( createText( "Intro." ), a );
 	appendNode( createText( "\n\t\t\t\t" ), li );
 	var last_text3 = section.introduction.title
 	var text3 = createText( last_text3 );
@@ -1272,7 +1284,7 @@ function renderIfBlock1_0 ( root, eachBlock_value, section, section__index, comp
 	appendNode( createText( " " ), li );
 	
 	var small = createElement( 'small' );
-	setAttribute( small, 'svelte-800127266', '' );
+	setAttribute( small, 'svelte-2353846945', '' );
 	
 	appendNode( small, li );
 	
@@ -1294,6 +1306,8 @@ function renderIfBlock1_0 ( root, eachBlock_value, section, section__index, comp
 			var __tmp;
 		
 			span.style.cssText = "background-color: " + ( template.helpers.getColor('introduction') );
+			
+			a.href = "./#" + ( section.introduction.anchor );
 			
 			if ( ( __tmp = section.introduction.title ) !== last_text3 ) {
 				text3.data = last_text3 = __tmp;
@@ -1318,17 +1332,17 @@ function renderIfBlock1_0 ( root, eachBlock_value, section, section__index, comp
 
 function renderIfBlock_0 ( root, eachBlock_value, section, section__index, component ) {
 	var li = createElement( 'li' );
-	setAttribute( li, 'svelte-800127266', '' );
+	setAttribute( li, 'svelte-2353846945', '' );
 	
 	var span = createElement( 'span' );
-	setAttribute( span, 'svelte-800127266', '' );
+	setAttribute( span, 'svelte-2353846945', '' );
 	span.className = "tiny-color-bar";
 	
 	appendNode( span, li );
 	appendNode( createText( "\n\t\t\t\t" ), li );
 	
 	var strong = createElement( 'strong' );
-	setAttribute( strong, 'svelte-800127266', '' );
+	setAttribute( strong, 'svelte-2353846945', '' );
 	strong.className = "subsection-label";
 	
 	appendNode( strong, li );
@@ -1339,7 +1353,7 @@ function renderIfBlock_0 ( root, eachBlock_value, section, section__index, compo
 	appendNode( createText( " " ), li );
 	
 	var small = createElement( 'small' );
-	setAttribute( small, 'svelte-800127266', '' );
+	setAttribute( small, 'svelte-2353846945', '' );
 	
 	appendNode( small, li );
 	
@@ -1543,7 +1557,15 @@ function dispatchObservers( component, group, newState, oldState ) {
 
 module.exports = subsections;
 
-},{"component/verse-range.html":1,"lib/identifier-color":6,"lib/structure":7}],6:[function(require,module,exports){
+},{"component/verse-range.html":1,"lib/identifier-color":7,"lib/structure":8}],6:[function(require,module,exports){
+module.exports.VERSE_SECTION_RANGE_MIN = 1
+module.exports.VERSE_SECTION_RANGE_MAX = 9999
+
+module.exports.MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH = 3
+
+},{}],7:[function(require,module,exports){
+const { MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH } = require('lib/constants')
+
 const chiasmColors = {
 	a: '#018d5d',
 	b: '#ba4460',
@@ -1555,10 +1577,8 @@ const chiasmColors = {
 	introduction: '#7d7d7d'
 }
 
-const minimumMeaningfulIdentifierLength = 3
-
 module.exports = function getChiasmColor(identifier) {
-	if (identifier.length < minimumMeaningfulIdentifierLength) {
+	if (identifier.length < MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH) {
 		const key = identifier[identifier.length - 1].toLowerCase()
 		return chiasmColors[key]
 	} else {
@@ -1566,10 +1586,13 @@ module.exports = function getChiasmColor(identifier) {
 	}
 }
 
-},{}],7:[function(require,module,exports){
+},{"lib/constants":6}],8:[function(require,module,exports){
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
-const VERSE_SECTION_RANGE_MIN = 1
-const VERSE_SECTION_RANGE_MAX = 9999
+const {
+	VERSE_SECTION_RANGE_MIN,
+	VERSE_SECTION_RANGE_MAX,
+	MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH
+} = require('lib/constants')
 
 function pipe(input, ...fns) {
 	return fns.reduce((lastResult, fn) => fn(lastResult), input)
@@ -1615,7 +1638,7 @@ module.exports = pipe([
 			s('Seal 4 - the yellowish-green horse', r([ 6, 7 ], [ 6, 8 ]), 'd'),
 			s('Seal 5 - the souls under the altar', r([ 6, 9 ], [ 6, 11 ]), 'e'),
 			s('Seal 6 - the earthquake', r([ 6, 12 ], [ 6, 17 ]), 'f'),
-			s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([ 7, 1 ], [ 7, 17 ])),
+			s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([ 7, 1 ], [ 7, 17 ]), 'interlude'),
 			s('Seal 7 - introduces the seven trumpets and seems to comprise all of the third septet', r([ 8, 1 ], [ 8, 1 ]), 'g')
 		]
 	}, {
@@ -1634,7 +1657,7 @@ module.exports = pipe([
 			s('Trumpet 4 - The heavenly bodies are dimmed', r([ 8, 12 ], [ 8, 13 ]), 'd'),
 			s('Trumpet 5 - Demons released from the pit', r([ 9, 1 ], [ 9, 12 ]), 'e'),
 			s('Trumpet 6 - Demons released from Euphrates', r([ 9, 13 ], [ 9, 21 ]), 'f'),
-			s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([ 10, 1 ], [ 11, 14 ])),
+			s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([ 10, 1 ], [ 11, 14 ]), 'interlude'),
 			s('Trumpet 7 - The seventh trumpet seems to comprise all of the fourth septet', r([ 11, 15 ], [ 11, 19 ]), 'g'),
 		]
 	}, {
@@ -1799,6 +1822,10 @@ function giveSubsectionsAnchors(sections) {
 			subsections: section.subsections.map(subsection => {
 				if (!subsection.identifier) {
 					return subsection
+				} else if (subsection.identifier === 'interlude') {
+					return Object.assign({
+						anchor: `${section.anchor}-${subsection.identifier}`
+					}, subsection)
 				}
 
 				return Object.assign({
@@ -1827,4 +1854,4 @@ function giveIntroductionsAnchors(sections) {
 	})
 }
 
-},{}]},{},[2]);
+},{"lib/constants":6}]},{},[2]);

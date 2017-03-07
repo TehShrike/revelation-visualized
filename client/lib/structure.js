@@ -1,6 +1,9 @@
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
-const VERSE_SECTION_RANGE_MIN = 1
-const VERSE_SECTION_RANGE_MAX = 9999
+const {
+	VERSE_SECTION_RANGE_MIN,
+	VERSE_SECTION_RANGE_MAX,
+	MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH
+} = require('lib/constants')
 
 function pipe(input, ...fns) {
 	return fns.reduce((lastResult, fn) => fn(lastResult), input)
@@ -46,7 +49,7 @@ module.exports = pipe([
 			s('Seal 4 - the yellowish-green horse', r([ 6, 7 ], [ 6, 8 ]), 'd'),
 			s('Seal 5 - the souls under the altar', r([ 6, 9 ], [ 6, 11 ]), 'e'),
 			s('Seal 6 - the earthquake', r([ 6, 12 ], [ 6, 17 ]), 'f'),
-			s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([ 7, 1 ], [ 7, 17 ])),
+			s('Interlude before the 7th seal: the 144,000 of the Jewish remnant and the innumerable multitude', r([ 7, 1 ], [ 7, 17 ]), 'interlude'),
 			s('Seal 7 - introduces the seven trumpets and seems to comprise all of the third septet', r([ 8, 1 ], [ 8, 1 ]), 'g')
 		]
 	}, {
@@ -65,7 +68,7 @@ module.exports = pipe([
 			s('Trumpet 4 - The heavenly bodies are dimmed', r([ 8, 12 ], [ 8, 13 ]), 'd'),
 			s('Trumpet 5 - Demons released from the pit', r([ 9, 1 ], [ 9, 12 ]), 'e'),
 			s('Trumpet 6 - Demons released from Euphrates', r([ 9, 13 ], [ 9, 21 ]), 'f'),
-			s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([ 10, 1 ], [ 11, 14 ])),
+			s('Interlude before 7th trumpet: The closing off of prophecy & the nature of prophecy', r([ 10, 1 ], [ 11, 14 ]), 'interlude'),
 			s('Trumpet 7 - The seventh trumpet seems to comprise all of the fourth septet', r([ 11, 15 ], [ 11, 19 ]), 'g'),
 		]
 	}, {
@@ -230,6 +233,10 @@ function giveSubsectionsAnchors(sections) {
 			subsections: section.subsections.map(subsection => {
 				if (!subsection.identifier) {
 					return subsection
+				} else if (subsection.identifier === 'interlude') {
+					return Object.assign({
+						anchor: `${section.anchor}-${subsection.identifier}`
+					}, subsection)
 				}
 
 				return Object.assign({
