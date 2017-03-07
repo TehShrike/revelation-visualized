@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "browserify -t [ sveltify --extensions [.html] ] client/index.js -o build.js",
-    "watch": "watchify -t [ sveltify --extensions [.html] ] client/index.js -o build.js -d"
+    "build": "npm run build-index && npm run build-explanation",
+    "build-index": "browserify -t [ sveltify --extensions [.html] ] client/index.js -o build.js",
+    "watch-index": "watchify -t [ sveltify --extensions [.html] ] client/index.js -o build.js -d",
+    "build-explanation": "node client/render-explanation.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +25,7 @@
     "multi-part-range-compare": "1.0.1",
     "one-to-many-array-zip": "~1.0.2",
     "pickering-majority-text-revelation": "~1.2.1",
-    "svelte": "1.9.1",
+    "svelte": "1.10.1",
     "sveltify": "1.0.3"
   },
   "devDependencies": {

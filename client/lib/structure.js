@@ -76,7 +76,7 @@ module.exports = pipe([
 		introduction: {
 			title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
 			range: r([ 12, 1 ], [ 12, 17 ]),
-			subsections: giveSectionsChiasmAnchors([
+			subsections: pipe([
 				s('The Bride reflecting the glory of her husband', r([ 12, 1 ], [ 12, 1 ]), 'Ea'),
 				s('The Child of the woman', r([ 12, 2 ], [ 12, 2 ]), 'Eb'),
 				s('The Dragon tries to devour the Child', r([ 12, 3 ], [ 12, 5 ]), 'Ec'),
@@ -88,7 +88,9 @@ module.exports = pipe([
 				s(`The Dragon's mouth & the earth swallows the serpents flood`, r([ 12, 15 ], [ 12, 16 ]), 'Ec'),
 				s('The rest of the offspring of the woman', r([ 12, 17, 1 ], [ 12, 17, 1 ]), 'Eb'),
 				s('The church reflecting the word of Christ', r([ 12, 17, 2 ], [ 12, 17 ]), 'Ea'),
-			])
+			],
+			addPrimeBooleanToChiasmSections,
+			giveSectionsChiasmAnchors)
 		},
 		subsections: [
 			s('The beast rising out of the sea', r([ 13, 1 ], [ 13, 10 ])),
@@ -156,6 +158,7 @@ module.exports = pipe([
 		range: r([ 22, 18 ], [ 22, 21 ])
 	}
 ],
+addPrimeBooleanToChiasmSections,
 giveSectionsChiasmAnchors,
 giveSubsectionsAnchors,
 giveIntroductionsAnchors)
@@ -188,6 +191,12 @@ function guaranteeRangeSection(range, defaultSection) {
 	} else {
 		return [ ...range, defaultSection ]
 	}
+}
+
+function addPrimeBooleanToChiasmSections(sections) {
+	const pivotIndex = Math.floor(sections.length / 2)
+
+	return sections.map((section, index) => Object.assign({ prime: index > pivotIndex }, section))
 }
 
 function giveSectionsChiasmAnchors(sections) {

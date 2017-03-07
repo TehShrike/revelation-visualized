@@ -493,7 +493,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-2399739693][data-chiasm-selected=true] [data-is-selected=false], [svelte-2399739693] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2399739693][data-chiasm-selected=true] [data-is-selected=true], [svelte-2399739693] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-2399739693][data-chiasm-selected=true] .chiasm-color-bar, [svelte-2399739693] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
+	style.textContent = "\n[svelte-430613375][data-chiasm-selected=true] [data-is-selected=false], [svelte-430613375] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-430613375][data-chiasm-selected=true] [data-is-selected=true], [svelte-430613375] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-430613375][data-chiasm-selected=true] .chiasm-color-bar, [svelte-430613375] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -501,7 +501,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2399739693', '' );
+	setAttribute( div, 'svelte-430613375', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -556,7 +556,7 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2399739693', '' );
+	setAttribute( div, 'svelte-430613375', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
@@ -576,7 +576,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-2399739693', '' );
+	setAttribute( div1, 'svelte-430613375', '' );
 	div1.className = "section-body";
 	
 	appendNode( div1, div );
@@ -1001,7 +1001,7 @@ function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-2399739693', '' );
+	setAttribute( h1, 'svelte-430613375', '' );
 	h1.style.cssText = "color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -1067,7 +1067,7 @@ function renderIfBlock_1 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 
 function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2399739693', '' );
+	setAttribute( div, 'svelte-430613375', '' );
 	div.className = "color-bar";
 
 	return {
@@ -2860,8 +2860,10 @@ const chiasmColors = {
 	introduction: '#7d7d7d'
 }
 
+const minimumMeaningfulIdentifierLength = 3
+
 module.exports = function getChiasmColor(identifier) {
-	if (identifier.length < 3) {
+	if (identifier.length < minimumMeaningfulIdentifierLength) {
 		const key = identifier[identifier.length - 1].toLowerCase()
 		return chiasmColors[key]
 	} else {
@@ -3453,7 +3455,7 @@ module.exports = pipe([
 		introduction: {
 			title: 'Introduction to the seven visions – The invisible battles are the key to the earthly ones',
 			range: r([ 12, 1 ], [ 12, 17 ]),
-			subsections: giveSectionsChiasmAnchors([
+			subsections: pipe([
 				s('The Bride reflecting the glory of her husband', r([ 12, 1 ], [ 12, 1 ]), 'Ea'),
 				s('The Child of the woman', r([ 12, 2 ], [ 12, 2 ]), 'Eb'),
 				s('The Dragon tries to devour the Child', r([ 12, 3 ], [ 12, 5 ]), 'Ec'),
@@ -3465,7 +3467,9 @@ module.exports = pipe([
 				s(`The Dragon's mouth & the earth swallows the serpents flood`, r([ 12, 15 ], [ 12, 16 ]), 'Ec'),
 				s('The rest of the offspring of the woman', r([ 12, 17, 1 ], [ 12, 17, 1 ]), 'Eb'),
 				s('The church reflecting the word of Christ', r([ 12, 17, 2 ], [ 12, 17 ]), 'Ea'),
-			])
+			],
+			addPrimeBooleanToChiasmSections,
+			giveSectionsChiasmAnchors)
 		},
 		subsections: [
 			s('The beast rising out of the sea', r([ 13, 1 ], [ 13, 10 ])),
@@ -3533,6 +3537,7 @@ module.exports = pipe([
 		range: r([ 22, 18 ], [ 22, 21 ])
 	}
 ],
+addPrimeBooleanToChiasmSections,
 giveSectionsChiasmAnchors,
 giveSubsectionsAnchors,
 giveIntroductionsAnchors)
@@ -3565,6 +3570,12 @@ function guaranteeRangeSection(range, defaultSection) {
 	} else {
 		return [ ...range, defaultSection ]
 	}
+}
+
+function addPrimeBooleanToChiasmSections(sections) {
+	const pivotIndex = Math.floor(sections.length / 2)
+
+	return sections.map((section, index) => Object.assign({ prime: index > pivotIndex }, section))
 }
 
 function giveSectionsChiasmAnchors(sections) {

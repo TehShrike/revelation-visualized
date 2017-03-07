@@ -1,0 +1,57 @@
+<ol>
+{{#each structure as section}}
+	<li style="padding-left: {{indentLevel(section.identifier)}}em">
+		<span
+			class="tiny-color-bar"
+			style="background-color: {{getColor(section.identifier)}}"
+		>
+		</span>
+		<strong>{{sectionLabel(section)}}:</strong> {{section.title}} <small><VerseRange range="{{section.range}}" /></small>
+	</li>
+{{/each}}
+</ol>
+
+<style>
+ol {
+	list-style-type: none;
+	padding: 0;
+}
+.tiny-color-bar {
+	width: 1em;
+}
+.tiny-color-bar::before {
+	content: "   ";
+}
+</style>
+
+<script>
+const structure = require('lib/structure')
+const getColor = require('lib/identifier-color')
+
+export default {
+	data() {
+		return {
+			structure
+		}
+	},
+	components: {
+		VerseRange: require('../component/verse-range.html')
+	},
+	helpers: {
+		sectionLabel(section) {
+			return section.prime ? `${section.identifier}′` : section.identifier
+		},
+		getColor,
+		indentLevel(identifier) {
+			return {
+				A: 0,
+				B: 1,
+				C: 2,
+				D: 3,
+				E: 4
+			}[identifier]
+		}
+	}
+}
+
+</script>
