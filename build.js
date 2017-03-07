@@ -337,29 +337,6 @@ paragraphs.prototype.teardown = paragraphs.prototype.destroy = function destroy 
 	this._torndown = true;
 };
 
-var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
-
 function createComment() {
 	return document.createComment( '' );
 }
@@ -493,7 +470,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-430613375][data-chiasm-selected=true] [data-is-selected=false], [svelte-430613375] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-430613375][data-chiasm-selected=true] [data-is-selected=true], [svelte-430613375] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-430613375][data-chiasm-selected=true] .chiasm-color-bar, [svelte-430613375] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
+	style.textContent = "\n[svelte-2399739693][data-chiasm-selected=true] [data-is-selected=false], [svelte-2399739693] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2399739693][data-chiasm-selected=true] [data-is-selected=true], [svelte-2399739693] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-2399739693][data-chiasm-selected=true] .chiasm-color-bar, [svelte-2399739693] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -501,7 +478,7 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-430613375', '' );
+	setAttribute( div, 'svelte-2399739693', '' );
 	var last_div_data_chiasm_selected = !!root.currentChiasm;
 	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
 	
@@ -556,7 +533,7 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-430613375', '' );
+	setAttribute( div, 'svelte-2399739693', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
@@ -576,7 +553,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-430613375', '' );
+	setAttribute( div1, 'svelte-2399739693', '' );
 	div1.className = "section-body";
 	
 	appendNode( div1, div );
@@ -1001,7 +978,7 @@ function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-430613375', '' );
+	setAttribute( h1, 'svelte-2399739693', '' );
 	h1.style.cssText = "color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -1067,7 +1044,7 @@ function renderIfBlock_1 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 
 function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-430613375', '' );
+	setAttribute( div, 'svelte-2399739693', '' );
 	div.className = "color-bar";
 
 	return {
@@ -1189,29 +1166,6 @@ revelation.prototype.teardown = revelation.prototype.destroy = function destroy 
 	this._state = {};
 	this._torndown = true;
 };
-
-var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
 
 function setAttribute( node, attribute, value ) {
 	node.setAttribute ( attribute, value );
@@ -1800,29 +1754,6 @@ sectionline.prototype.teardown = sectionline.prototype.destroy = function destro
 	this._torndown = true;
 };
 
-var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
-
 function createElement( name ) {
 	return document.createElement( name );
 }
@@ -2147,29 +2078,6 @@ subsections.prototype.teardown = subsections.prototype.destroy = function destro
 	this._torndown = true;
 };
 
-var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
-
 function createComment() {
 	return document.createComment( '' );
 }
@@ -2411,29 +2319,6 @@ title.prototype.teardown = title.prototype.destroy = function destroy ( detach )
 	this._state = {};
 	this._torndown = true;
 };
-
-var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
 
 function createText( data ) {
 	return document.createTextNode( data );
@@ -2684,29 +2569,6 @@ verserange.prototype.teardown = verserange.prototype.destroy = function destroy 
 	this._state = {};
 	this._torndown = true;
 };
-
-var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
 
 function createElement( name ) {
 	return document.createElement( name );
@@ -3299,29 +3161,6 @@ link.prototype.teardown = link.prototype.destroy = function destroy ( detach ) {
 	this._state = {};
 	this._torndown = true;
 };
-
-var dispatchObservers = function dispatchObservers( component, group, newState, oldState ) {
-	for ( var key in group ) {
-		if ( !( key in newState ) ) continue;
-
-		var newValue = newState[ key ];
-		var oldValue = oldState[ key ];
-
-		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
-
-		var callbacks = group[ key ];
-		if ( !callbacks ) continue;
-
-		for ( var i = 0; i < callbacks.length; i += 1 ) {
-			var callback = callbacks[i];
-			if ( callback.__calling ) continue;
-
-			callback.__calling = true;
-			callback.call( component, newValue, oldValue );
-			callback.__calling = false;
-		}
-	}
-}
 
 function addEventListener( node, event, handler ) {
 	node.addEventListener ( event, handler, false );

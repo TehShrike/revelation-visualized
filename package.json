@@ -6,7 +6,8 @@
     "build": "npm run build-index && npm run build-explanation",
     "build-index": "browserify -t [ sveltify --extensions [.html] ] client/index.js -o build.js",
     "watch-index": "watchify -t [ sveltify --extensions [.html] ] client/index.js -o build.js -d",
-    "build-explanation": "node client/render-explanation.js"
+    "build-explanation": "browserify -t [ sveltify --extensions [.html] ] client/explanation-index.js -o explanation-build.js",
+    "watch-explanation": "watchify -t [ sveltify --extensions [.html] ] client/explanation-index.js -o explanation-build.js -d"
   },
   "repository": {
     "type": "git",
