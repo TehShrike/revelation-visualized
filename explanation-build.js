@@ -260,12 +260,17 @@ module.exports = verserange;
 'use strict';
 
 var Outline = require('./explanation/outline.html');
+var Subsections = require('./explanation/subsections.html');
 
 new Outline({
 	target: document.querySelector('Outline')
 });
 
-},{"./explanation/outline.html":3}],3:[function(require,module,exports){
+new Subsections({
+	target: document.querySelector('Subsections')
+});
+
+},{"./explanation/outline.html":3,"./explanation/subsections.html":4}],3:[function(require,module,exports){
 'use strict';
 
 var template = (function () {
@@ -300,18 +305,8 @@ return {
 
 }());
 
-let addedCss = false;
-function addCss () {
-	var style = createElement( 'style' );
-	style.textContent = "\nol[svelte-1119393891], [svelte-1119393891] ol {\n\tlist-style-type: none;\n\tpadding: 0;\n}\n[svelte-1119393891].tiny-color-bar, [svelte-1119393891] .tiny-color-bar {\n\twidth: 1em;\n}\n[svelte-1119393891].tiny-color-bar::before, [svelte-1119393891] .tiny-color-bar::before {\n\tcontent: \"   \";\n}\n";
-	appendNode( style, document.head );
-
-	addedCss = true;
-}
-
 function renderMainFragment ( root, component ) {
 	var ol = createElement( 'ol' );
-	setAttribute( ol, 'svelte-1119393891', '' );
 	
 	var eachBlock_anchor = createComment();
 	appendNode( eachBlock_anchor, ol );
@@ -359,11 +354,9 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, section, section__index, component ) {
 	var li = createElement( 'li' );
-	setAttribute( li, 'svelte-1119393891', '' );
 	li.style.cssText = "padding-left: " + ( template.helpers.indentLevel(section.identifier) ) + "em";
 	
 	var span = createElement( 'span' );
-	setAttribute( span, 'svelte-1119393891', '' );
 	span.className = "tiny-color-bar";
 	span.style.cssText = "background-color: " + ( template.helpers.getColor(section.identifier) );
 	
@@ -371,13 +364,17 @@ function renderEachBlock ( root, eachBlock_value, section, section__index, compo
 	appendNode( createText( "\n\t\t" ), li );
 	
 	var strong = createElement( 'strong' );
-	setAttribute( strong, 'svelte-1119393891', '' );
 	
 	appendNode( strong, li );
+	
+	var a = createElement( 'a' );
+	a.href = "./#" + ( section.anchor );
+	
+	appendNode( a, strong );
 	var last_text1 = template.helpers.sectionLabel(section)
 	var text1 = createText( last_text1 );
-	appendNode( text1, strong );
-	appendNode( createText( ":" ), strong );
+	appendNode( text1, a );
+	appendNode( createText( ":" ), a );
 	appendNode( createText( " " ), li );
 	var last_text4 = section.title
 	var text4 = createText( last_text4 );
@@ -385,7 +382,6 @@ function renderEachBlock ( root, eachBlock_value, section, section__index, compo
 	appendNode( createText( " " ), li );
 	
 	var small = createElement( 'small' );
-	setAttribute( small, 'svelte-1119393891', '' );
 	
 	appendNode( small, li );
 	
@@ -409,6 +405,8 @@ function renderEachBlock ( root, eachBlock_value, section, section__index, compo
 			li.style.cssText = "padding-left: " + ( template.helpers.indentLevel(section.identifier) ) + "em";
 			
 			span.style.cssText = "background-color: " + ( template.helpers.getColor(section.identifier) );
+			
+			a.href = "./#" + ( section.anchor );
 			
 			if ( ( __tmp = template.helpers.sectionLabel(section) ) !== last_text1 ) {
 				text1.data = last_text1 = __tmp;
@@ -450,7 +448,6 @@ function outline ( options ) {
 	this._yield = options._yield;
 	
 	this._torndown = false;
-	if ( !addedCss ) addCss();
 	this._renderHooks = [];
 	
 	this._fragment = renderMainFragment( this._state, this );
@@ -542,6 +539,627 @@ function createElement( name ) {
 	return document.createElement( name );
 }
 
+function detachNode( node ) {
+	node.parentNode.removeChild( node );
+}
+
+function insertNode( node, target, anchor ) {
+	target.insertBefore( node, anchor );
+}
+
+function createComment() {
+	return document.createComment( '' );
+}
+
+function appendNode( node, target ) {
+	target.appendChild( node );
+}
+
+function teardownEach( iterations, detach, start ) {
+	for ( var i = ( start || 0 ); i < iterations.length; i += 1 ) {
+		iterations[i].teardown( detach );
+	}
+}
+
+function createText( data ) {
+	return document.createTextNode( data );
+}
+
+function dispatchObservers( component, group, newState, oldState ) {
+	for ( var key in group ) {
+		if ( !( key in newState ) ) continue;
+
+		var newValue = newState[ key ];
+		var oldValue = oldState[ key ];
+
+		if ( newValue === oldValue && typeof newValue !== 'object' ) continue;
+
+		var callbacks = group[ key ];
+		if ( !callbacks ) continue;
+
+		for ( var i = 0; i < callbacks.length; i += 1 ) {
+			var callback = callbacks[i];
+			if ( callback.__calling ) continue;
+
+			callback.__calling = true;
+			callback.call( component, newValue, oldValue );
+			callback.__calling = false;
+		}
+	}
+}
+
+module.exports = outline;
+
+},{"component/verse-range.html":1,"lib/identifier-color":5,"lib/structure":6}],4:[function(require,module,exports){
+'use strict';
+
+var template = (function () {
+const structure = require('lib/structure')
+const getColor = require('lib/identifier-color')
+
+return {
+	data() {
+		return {
+			structure
+		}
+	},
+	components: {
+		VerseRange: require('component/verse-range.html')
+	},
+	helpers: {
+		sectionLabel(section) {
+			return section.prime ? `${section.identifier}′` : section.identifier
+		},
+		getColor,
+		septetLabel(identifier) {
+			return {
+				a: 1,
+				b: 2,
+				c: 3,
+				d: 4,
+				e: 5,
+				f: 6,
+				g: 7
+			}[identifier] || 'Interlude'
+		}
+	}
+}
+
+}());
+
+let addedCss = false;
+function addCss () {
+	var style = createElement( 'style' );
+	style.textContent = "\n[svelte-800127266].subsection-label, [svelte-800127266] .subsection-label {\n\tmin-width: 5em;\n\tdisplay: inline-block;\n}\n[svelte-800127266].section-label, [svelte-800127266] .section-label {\n\tfont-size: larger;\n}\n";
+	appendNode( style, document.head );
+
+	addedCss = true;
+}
+
+function renderMainFragment ( root, component ) {
+	var ol = createElement( 'ol' );
+	setAttribute( ol, 'svelte-800127266', '' );
+	
+	var eachBlock_anchor = createComment();
+	appendNode( eachBlock_anchor, ol );
+	var eachBlock_value = root.structure;
+	var eachBlock_iterations = [];
+	
+	for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+		eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+		eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+	}
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( ol, target, anchor );
+		},
+		
+		update: function ( changed, root ) {
+			var __tmp;
+		
+			var eachBlock_value = root.structure;
+			
+			for ( var i = 0; i < eachBlock_value.length; i += 1 ) {
+				if ( !eachBlock_iterations[i] ) {
+					eachBlock_iterations[i] = renderEachBlock( root, eachBlock_value, eachBlock_value[i], i, component );
+					eachBlock_iterations[i].mount( eachBlock_anchor.parentNode, eachBlock_anchor );
+				} else {
+					eachBlock_iterations[i].update( changed, root, eachBlock_value, eachBlock_value[i], i );
+				}
+			}
+			
+			teardownEach( eachBlock_iterations, true, eachBlock_value.length );
+			
+			eachBlock_iterations.length = eachBlock_value.length;
+		},
+		
+		teardown: function ( detach ) {
+			teardownEach( eachBlock_iterations, false );
+			
+			if ( detach ) {
+				detachNode( ol );
+			}
+		}
+	};
+}
+
+function renderEachBlock ( root, eachBlock_value, section, section__index, component ) {
+	var li = createElement( 'li' );
+	setAttribute( li, 'svelte-800127266', '' );
+	
+	var strong = createElement( 'strong' );
+	setAttribute( strong, 'svelte-800127266', '' );
+	strong.className = "section-label";
+	
+	appendNode( strong, li );
+	var last_text = template.helpers.sectionLabel(section)
+	var text = createText( last_text );
+	appendNode( text, strong );
+	appendNode( createText( "\n\t\t" ), li );
+	
+	var ol = createElement( 'ol' );
+	setAttribute( ol, 'svelte-800127266', '' );
+	
+	appendNode( ol, li );
+	var ifBlock_anchor = createComment();
+	appendNode( ifBlock_anchor, ol );
+	
+	function getBlock ( root, eachBlock_value, section, section__index ) {
+		if ( !section.introduction && !section.subsections ) return renderIfBlock_0;
+		return null;
+	}
+	
+	var currentBlock = getBlock( root, eachBlock_value, section, section__index );
+	var ifBlock = currentBlock && currentBlock( root, eachBlock_value, section, section__index, component );
+	
+	if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+	appendNode( createText( "\n\n\t\t\t" ), ol );
+	var ifBlock1_anchor = createComment();
+	appendNode( ifBlock1_anchor, ol );
+	
+	function getBlock1 ( root, eachBlock_value, section, section__index ) {
+		if ( section.introduction ) return renderIfBlock1_0;
+		return null;
+	}
+	
+	var currentBlock1 = getBlock1( root, eachBlock_value, section, section__index );
+	var ifBlock1 = currentBlock1 && currentBlock1( root, eachBlock_value, section, section__index, component );
+	
+	if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
+	appendNode( createText( "\n\n\t\t\t" ), ol );
+	var ifBlock2_anchor = createComment();
+	appendNode( ifBlock2_anchor, ol );
+	
+	function getBlock2 ( root, eachBlock_value, section, section__index ) {
+		if ( section.subsections ) return renderIfBlock2_0;
+		return null;
+	}
+	
+	var currentBlock2 = getBlock2( root, eachBlock_value, section, section__index );
+	var ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, section, section__index, component );
+	
+	if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( li, target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, section, section__index ) {
+			var __tmp;
+		
+			if ( ( __tmp = template.helpers.sectionLabel(section) ) !== last_text ) {
+				text.data = last_text = __tmp;
+			}
+			
+			var _currentBlock = currentBlock;
+			currentBlock = getBlock( root, eachBlock_value, section, section__index );
+			if ( _currentBlock === currentBlock && ifBlock) {
+				ifBlock.update( changed, root, eachBlock_value, section, section__index );
+			} else {
+				if ( ifBlock ) ifBlock.teardown( true );
+				ifBlock = currentBlock && currentBlock( root, eachBlock_value, section, section__index, component );
+				if ( ifBlock ) ifBlock.mount( ifBlock_anchor.parentNode, ifBlock_anchor );
+			}
+			
+			var _currentBlock1 = currentBlock1;
+			currentBlock1 = getBlock1( root, eachBlock_value, section, section__index );
+			if ( _currentBlock1 === currentBlock1 && ifBlock1) {
+				ifBlock1.update( changed, root, eachBlock_value, section, section__index );
+			} else {
+				if ( ifBlock1 ) ifBlock1.teardown( true );
+				ifBlock1 = currentBlock1 && currentBlock1( root, eachBlock_value, section, section__index, component );
+				if ( ifBlock1 ) ifBlock1.mount( ifBlock1_anchor.parentNode, ifBlock1_anchor );
+			}
+			
+			var _currentBlock2 = currentBlock2;
+			currentBlock2 = getBlock2( root, eachBlock_value, section, section__index );
+			if ( _currentBlock2 === currentBlock2 && ifBlock2) {
+				ifBlock2.update( changed, root, eachBlock_value, section, section__index );
+			} else {
+				if ( ifBlock2 ) ifBlock2.teardown( true );
+				ifBlock2 = currentBlock2 && currentBlock2( root, eachBlock_value, section, section__index, component );
+				if ( ifBlock2 ) ifBlock2.mount( ifBlock2_anchor.parentNode, ifBlock2_anchor );
+			}
+		},
+		
+		teardown: function ( detach ) {
+			if ( ifBlock ) ifBlock.teardown( false );
+			if ( ifBlock1 ) ifBlock1.teardown( false );
+			if ( ifBlock2 ) ifBlock2.teardown( false );
+			
+			if ( detach ) {
+				detachNode( li );
+			}
+		}
+	};
+}
+
+function renderIfBlock2_0 ( root, eachBlock_value, section, section__index, component ) {
+	var eachBlock1_anchor = createComment();
+	var eachBlock1_value = section.subsections;
+	var eachBlock1_iterations = [];
+	
+	for ( var i = 0; i < eachBlock1_value.length; i += 1 ) {
+		eachBlock1_iterations[i] = renderEachBlock1( root,eachBlock_value,section,section__index, eachBlock1_value, eachBlock1_value[i], i, component );
+	}
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( eachBlock1_anchor, target, anchor );
+			
+			for ( var i = 0; i < eachBlock1_iterations.length; i += 1 ) {
+				eachBlock1_iterations[i].mount( eachBlock1_anchor.parentNode, eachBlock1_anchor );
+			}
+		},
+		
+		update: function ( changed, root, eachBlock_value, section, section__index ) {
+			var __tmp;
+		
+			var eachBlock1_value = section.subsections;
+			
+			for ( var i = 0; i < eachBlock1_value.length; i += 1 ) {
+				if ( !eachBlock1_iterations[i] ) {
+					eachBlock1_iterations[i] = renderEachBlock1( root,eachBlock_value,section,section__index, eachBlock1_value, eachBlock1_value[i], i, component );
+					eachBlock1_iterations[i].mount( eachBlock1_anchor.parentNode, eachBlock1_anchor );
+				} else {
+					eachBlock1_iterations[i].update( changed, root,eachBlock_value,section,section__index, eachBlock1_value, eachBlock1_value[i], i );
+				}
+			}
+			
+			teardownEach( eachBlock1_iterations, true, eachBlock1_value.length );
+			
+			eachBlock1_iterations.length = eachBlock1_value.length;
+		},
+		
+		teardown: function ( detach ) {
+			teardownEach( eachBlock1_iterations, detach );
+			
+			if ( detach ) {
+				detachNode( eachBlock1_anchor );
+			}
+		}
+	};
+}
+
+function renderEachBlock1 ( root, eachBlock_value, section, section__index, eachBlock1_value, subsection, subsection__index, component ) {
+	var li = createElement( 'li' );
+	setAttribute( li, 'svelte-800127266', '' );
+	
+	var span = createElement( 'span' );
+	setAttribute( span, 'svelte-800127266', '' );
+	span.className = "tiny-color-bar";
+	span.style.cssText = "background-color: " + ( subsection.identifier ? template.helpers.getColor(subsection.identifier) : 'inherit' );
+	
+	appendNode( span, li );
+	appendNode( createText( "\n\t\t\t\t" ), li );
+	
+	var strong = createElement( 'strong' );
+	setAttribute( strong, 'svelte-800127266', '' );
+	strong.className = "subsection-label";
+	
+	appendNode( strong, li );
+	var last_text1 = template.helpers.septetLabel(subsection.identifier)
+	var text1 = createText( last_text1 );
+	appendNode( text1, strong );
+	appendNode( createText( "." ), strong );
+	appendNode( createText( "\n\t\t\t\t" ), li );
+	var last_text4 = subsection.title
+	var text4 = createText( last_text4 );
+	appendNode( text4, li );
+	appendNode( createText( " " ), li );
+	
+	var small = createElement( 'small' );
+	setAttribute( small, 'svelte-800127266', '' );
+	
+	appendNode( small, li );
+	
+	var verseRange_initialData = {
+		range: subsection.range
+	};
+	var verseRange = new template.components.VerseRange({
+		target: small,
+		_root: component._root || component,
+		data: verseRange_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( li, target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, section, section__index, eachBlock1_value, subsection, subsection__index ) {
+			var __tmp;
+		
+			span.style.cssText = "background-color: " + ( subsection.identifier ? template.helpers.getColor(subsection.identifier) : 'inherit' );
+			
+			if ( ( __tmp = template.helpers.septetLabel(subsection.identifier) ) !== last_text1 ) {
+				text1.data = last_text1 = __tmp;
+			}
+			
+			if ( ( __tmp = subsection.title ) !== last_text4 ) {
+				text4.data = last_text4 = __tmp;
+			}
+			
+			var verseRange_changes = {};
+			
+			if ( 'structure' in changed ) verseRange_changes.range = subsection.range;
+			
+			if ( Object.keys( verseRange_changes ).length ) verseRange.set( verseRange_changes );
+		},
+		
+		teardown: function ( detach ) {
+			verseRange.destroy( false );
+			
+			if ( detach ) {
+				detachNode( li );
+			}
+		}
+	};
+}
+
+function renderIfBlock1_0 ( root, eachBlock_value, section, section__index, component ) {
+	var li = createElement( 'li' );
+	setAttribute( li, 'svelte-800127266', '' );
+	
+	var span = createElement( 'span' );
+	setAttribute( span, 'svelte-800127266', '' );
+	span.className = "tiny-color-bar";
+	span.style.cssText = "background-color: " + ( template.helpers.getColor('introduction') );
+	
+	appendNode( span, li );
+	appendNode( createText( "\n\t\t\t\t" ), li );
+	
+	var strong = createElement( 'strong' );
+	setAttribute( strong, 'svelte-800127266', '' );
+	strong.className = "subsection-label";
+	
+	appendNode( strong, li );
+	appendNode( createText( "Intro." ), strong );
+	appendNode( createText( "\n\t\t\t\t" ), li );
+	var last_text3 = section.introduction.title
+	var text3 = createText( last_text3 );
+	appendNode( text3, li );
+	appendNode( createText( " " ), li );
+	
+	var small = createElement( 'small' );
+	setAttribute( small, 'svelte-800127266', '' );
+	
+	appendNode( small, li );
+	
+	var verseRange_initialData = {
+		range: section.introduction.range
+	};
+	var verseRange = new template.components.VerseRange({
+		target: small,
+		_root: component._root || component,
+		data: verseRange_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( li, target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, section, section__index ) {
+			var __tmp;
+		
+			span.style.cssText = "background-color: " + ( template.helpers.getColor('introduction') );
+			
+			if ( ( __tmp = section.introduction.title ) !== last_text3 ) {
+				text3.data = last_text3 = __tmp;
+			}
+			
+			var verseRange_changes = {};
+			
+			if ( 'structure' in changed ) verseRange_changes.range = section.introduction.range;
+			
+			if ( Object.keys( verseRange_changes ).length ) verseRange.set( verseRange_changes );
+		},
+		
+		teardown: function ( detach ) {
+			verseRange.destroy( false );
+			
+			if ( detach ) {
+				detachNode( li );
+			}
+		}
+	};
+}
+
+function renderIfBlock_0 ( root, eachBlock_value, section, section__index, component ) {
+	var li = createElement( 'li' );
+	setAttribute( li, 'svelte-800127266', '' );
+	
+	var span = createElement( 'span' );
+	setAttribute( span, 'svelte-800127266', '' );
+	span.className = "tiny-color-bar";
+	
+	appendNode( span, li );
+	appendNode( createText( "\n\t\t\t\t" ), li );
+	
+	var strong = createElement( 'strong' );
+	setAttribute( strong, 'svelte-800127266', '' );
+	strong.className = "subsection-label";
+	
+	appendNode( strong, li );
+	appendNode( createText( "\n\t\t\t\t" ), li );
+	var last_text2 = section.description
+	var text2 = createText( last_text2 );
+	appendNode( text2, li );
+	appendNode( createText( " " ), li );
+	
+	var small = createElement( 'small' );
+	setAttribute( small, 'svelte-800127266', '' );
+	
+	appendNode( small, li );
+	
+	var verseRange_initialData = {
+		range: section.range
+	};
+	var verseRange = new template.components.VerseRange({
+		target: small,
+		_root: component._root || component,
+		data: verseRange_initialData
+	});
+
+	return {
+		mount: function ( target, anchor ) {
+			insertNode( li, target, anchor );
+		},
+		
+		update: function ( changed, root, eachBlock_value, section, section__index ) {
+			var __tmp;
+		
+			if ( ( __tmp = section.description ) !== last_text2 ) {
+				text2.data = last_text2 = __tmp;
+			}
+			
+			var verseRange_changes = {};
+			
+			if ( 'structure' in changed ) verseRange_changes.range = section.range;
+			
+			if ( Object.keys( verseRange_changes ).length ) verseRange.set( verseRange_changes );
+		},
+		
+		teardown: function ( detach ) {
+			verseRange.destroy( false );
+			
+			if ( detach ) {
+				detachNode( li );
+			}
+		}
+	};
+}
+
+function subsections ( options ) {
+	options = options || {};
+	this._state = Object.assign( template.data(), options.data );
+	
+	this._observers = {
+		pre: Object.create( null ),
+		post: Object.create( null )
+	};
+	
+	this._handlers = Object.create( null );
+	
+	this._root = options._root;
+	this._yield = options._yield;
+	
+	this._torndown = false;
+	if ( !addedCss ) addCss();
+	this._renderHooks = [];
+	
+	this._fragment = renderMainFragment( this._state, this );
+	if ( options.target ) this._fragment.mount( options.target, null );
+	
+	this._flush();
+}
+
+subsections.prototype.get = function get( key ) {
+ 	return key ? this._state[ key ] : this._state;
+ };
+
+subsections.prototype.fire = function fire( eventName, data ) {
+ 	var handlers = eventName in this._handlers && this._handlers[ eventName ].slice();
+ 	if ( !handlers ) return;
+ 
+ 	for ( var i = 0; i < handlers.length; i += 1 ) {
+ 		handlers[i].call( this, data );
+ 	}
+ };
+
+subsections.prototype.observe = function observe( key, callback, options ) {
+ 	var group = ( options && options.defer ) ? this._observers.pre : this._observers.post;
+ 
+ 	( group[ key ] || ( group[ key ] = [] ) ).push( callback );
+ 
+ 	if ( !options || options.init !== false ) {
+ 		callback.__calling = true;
+ 		callback.call( this, this._state[ key ] );
+ 		callback.__calling = false;
+ 	}
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = group[ key ].indexOf( callback );
+ 			if ( ~index ) group[ key ].splice( index, 1 );
+ 		}
+ 	};
+ };
+
+subsections.prototype.on = function on( eventName, handler ) {
+ 	var handlers = this._handlers[ eventName ] || ( this._handlers[ eventName ] = [] );
+ 	handlers.push( handler );
+ 
+ 	return {
+ 		cancel: function () {
+ 			var index = handlers.indexOf( handler );
+ 			if ( ~index ) handlers.splice( index, 1 );
+ 		}
+ 	};
+ };
+
+subsections.prototype.set = function set( newState ) {
+ 	this._set( newState );
+ 	( this._root || this )._flush();
+ };
+
+subsections.prototype._flush = function _flush() {
+ 	if ( !this._renderHooks ) return;
+ 
+ 	while ( this._renderHooks.length ) {
+ 		var hook = this._renderHooks.pop();
+ 		hook.fn.call( hook.context );
+ 	}
+ };
+
+subsections.prototype._set = function _set ( newState ) {
+	var oldState = this._state;
+	this._state = Object.assign( {}, oldState, newState );
+	
+	dispatchObservers( this, this._observers.pre, newState, oldState );
+	if ( this._fragment ) this._fragment.update( newState, this._state );
+	dispatchObservers( this, this._observers.post, newState, oldState );
+	
+	this._flush();
+};
+
+subsections.prototype.teardown = subsections.prototype.destroy = function destroy ( detach ) {
+	this.fire( 'teardown' );
+
+	this._fragment.teardown( detach !== false );
+	this._fragment = null;
+
+	this._state = {};
+	this._torndown = true;
+};
+
+function createElement( name ) {
+	return document.createElement( name );
+}
+
 function setAttribute( node, attribute, value ) {
 	node.setAttribute ( attribute, value );
 }
@@ -595,9 +1213,9 @@ function dispatchObservers( component, group, newState, oldState ) {
 	}
 }
 
-module.exports = outline;
+module.exports = subsections;
 
-},{"component/verse-range.html":1,"lib/identifier-color":4,"lib/structure":5}],4:[function(require,module,exports){
+},{"component/verse-range.html":1,"lib/identifier-color":5,"lib/structure":6}],5:[function(require,module,exports){
 const chiasmColors = {
 	a: '#018d5d',
 	b: '#ba4460',
@@ -620,7 +1238,7 @@ module.exports = function getChiasmColor(identifier) {
 	}
 }
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
 const VERSE_SECTION_RANGE_MIN = 1
 const VERSE_SECTION_RANGE_MAX = 9999
@@ -715,15 +1333,15 @@ module.exports = pipe([
 			addPrimeBooleanToChiasmSections,
 			giveSectionsChiasmAnchors)
 		},
-		subsections: [
+		subsections: makeSubsections(
 			s('The beast rising out of the sea', r([ 13, 1 ], [ 13, 10 ])),
 			s('The beast rising out of the land', r([ 13, 11 ], [ 13, 18 ])),
 			s('The 144,000 virgin (warriors) and the Lamb', r([ 14, 1 ], [ 14, 5 ])),
 			s('The seven angels', r([ 14, 6 ], [ 14, 13 ])),
 			s('The positive reaping of wheat', r([ 14, 14 ], [ 14, 16 ])),
 			s('The negative reaping of grapes', r([ 14, 17 ], [ 14, 20 ])),
-			s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations', r([ 15, 1 ], [ 15, 1 ])),
-		]
+			s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations', r([ 15, 1 ], [ 15, 1 ]))
+		)
 	}, {
 		identifier: 'D',
 		title: 'Fifth Septet – Seven Bowls of Wrath Containing the Seven Plagues',
@@ -777,7 +1395,8 @@ module.exports = pipe([
 		)
 	}, {
 		identifier: 'A',
-		title: 'Epilogue: How to Read This Book',
+		title: 'Epilogue',
+		description: 'How to Read This Book',
 		range: r([ 22, 18 ], [ 22, 21 ])
 	}
 ],
@@ -827,7 +1446,9 @@ function giveSectionsChiasmAnchors(sections) {
 
 	return sections.map((section, index) => {
 		if (index === pivotIndex) {
-			return section
+			return Object.assign({
+				anchor: section.identifier
+			}, section)
 		}
 
 		const primeAnchor = `${section.identifier}prime`

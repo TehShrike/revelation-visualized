@@ -6,23 +6,14 @@
 			style="background-color: {{getColor(section.identifier)}}"
 		>
 		</span>
-		<strong>{{sectionLabel(section)}}:</strong> {{section.title}} <small><VerseRange range="{{section.range}}" /></small>
+		<strong>
+			<a href="./#{{section.anchor}}">
+				{{sectionLabel(section)}}:
+			</a>
+		</strong> {{section.title}} <small><VerseRange range="{{section.range}}" /></small>
 	</li>
 {{/each}}
 </ol>
-
-<style>
-ol {
-	list-style-type: none;
-	padding: 0;
-}
-.tiny-color-bar {
-	width: 1em;
-}
-.tiny-color-bar::before {
-	content: "   ";
-}
-</style>
 
 <script>
 const structure = require('lib/structure')

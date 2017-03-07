@@ -1,0 +1,88 @@
+<ol>
+{{#each structure as section}}
+	<li>
+		<strong class="section-label">
+			{{sectionLabel(section)}}
+		</strong>
+		<ol>
+			{{#if !section.introduction && !section.subsections}}
+			<li>
+				<span class="tiny-color-bar"></span>
+				<strong class="subsection-label"></strong>
+				{{section.description}} <small><VerseRange range="{{section.range}}" /></small>
+			</li>
+			{{/if}}
+
+			{{#if section.introduction}}
+			<li>
+				<span
+					class="tiny-color-bar"
+					style="background-color: {{getColor('introduction')}}"
+				>
+				</span>
+				<strong class="subsection-label">Intro. </strong>
+				{{section.introduction.title}} <small><VerseRange range="{{section.introduction.range}}" /></small>
+			</li>
+			{{/if}}
+
+			{{#if section.subsections}}
+			{{#each section.subsections as subsection}}
+			<li>
+				<span
+					class="tiny-color-bar"
+					style="background-color: {{subsection.identifier ? getColor(subsection.identifier) : 'inherit'}}"
+				>
+				</span>
+				<strong class="subsection-label">{{septetLabel(subsection.identifier)}}. </strong>
+				{{subsection.title}} <small><VerseRange range="{{subsection.range}}" /></small>
+			</li>
+			{{/each}}
+			{{/if}}
+		</ol>
+	</li>
+{{/each}}
+</ol>
+
+<style>
+.subsection-label {
+	min-width: 5em;
+	display: inline-block;
+}
+.section-label {
+	font-size: larger;
+}
+</style>
+
+<script>
+const structure = require('lib/structure')
+const getColor = require('lib/identifier-color')
+
+export default {
+	data() {
+		return {
+			structure
+		}
+	},
+	components: {
+		VerseRange: require('component/verse-range.html')
+	},
+	helpers: {
+		sectionLabel(section) {
+			return section.prime ? `${section.identifier}′` : section.identifier
+		},
+		getColor,
+		septetLabel(identifier) {
+			return {
+				a: 1,
+				b: 2,
+				c: 3,
+				d: 4,
+				e: 5,
+				f: 6,
+				g: 7
+			}[identifier] || 'Interlude'
+		}
+	}
+}
+
+</script>

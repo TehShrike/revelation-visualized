@@ -92,15 +92,15 @@ module.exports = pipe([
 			addPrimeBooleanToChiasmSections,
 			giveSectionsChiasmAnchors)
 		},
-		subsections: [
+		subsections: makeSubsections(
 			s('The beast rising out of the sea', r([ 13, 1 ], [ 13, 10 ])),
 			s('The beast rising out of the land', r([ 13, 11 ], [ 13, 18 ])),
 			s('The 144,000 virgin (warriors) and the Lamb', r([ 14, 1 ], [ 14, 5 ])),
 			s('The seven angels', r([ 14, 6 ], [ 14, 13 ])),
 			s('The positive reaping of wheat', r([ 14, 14 ], [ 14, 16 ])),
 			s('The negative reaping of grapes', r([ 14, 17 ], [ 14, 20 ])),
-			s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations', r([ 15, 1 ], [ 15, 1 ])),
-		]
+			s('The final "sign in heaven" seems to comprise everything in the fifth septet and guarantees the eventual conversion of all nations', r([ 15, 1 ], [ 15, 1 ]))
+		)
 	}, {
 		identifier: 'D',
 		title: 'Fifth Septet – Seven Bowls of Wrath Containing the Seven Plagues',
@@ -154,7 +154,8 @@ module.exports = pipe([
 		)
 	}, {
 		identifier: 'A',
-		title: 'Epilogue: How to Read This Book',
+		title: 'Epilogue',
+		description: 'How to Read This Book',
 		range: r([ 22, 18 ], [ 22, 21 ])
 	}
 ],
@@ -204,7 +205,9 @@ function giveSectionsChiasmAnchors(sections) {
 
 	return sections.map((section, index) => {
 		if (index === pivotIndex) {
-			return section
+			return Object.assign({
+				anchor: section.identifier
+			}, section)
 		}
 
 		const primeAnchor = `${section.identifier}prime`

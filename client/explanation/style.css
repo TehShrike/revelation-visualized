@@ -1,0 +1,14 @@
+ol {
+	list-style-type: none;
+	padding: 0;
+}
+ol ol {
+	margin-left: 1em;
+}
+.tiny-color-bar {
+	width: 1em;
+	margin-right: .25em;
+}
+.tiny-color-bar::before {
+	content: "   ";
+}
