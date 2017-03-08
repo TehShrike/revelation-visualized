@@ -3,14 +3,6 @@
 	font-size: 1.3em;
 }
 
-p, .paragraph-margin {
-	margin: 10px 0;
-}
-
-h1, .header-margin {
-	margin: 25px 0;
-}
-
 .chiasm-section {
 	display: flex;
 }
