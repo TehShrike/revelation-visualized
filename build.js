@@ -470,7 +470,7 @@ return {
 let addedCss = false;
 function addCss () {
 	var style = createElement( 'style' );
-	style.textContent = "\n[svelte-2399739693][data-chiasm-selected=true] [data-is-selected=false], [svelte-2399739693] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-2399739693][data-chiasm-selected=true] [data-is-selected=true], [svelte-2399739693] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-2399739693][data-chiasm-selected=true] .chiasm-color-bar, [svelte-2399739693] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
+	style.textContent = "\n[svelte-536224285][data-chiasm-selected=true] [data-is-selected=false], [svelte-536224285] [data-chiasm-selected=true] [data-is-selected=false] {\n\tdisplay: none;\n}\n\n[svelte-536224285][data-chiasm-selected=true] [data-is-selected=true], [svelte-536224285] [data-chiasm-selected=true] [data-is-selected=true] {\n\tmargin-bottom: 20px;\n}\n\n[svelte-536224285][data-chiasm-selected=true] .chiasm-color-bar, [svelte-536224285] [data-chiasm-selected=true] .chiasm-color-bar {\n\tcolor: #7d7d7d;\n}\n";
 	appendNode( style, document.head );
 
 	addedCss = true;
@@ -478,12 +478,31 @@ function addCss () {
 
 function renderMainFragment ( root, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2399739693', '' );
-	var last_div_data_chiasm_selected = !!root.currentChiasm;
-	setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
+	setAttribute( div, 'svelte-536224285', '' );
+	div.id = "intro";
+	
+	var h1 = createElement( 'h1' );
+	setAttribute( h1, 'svelte-536224285', '' );
+	
+	appendNode( h1, div );
+	appendNode( createText( "Revelation" ), h1 );
+	appendNode( createText( "\n\t" ), div );
+	
+	var a = createElement( 'a' );
+	setAttribute( a, 'svelte-536224285', '' );
+	a.href = "explanation.html";
+	
+	appendNode( a, div );
+	appendNode( createText( "Explanation" ), a );
+	var text3 = createText( "\n\n" );
+	
+	var div1 = createElement( 'div' );
+	setAttribute( div1, 'svelte-536224285', '' );
+	var last_div1_data_chiasm_selected = !!root.currentChiasm;
+	setAttribute( div1, 'data-chiasm-selected', last_div1_data_chiasm_selected );
 	
 	var eachBlock_anchor = createComment();
-	appendNode( eachBlock_anchor, div );
+	appendNode( eachBlock_anchor, div1 );
 	var eachBlock_value = root.structuredText;
 	var eachBlock_iterations = [];
 	
@@ -495,14 +514,16 @@ function renderMainFragment ( root, component ) {
 	return {
 		mount: function ( target, anchor ) {
 			insertNode( div, target, anchor );
+			insertNode( text3, target, anchor );
+			insertNode( div1, target, anchor );
 		},
 		
 		update: function ( changed, root ) {
 			var __tmp;
 		
-			if ( ( __tmp = !!root.currentChiasm ) !== last_div_data_chiasm_selected ) {
-				last_div_data_chiasm_selected = __tmp;
-				setAttribute( div, 'data-chiasm-selected', last_div_data_chiasm_selected );
+			if ( ( __tmp = !!root.currentChiasm ) !== last_div1_data_chiasm_selected ) {
+				last_div1_data_chiasm_selected = __tmp;
+				setAttribute( div1, 'data-chiasm-selected', last_div1_data_chiasm_selected );
 			}
 			
 			var eachBlock_value = root.structuredText;
@@ -526,6 +547,8 @@ function renderMainFragment ( root, component ) {
 			
 			if ( detach ) {
 				detachNode( div );
+				detachNode( text3 );
+				detachNode( div1 );
 			}
 		}
 	};
@@ -533,7 +556,7 @@ function renderMainFragment ( root, component ) {
 
 function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2399739693', '' );
+	setAttribute( div, 'svelte-536224285', '' );
 	div.className = "chiasm-section";
 	var last_div_data_is_selected = root.currentChiasm && root.currentChiasm === outerChiasm.identifier;
 	setAttribute( div, 'data-is-selected', last_div_data_is_selected );
@@ -553,7 +576,7 @@ function renderEachBlock ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 	appendNode( createText( "\n\t\t\t" ), div );
 	
 	var div1 = createElement( 'div' );
-	setAttribute( div1, 'svelte-2399739693', '' );
+	setAttribute( div1, 'svelte-536224285', '' );
 	div1.className = "section-body";
 	
 	appendNode( div1, div );
@@ -978,7 +1001,7 @@ function renderIfBlock1_0 ( root, eachBlock_value, outerChiasm, outerChiasm__ind
 
 function rendersectionLineYieldFragment ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var h1 = createElement( 'h1' );
-	setAttribute( h1, 'svelte-2399739693', '' );
+	setAttribute( h1, 'svelte-536224285', '' );
 	h1.style.cssText = "color: " + ( root.chiasmColorBarColor(outerChiasm.identifier) );
 	
 	var last_text = outerChiasm.title
@@ -1044,7 +1067,7 @@ function renderIfBlock_1 ( root, eachBlock_value, outerChiasm, outerChiasm__inde
 
 function renderIfBlock_0 ( root, eachBlock_value, outerChiasm, outerChiasm__index, component ) {
 	var div = createElement( 'div' );
-	setAttribute( div, 'svelte-2399739693', '' );
+	setAttribute( div, 'svelte-536224285', '' );
 	div.className = "color-bar";
 
 	return {
@@ -1167,12 +1190,12 @@ revelation.prototype.teardown = revelation.prototype.destroy = function destroy 
 	this._torndown = true;
 };
 
-function setAttribute( node, attribute, value ) {
-	node.setAttribute ( attribute, value );
-}
-
 function createElement( name ) {
 	return document.createElement( name );
+}
+
+function setAttribute( node, attribute, value ) {
+	node.setAttribute ( attribute, value );
 }
 
 function detachNode( node ) {
@@ -1183,12 +1206,16 @@ function insertNode( node, target, anchor ) {
 	target.insertBefore( node, anchor );
 }
 
-function createComment() {
-	return document.createComment( '' );
-}
-
 function appendNode( node, target ) {
 	target.appendChild( node );
+}
+
+function createText( data ) {
+	return document.createTextNode( data );
+}
+
+function createComment() {
+	return document.createComment( '' );
 }
 
 function teardownEach( iterations, detach, start ) {
@@ -1198,10 +1225,6 @@ function teardownEach( iterations, detach, start ) {
 }
 
 function noop() {}
-
-function createText( data ) {
-	return document.createTextNode( data );
-}
 
 function dispatchObservers( component, group, newState, oldState ) {
 	for ( var key in group ) {
