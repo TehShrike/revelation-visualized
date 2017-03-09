@@ -1,0 +1,16 @@
+machine:
+  node:
+    version: 7.7.2
+dependencies:
+  pre:
+    - npm install now -g
+    - npm install now-alias -g
+test:
+  override:
+    - npm test
+deployment:
+  production:
+    branch: master
+    commands:
+      - now --token=$NOW_API_KEY --name=revelationstructure.com
+      - now-alias --token=$NOW_API_KEY --name=revelationstructure.com --alias=revelationstructure.com
