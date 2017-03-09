@@ -17,3 +17,13 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: Verdana, sans-serif;
 	line-height: 100%;
 }
+
+a:link {
+	color: #0066e4;
+}
+a:visited {
+	color: #00479f;
+}
+a.everblue:visited {
+	color: #0066e4;
+}
