@@ -18,6 +18,7 @@
 <script>
 const structure = require('lib/structure')
 const getColor = require('lib/identifier-color')
+const sectionLabel = require('lib/section-label')
 
 export default {
 	data() {
@@ -29,9 +30,7 @@ export default {
 		VerseRange: require('component/verse-range.html')
 	},
 	helpers: {
-		sectionLabel(section) {
-			return section.prime ? `${section.identifier}′` : section.identifier
-		},
+		sectionLabel,
 		getColor,
 		indentLevel(identifier) {
 			return {

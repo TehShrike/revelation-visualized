@@ -9,16 +9,20 @@
 	{{#each structuredText as outerChiasm}}
 		<div
 			class="chiasm-section"
-			data-is-selected="{{currentChiasm && currentChiasm === outerChiasm.identifier}}"
+			data-is-selected="{{!!currentChiasm && currentChiasm === outerChiasm.identifier}}"
 		>
 			{{#if subsectionIsSelected}}
-				<div class="color-bar"></div>
+				<div class="color-bar">
+					{{sectionLabel(outerChiasm)}}
+				</div>
 			{{else}}
 			<Link
 				className="color-bar chiasm-color-bar"
 				style="background-color: {{chiasmColorBarColor(outerChiasm.identifier)}}"
 				parameters="{{ getLinkParameters(outerChiasm.identifier) }}"
-			/>
+			>
+				{{sectionLabel(outerChiasm)}}
+			</Link>
 			{{/if}}
 			<div class="section-body">
 				{{#if !currentSubsection}}
@@ -100,6 +104,7 @@ const SectionLine = require('component/section-line.html')
 
 const { Link } = require('lib/router-instance')
 
+const sectionLabel = require('lib/section-label')
 const extractRangeFromVerses = require('lib/extract-range-from-verses')
 const getChiasmColor = require('lib/identifier-color')
 
@@ -134,7 +139,8 @@ export default {
 		Link
 	},
 	helpers: {
-		extractRangeFromVerses
+		extractRangeFromVerses,
+		sectionLabel
 	}
 }
 </script>
