@@ -9,7 +9,7 @@
     "watch-index": "watchify -t [ sveltify --extensions [.html] ] client/index.js -o public/build.js -d",
     "build-explanation": "browserify -t [ sveltify --extensions [.html] ] client/explanation-index.js -o public/explanation-build.js",
     "watch-explanation": "watchify -t [ sveltify --extensions [.html] ] client/explanation-index.js -o public/explanation-build.js -d",
-    "create-symlinks": "mkdir client/node_modules/; cd client/node_modules; ln -s ../component/ component; ln -s ../lib/ lib; cd ../../;",
+    "create-symlinks": "mkdir client/node_modules/; cd client/node_modules; ln -s ../component/ component && ln -s ../lib/ lib; cd ../../;",
     "test": "echo \"No test script found :-(\"",
     "start": "serve public"
   },
@@ -29,7 +29,7 @@
     "eventemitter3": "2.0.2",
     "multi-part-range-compare": "1.0.1",
     "one-to-many-array-zip": "~1.0.2",
-    "revelation": "~2.0.0",
+    "revelation": "~2.0.1",
     "serve": "5.0.2",
     "svelte": "1.10.1",
     "sveltify": "1.0.3"
