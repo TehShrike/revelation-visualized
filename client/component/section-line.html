@@ -6,6 +6,7 @@
 		style="background-color: {{getChiasmColor(sectionIdentifier)}}"
 		parameters="{{ linkParameters }}"
 	>
+		{{shortSeptetLabel(sectionIdentifier)}}
 	</Link>
 	{{else}}
 	<div class="color-bar paragraph-margin"></div>
@@ -54,6 +55,7 @@ small {
 const getChiasmColor = require('lib/identifier-color')
 const { Link } = require('lib/router-instance')
 const VerseRange = require('component/verse-range.html')
+const septetLabel = require('lib/septet-label')
 
 export default {
 	data() {
@@ -78,7 +80,12 @@ export default {
 		}
 	},
 	helpers: {
-		getChiasmColor
+		getChiasmColor,
+		shortSeptetLabel(identifier) {
+			const label = septetLabel(identifier)
+
+			return label.length > 1 ? '' : label
+		}
 	}
 }
 </script>

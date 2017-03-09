@@ -62,6 +62,8 @@
 <script>
 const structure = require('lib/structure')
 const getColor = require('lib/identifier-color')
+const sectionLabel = require('lib/section-label')
+const septetLabel = require('lib/septet-label')
 
 export default {
 	data() {
@@ -73,21 +75,9 @@ export default {
 		VerseRange: require('component/verse-range.html')
 	},
 	helpers: {
-		sectionLabel(section) {
-			return section.prime ? `${section.identifier}′` : section.identifier
-		},
+		sectionLabel,
 		getColor,
-		septetLabel(identifier) {
-			return {
-				a: 1,
-				b: 2,
-				c: 3,
-				d: 4,
-				e: 5,
-				f: 6,
-				g: 7
-			}[identifier] || 'Interlude'
-		}
+		septetLabel
 	}
 }
 
