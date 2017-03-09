@@ -7,7 +7,8 @@
     "build-index": "browserify -t [ sveltify --extensions [.html] ] client/index.js -o build.js",
     "watch-index": "watchify -t [ sveltify --extensions [.html] ] client/index.js -o build.js -d",
     "build-explanation": "browserify -t [ sveltify --extensions [.html] ] client/explanation-index.js -o explanation-build.js",
-    "watch-explanation": "watchify -t [ sveltify --extensions [.html] ] client/explanation-index.js -o explanation-build.js -d"
+    "watch-explanation": "watchify -t [ sveltify --extensions [.html] ] client/explanation-index.js -o explanation-build.js -d",
+    "test": "echo \"No test script found :-(\""
   },
   "repository": {
     "type": "git",
