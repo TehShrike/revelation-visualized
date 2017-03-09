@@ -6,11 +6,11 @@
 
 nav ol {
 	list-style-type: disc;
-	padding-left: 1em;
+	padding-left: 1rem;
 }
 
 ul {
-	padding-left: 1em;
+	padding-left: 1rem;
 }
 
 ol {
@@ -18,13 +18,18 @@ ol {
 	padding: 0;
 }
 ol ol {
-	margin-left: 1em;
+	margin-left: 1rem;
+}
+
+li {
+	padding-top: .1rem;
+	padding-bottom: .1rem;
 }
 
 .tiny-color-bar {
-	width: 1em;
-	margin-right: .25em;
-}
-.tiny-color-bar::before {
-	content: "   ";
+	width: .9rem;
+	height: .9rem;
+	margin-right: .25rem;
+	border-radius: .1rem;
+	display: inline-block;
 }

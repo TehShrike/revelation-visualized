@@ -1,16 +1,26 @@
 <ol>
 {{#each structure as section}}
-	<li style="padding-left: {{indentLevel(section.identifier)}}em">
+	<li
+		style="padding-left: {{indentLevel(section.identifier)}}em"
+	>
 		<span
 			class="tiny-color-bar"
 			style="background-color: {{getColor(section.identifier)}}"
 		>
+			&nbsp;
 		</span>
+
 		<strong>
 			<a href="./#{{section.anchor}}">
 				{{sectionLabel(section)}}:
 			</a>
-		</strong> {{section.title}} <small><VerseRange range="{{section.range}}" /></small>
+		</strong>
+
+		{{section.title}}
+
+		<small>
+			<VerseRange range="{{section.range}}" />
+		</small>
 	</li>
 {{/each}}
 </ol>
