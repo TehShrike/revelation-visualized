@@ -140,7 +140,8 @@ module.exports = pipe([
 		)
 	}, {
 		identifier: 'B',
-		title: 'Seventh Septet – Seven visions of the victory of Christ’s Kingdom – The Church Militant & Triumphant',
+		title: 'Seventh Septet – Seven visions of the victory of Christ’s Kingdom',
+		description: 'The Church Militant & Triumphant',
 		range: r([ 20, 1 ], [ 22, 17 ]),
 		introduction: {
 			title: 'Introduction to the seven New Covenant visions – Jesus proves that He is King of kings and Lord of lords',
