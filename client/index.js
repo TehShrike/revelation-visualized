@@ -1,4 +1,4 @@
-const revelation = require('pickering-majority-text-revelation')
+const revelation = require('revelation')
 
 const combineStructureAndVerses = require('lib/combine-structure-and-verses')
 const structure = require('lib/structure')
