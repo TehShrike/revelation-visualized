@@ -12,5 +12,5 @@ deployment:
   production:
     branch: master
     commands:
-      - now --token=$NOW_API_KEY --name=revelationstructure.com
-      - now-alias --token=$NOW_API_KEY --name=revelationstructure.com --alias=revelationstructure.com
+      - now --token=$NOW_API_KEY --name=revelation-visualized
+      - now-alias --token=$NOW_API_KEY --name=revelation-visualized --alias=revelationstructure.com
