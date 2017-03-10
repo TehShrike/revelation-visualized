@@ -19,7 +19,7 @@
 </div>
 
 <div data-chiasm-selected="{{!!currentChiasm}}">
-	{{#each visibleSections as outerChiasm}}
+	{{#each structuredText as outerChiasm}}
 		<div
 			class="chiasm-section"
 			data-is-selected="{{!!currentChiasm && currentChiasm === outerChiasm.identifier}}"
@@ -97,6 +97,10 @@
 </div>
 
 <style>
+[data-chiasm-selected=true] [data-is-selected=false] {
+	display: none;
+}
+
 [data-chiasm-selected=true] [data-is-selected=true] {
 	margin-bottom: 20px;
 }
@@ -155,13 +159,6 @@ export default {
 		},
 		structuredText: currentTranslation => {
 			return combineStructureAndVerses(structure, currentTranslation)
-		},
-		visibleSections: (structuredText, currentChiasm) => {
-			if (!currentChiasm) {
-				return structuredText
-			}
-
-			return structuredText.filter(outerChiasm => currentChiasm === outerChiasm.identifier)
 		}
 	},
 	components: {
