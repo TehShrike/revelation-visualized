@@ -36,6 +36,9 @@
 .color-bar:link {
 	color: #d8d8d8;
 }
+.color-bar:visited {
+	color: #d8d8d8;
+}
 
 .section-text {
 	flex-grow: 1;
