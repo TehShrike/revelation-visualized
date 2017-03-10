@@ -7,7 +7,7 @@
 	</p>
 	<p>
 		<small>
-			<Link parameters="{{toggleTranslationParameters}}">
+			<Link parameters="{{toggledTranslationParameters}}">
 			{{#if currentTranslation === translations.greek}}
 				English
 			{{else}}
@@ -122,13 +122,14 @@ const sectionLabel = require('lib/section-label')
 const extractRangeFromVerses = require('lib/extract-range-from-verses')
 const getChiasmColor = require('lib/identifier-color')
 const combineStructureAndVerses = require('lib/combine-structure-and-verses')
+const getParametersWithTranslationToggled = require('lib/toggle-translation-parameter')
 
 export default {
 	computed: {
-		toggleTranslationParameters: (currentTranslation, translations) => {
-			return currentTranslation !== translations.greek
-				? { translation: 'greek' }
-				: { }
+		toggledTranslationParameters: (querystringParameters) => {
+			return querystringParameters
+				? getParametersWithTranslationToggled(querystringParameters)
+				: {}
 		},
 		currentChiasm: querystringParameters => {
 			return querystringParameters && querystringParameters.chiasm
