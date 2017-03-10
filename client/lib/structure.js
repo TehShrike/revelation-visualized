@@ -224,16 +224,20 @@ function giveSectionsChiasmAnchors(sections) {
 }
 
 function giveSubsectionsAnchors(sections) {
-	return sections.map(section => {
+	const pivotIndex = Math.floor(sections.length / 2)
+
+	return sections.map((section, index) => {
 		if (!section.subsections) {
 			return section
 		}
+
+		const isPivotSection = index === pivotIndex
 
 		return Object.assign({}, section, {
 			subsections: section.subsections.map(subsection => {
 				if (!subsection.identifier) {
 					return subsection
-				} else if (subsection.identifier === 'interlude') {
+				} else if (subsection.identifier === 'interlude' || isPivotSection) {
 					return Object.assign({
 						anchor: `${section.anchor}-${subsection.identifier}`
 					}, subsection)
