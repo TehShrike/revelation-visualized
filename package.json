@@ -27,6 +27,7 @@
   "dependencies": {
     "browserify": "14.1.0",
     "eventemitter3": "2.0.2",
+    "majority-text-family-35-revelation": "1.0.0",
     "multi-part-range-compare": "1.0.1",
     "one-to-many-array-zip": "~1.0.2",
     "revelation": "~2.0.1",

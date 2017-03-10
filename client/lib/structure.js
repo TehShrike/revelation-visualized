@@ -1,8 +1,7 @@
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
 const {
 	VERSE_SECTION_RANGE_MIN,
-	VERSE_SECTION_RANGE_MAX,
-	MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH
+	VERSE_SECTION_RANGE_MAX
 } = require('lib/constants')
 
 function pipe(input, ...fns) {

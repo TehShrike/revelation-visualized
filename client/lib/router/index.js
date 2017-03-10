@@ -26,6 +26,14 @@ function defaultOnPopState(listener) {
 	window.addEventListener('popstate', listener)
 }
 
+function parametersToQuerystring(parameters) {
+	const parameterStrings = Object.keys(parameters)
+		.map(key => ({ key, value: parameters[key] }))
+		.map(({ key, value }) => `${key}=${encodeURIComponent(value)}`)
+
+	return '?' + parameterStrings.join('&')
+}
+
 module.exports = function createRouterInstance(
 		pushState = defaultPushState,
 		currentQuerystring = defaultCurrentQuerystring,
@@ -39,28 +47,40 @@ module.exports = function createRouterInstance(
 		emitter.emit('navigate', { querystring, parameters })
 	})
 
+	function navigate({ querystring, parameters, element }) {
+		if (typeof querystring === 'undefined') {
+			querystring = parametersToQuerystring(parameters)
+		}
+		current = { querystring, parameters }
+
+		function emit(event) {
+			emitter.emit(event, {
+				querystring,
+				parameters,
+				element
+			})
+		}
+
+		emit('before navigate')
+
+		emit('navigate')
+
+		pushState(parameters, '', querystring)
+
+		emit('after navigate')
+	}
+
 	return {
+		navigate,
 		Link: function linkProxy(options) {
 			const linkComponent = new Link(options)
 
 			linkComponent.on('navigate', ({ querystring, parameters }) => {
-				current = { querystring, parameters }
-
-				function emit(event) {
-					emitter.emit(event, {
-						querystring,
-						parameters,
-						element: linkComponent.refs.link
-					})
-				}
-
-				emit('before navigate')
-
-				emit('navigate')
-
-				pushState(parameters, '', querystring)
-
-				emit('after navigate')
+				navigate({
+					querystring,
+					parameters,
+					element: linkComponent.refs.link
+				})
 			})
 
 			return linkComponent
@@ -84,6 +104,12 @@ module.exports = function createRouterInstance(
 		once(event, listener) {
 			emitter.once(event, listener)
 			return () => emitter.removeListener(event, listener)
+		},
+		getCurrentQuerystring() {
+			return current.querystring
+		},
+		getCurrentParameters() {
+			return current.parameters
 		}
 	}
 }

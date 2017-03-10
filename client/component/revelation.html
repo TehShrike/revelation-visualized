@@ -2,7 +2,20 @@
 	<h1>
 		Revelation
 	</h1>
-	<a href="explanation.html">Explanation</a>
+	<p>
+		<a href="explanation.html">Explanation</a>
+	</p>
+	<p>
+		<small>
+			<Link parameters="{{toggleTranslationParameters}}">
+			{{#if currentTranslation === translations.greek}}
+				English
+			{{else}}
+				Greek
+			{{/if}}
+			</Link>
+		</small>
+	</p>
 </div>
 
 <div data-chiasm-selected="{{!!currentChiasm}}">
@@ -104,12 +117,19 @@ const SectionLine = require('component/section-line.html')
 
 const { Link } = require('lib/router-instance')
 
+const structure = require('lib/structure')
 const sectionLabel = require('lib/section-label')
 const extractRangeFromVerses = require('lib/extract-range-from-verses')
 const getChiasmColor = require('lib/identifier-color')
+const combineStructureAndVerses = require('lib/combine-structure-and-verses')
 
 export default {
 	computed: {
+		toggleTranslationParameters: (currentTranslation, translations) => {
+			return currentTranslation !== translations.greek
+				? { translation: 'greek' }
+				: { }
+		},
 		currentChiasm: querystringParameters => {
 			return querystringParameters && querystringParameters.chiasm
 		},
@@ -130,6 +150,14 @@ export default {
 			} else {
 				return getChiasmColor
 			}
+		},
+		currentTranslation: (querystringParameters, translations) => {
+			return querystringParameters && querystringParameters.translation === 'greek'
+				? translations.greek
+				: translations.english
+		},
+		structuredText: currentTranslation => {
+			return combineStructureAndVerses(structure, currentTranslation)
 		}
 	},
 	components: {
