@@ -1,6 +1,8 @@
 The source code for [revelationstructure.com](https://revelationstructure.com).
 
-The text of the book can be found in a different repo, [TehShrike/pickering-majority-text-revelation](https://github.com/TehShrike/pickering-majority-text-revelation).
+The English text can be found in a different repo, [TehShrike/pickering-majority-text-revelation](https://github.com/TehShrike/pickering-majority-text-revelation).
+
+The Greek text can be found in [TehShrike/majority-text-family-35-revelation](https://github.com/TehShrike/majority-text-family-35-revelation).
 
 The data structure describing the chiasm is in [client/lib/structure.js](./client/lib/structure.js).
 
