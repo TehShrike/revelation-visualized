@@ -1,5 +1,7 @@
-const Link = require('./link.html')
+const qs = require('query-string')
 const EventEmitter = require('eventemitter3')
+
+const Link = require('./link.html')
 
 function defaultPushState(state, title, url) {
 	history.pushState(state, title, url)
@@ -7,18 +9,10 @@ function defaultPushState(state, title, url) {
 
 function defaultCurrentQuerystring() {
 	const querystring = location.search
-	const keyValuePairs = querystring.length > 1
-		?	querystring.slice(1).split('&').map(keyValuePairString => keyValuePairString.split('='))
-		: []
-
-	const parameters = keyValuePairs.reduce((map, [ key, value ]) => {
-		map[key] = value
-		return map
-	}, Object.create(null))
 
 	return {
 		querystring,
-		parameters
+		parameters: qs.parse(querystring)
 	}
 }
 
@@ -27,17 +21,19 @@ function defaultOnPopState(listener) {
 }
 
 function parametersToQuerystring(parameters) {
-	const parameterStrings = Object.keys(parameters)
-		.map(key => ({ key, value: parameters[key] }))
-		.map(({ key, value }) => `${key}=${encodeURIComponent(value)}`)
-
-	return '?' + parameterStrings.join('&')
+	return '?' + qs.stringify(parameters)
 }
 
-module.exports = function createRouterInstance(
-		pushState = defaultPushState,
-		currentQuerystring = defaultCurrentQuerystring,
-		onPopState = defaultOnPopState) {
+module.exports = function createRouterInstance(options = {}) {
+	const {
+		pushState,
+		currentQuerystring,
+		onPopState
+	} = Object.assign({
+		pushState: defaultPushState,
+		currentQuerystring: defaultCurrentQuerystring,
+		onPopState: defaultOnPopState
+	}, options)
 
 	const emitter = new EventEmitter()
 	let current = currentQuerystring()
