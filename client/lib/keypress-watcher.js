@@ -1,16 +1,14 @@
 const inViewport = require('lib/in-viewport')
 const getParametersWithTranslationToggled = require('lib/toggle-translation-parameter')
+const createKeyboardListener = require('lib/keyboard-shortcut')
 
 const keyCodes = {
 	g: 71
 }
 
-// window.getSelection()
 module.exports = function startKeypressWatcher(router) {
-	document.addEventListener('keydown', event => {
-		if (event.keyCode === keyCodes.g) {
-			event.preventDefault()
-
+	createKeyboardListener({
+		[keyCodes.g]: () => {
 			const parameters = getParametersWithTranslationToggled(router.getCurrentParameters())
 
 			router.navigate({

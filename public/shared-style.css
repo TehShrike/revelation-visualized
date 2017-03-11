@@ -1,3 +1,13 @@
+body {
+	padding: 1em;
+}
+
+.intro {
+	padding-bottom: 3em;
+	text-align: center;
+	font-size: 1.3em;
+}
+
 p, .paragraph-margin {
 	margin: 10px 0;
 }
