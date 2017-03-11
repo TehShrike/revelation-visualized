@@ -3,7 +3,7 @@
 module.exports = function positionPreserver(router, options = defaultOptions()) {
 	onNavigateByElement(router, element => {
 		const originalViewport = getViewport(options)
-		const originalRelationshipToViewport = originalViewport.top - element.getBoundingClientRect().top
+		const originalRelationshipToViewport = originalViewport.top - element.getBoundingClientRect().top + 1
 
 		router.once('after navigate', ({ element }) => {
 			const destination = element.offsetTop + originalRelationshipToViewport
