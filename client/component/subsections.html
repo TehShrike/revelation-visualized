@@ -5,7 +5,7 @@
 	sectionIdentifier="{{subsection.identifier}}"
 	zoomedIn="{{!!currentSubsection}}"
 	showColorBar="{{showColorBar}}"
-	anchor="{{subsection.anchor}}"
+	anchor="{{useAnchors && subsection.anchor}}"
 	siblingAnchor="{{subsection.siblingAnchor}}"
 	siblingIsDown="{{subsection.siblingIsDown}}"
 	visible="{{subsectionIsVisible(subsection)}}"
@@ -24,6 +24,11 @@ const Paragraphs = require('component/paragraphs.html')
 const SectionLine = require('component/section-line.html')
 
 export default {
+	data() {
+		return {
+			useAnchors: true
+		}
+	},
 	components: {
 		Paragraphs,
 		SectionLine

@@ -19,76 +19,78 @@
 </div>
 
 <div data-chiasm-selected="{{!!currentChiasm}}">
-	{{#each structuredText as outerChiasm}}
+	{{#each structuredText as section}}
 		<div
 			class="chiasm-section"
-			data-is-selected="{{!!currentChiasm && currentChiasm === outerChiasm.identifier}}"
+			data-is-selected="{{!!currentChiasm && currentChiasm === section.identifier}}"
 		>
 			{{#if subsectionIsSelected}}
 				<div class="color-bar">
-					{{sectionLabel(outerChiasm)}}
+					{{sectionLabel(section)}}
 				</div>
 			{{else}}
 			<Link
 				className="color-bar chiasm-color-bar"
-				style="background-color: {{chiasmColorBarColor(outerChiasm.identifier)}}"
-				parameters="{{ getLinkParameters(outerChiasm.identifier) }}"
+				style="background-color: {{chiasmColorBarColor(section.identifier)}}"
+				parameters="{{ getLinkParameters(section.identifier) }}"
 			>
-				{{sectionLabel(outerChiasm)}}
+				{{sectionLabel(section)}}
 			</Link>
 			{{/if}}
 			<div class="section-body">
 				{{#if !currentSubsection}}
 				<SectionLine
-					description="{{outerChiasm.description}}"
+					description="{{section.description}}"
 					descriptionClass="header-margin"
-					anchor="{{outerChiasm.anchor}}"
-					siblingAnchor="{{outerChiasm.siblingAnchor}}"
-					siblingIsDown="{{outerChiasm.siblingIsDown}}"
+					anchor="{{sectionIsVisible(section) && section.anchor}}"
+					siblingAnchor="{{section.siblingAnchor}}"
+					siblingIsDown="{{section.siblingIsDown}}"
 				>
-					<h1 style="color: {{chiasmColorBarColor(outerChiasm.identifier)}}">
-						{{outerChiasm.title}}
+					<h1 style="color: {{chiasmColorBarColor(section.identifier)}}">
+						{{section.title}}
 					</h1>
 				</SectionLine>
 				{{/if}}
 
-				{{#if outerChiasm.introduction}}
-					{{#if outerChiasm.introduction.subsections}}
+				{{#if section.introduction}}
+					{{#if section.introduction.subsections}}
 						<Subsections
-							subsections="{{outerChiasm.introduction.subsections}}"
-							chiasmIdentifier="{{outerChiasm.identifier}}"
+							subsections="{{section.introduction.subsections}}"
+							chiasmIdentifier="{{section.identifier}}"
 							currentSubsection="{{currentSubsection}}"
-							verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}"
+							verses="{{extractRangeFromVerses(section.verses, section.introduction.range)}}"
 							showColorBar="{{!!currentChiasm}}"
+							useAnchors="{{sectionIsVisible(section)}}"
 						/>
 					{{elseif !currentSubsection || currentSubsection === 'introduction'}}
 						<SectionLine
-							description="{{outerChiasm.introduction.title}}"
-							chiasmIdentifier="{{outerChiasm.identifier}}"
+							description="{{section.introduction.title}}"
+							chiasmIdentifier="{{section.identifier}}"
 							sectionIdentifier="introduction"
 							zoomedIn="{{subsectionIsSelected}}"
 							showColorBar="{{!!currentChiasm}}"
-							anchor="{{outerChiasm.introduction.anchor}}"
-							siblingAnchor="{{outerChiasm.introduction.siblingAnchor}}"
-							siblingIsDown="{{outerChiasm.introduction.siblingIsDown}}"
-							range="{{outerChiasm.introduction.range}}"
+							anchor="{{sectionIsVisible(section) && section.introduction.anchor}}"
+							siblingAnchor="{{section.introduction.siblingAnchor}}"
+							siblingIsDown="{{section.introduction.siblingIsDown}}"
+							range="{{section.introduction.range}}"
 						>
-							<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.introduction.range)}}" />
+							<Paragraphs verses="{{extractRangeFromVerses(section.verses, section.introduction.range)}}" />
 						</SectionLine>
 					{{/if}}
 				{{/if}}
 
-				{{#if outerChiasm.subsections}}
+				{{#if section.subsections}}
 					<Subsections
-						subsections="{{outerChiasm.subsections}}"
-						chiasmIdentifier="{{outerChiasm.identifier}}"
+						subsections="{{section.subsections}}"
+						chiasmIdentifier="{{section.identifier}}"
 						currentSubsection="{{currentSubsection}}"
-						verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)}}"
+						verses="{{extractRangeFromVerses(section.verses, section.range)}}"
 						showColorBar="{{!!currentChiasm}}"
+						useAnchors="{{sectionIsVisible(section)}}"
 					/>
 				{{elseif !currentSubsection}}
-					<SectionLine range="{{outerChiasm.range}}">
-						<Paragraphs verses="{{extractRangeFromVerses(outerChiasm.verses, outerChiasm.range)}}" />
+					<SectionLine range="{{section.range}}">
+						<Paragraphs verses="{{extractRangeFromVerses(section.verses, section.range)}}" />
 					</SectionLine>
 				{{/if}}
 			</div>
@@ -159,6 +161,9 @@ export default {
 		},
 		structuredText: currentTranslation => {
 			return combineStructureAndVerses(structure, currentTranslation)
+		},
+		sectionIsVisible: currentChiasm => {
+			return section => !currentChiasm || currentChiasm === section.identifier
 		}
 	},
 	components: {
