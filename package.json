@@ -5,10 +5,10 @@
   "scripts": {
     "build": "npm run build-index && npm run build-explanation",
     "now-build": "npm run create-symlinks && npm run build",
-    "build-index": "browserify -t [ sveltify --extensions [.html] ] client/index.js -o public/build.js",
-    "watch-index": "watchify -t [ sveltify --extensions [.html] ] client/index.js -o public/build.js -d",
-    "build-explanation": "browserify -t [ sveltify --extensions [.html] ] client/explanation-index.js -o public/explanation-build.js",
-    "watch-explanation": "watchify -t [ sveltify --extensions [.html] ] client/explanation-index.js -o public/explanation-build.js -d",
+    "build-index": "browserify -t [ babelify --presets [ es2015 ] ] -t [ sveltify --extensions [.html] ] client/index.js -o public/build.js",
+    "watch-index": "watchify -t [ babelify --presets [ es2015 ] ] -t [ sveltify --extensions [.html] ] client/index.js -o public/build.js -d",
+    "build-explanation": "browserify -t [ babelify --presets [ es2015 ] ] -t [ sveltify --extensions [.html] ] client/explanation-index.js -o public/explanation-build.js",
+    "watch-explanation": "watchify -t [ babelify --presets [ es2015 ] ] -t [ sveltify --extensions [.html] ] client/explanation-index.js -o public/explanation-build.js -d",
     "create-symlinks": "mkdir client/node_modules/; cd client/node_modules; ln -s ../component/ component && ln -s ../lib/ lib; cd ../../;",
     "test": "echo \"No test script found :-(\"",
     "start": "serve public"

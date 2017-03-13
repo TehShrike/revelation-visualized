@@ -4,6 +4,13 @@
     "transform": [
       [
         "sveltify"
+      ],
+      [
+        "babelify",
+        {
+          "presets": "es2015",
+          "extensions": [".html", ".js"]
+        }
       ]
     ]
   },
