@@ -2,6 +2,9 @@
 {{#each structure as section}}
 	<li
 		style="padding-left: {{indentLevel(section.identifier)}}em"
+		on:mouseenter="set({ currentlyHovered: section.identifier })"
+		on:mouseleave="set({ currentlyHovered: null })"
+		data-unhighlighted="{{!!currentlyHovered && currentlyHovered !== section.identifier}}"
 	>
 		<span
 			class="tiny-color-bar"
@@ -37,7 +40,7 @@ export default {
 		}
 	},
 	components: {
-		VerseRange: require('component/verse-range.html')
+		VerseRange: require('component/verse-range.html'),
 	},
 	helpers: {
 		sectionLabel,

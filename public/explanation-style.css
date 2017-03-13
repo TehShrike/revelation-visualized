@@ -33,3 +33,18 @@ li {
 	border-radius: .1rem;
 	display: inline-block;
 }
+
+[data-unhighlighted=true] {
+	animation-name: lighten;
+	animation-duration: .3s;
+	color: #ababab;
+}
+
+@keyframes lighten {
+	0% {
+		color: #333;
+	}
+	100% {
+		color: #ababab;
+	}
+}
