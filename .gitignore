@@ -1,1 +1,3 @@
-*build.js
+public/*build.js
+public/*.css
+public/*.map
