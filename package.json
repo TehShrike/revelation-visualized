@@ -31,7 +31,7 @@
     "browserify": "14.1.0",
     "eventemitter3": "2.0.2",
     "majority-text-family-35-revelation": "~1.0.1",
-    "multi-part-range-compare": "~1.0.2",
+    "multi-part-range-compare": "~1.0.3",
     "one-to-many-array-zip": "~1.0.2",
     "postcss": "5.2.16",
     "precss": "1.4.0",
