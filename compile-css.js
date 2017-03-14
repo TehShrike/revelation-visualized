@@ -13,10 +13,16 @@ const writeFile = denodeify(fs.writeFile)
 
 async function build(filePath) {
 	const basename = path.basename(filePath)
+	console.log('building', basename)
 	const destination = `./public/${basename}`
 	const contents = await readFile(filePath, { encoding: 'utf8' })
+	const reasonablePrecss = precss({
+		import: {
+			prefix: ''
+		}
+	})
 
-	const result = await postcss([ precss, autoprefixer ]).process(contents, {
+	const result = await postcss([ reasonablePrecss, autoprefixer ]).process(contents, {
 		from: filePath,
 		to: destination
 	})
@@ -35,4 +41,39 @@ async function regularBuild() {
 	])
 }
 
-regularBuild()
+function startIfItsNotRunningAlready(asyncFunction) {
+	let queued = false
+	let running = false
+
+	return async function run() {
+		if (running) {
+			queued = true
+		} else {
+			running = true
+			queued = false
+			await asyncFunction()
+			running = false
+			if (queued) {
+				run()
+			}
+		}
+	}
+}
+
+function watch() {
+	const watcher = chokidar.watch('client/**/*.css')
+	const buildButOnlyOneAtATime = startIfItsNotRunningAlready(regularBuild)
+
+	watcher.on('add', buildButOnlyOneAtATime).on('change', buildButOnlyOneAtATime)
+	// watcher.on('add', path => console.log('add:', path)).on('change', path => console.log('change:', path))
+}
+
+async function main(debug) {
+	await regularBuild()
+
+	if (debug) {
+		watch()
+	}
+}
+
+main(process.argv[2] === 'watch')
