@@ -1,4 +1,4 @@
-@import "./colors";
+@import "./constants";
 
 .text-body {
 	font-size: 1.3em;
@@ -49,13 +49,18 @@
 	color: $darkGray;
 }
 
+[data-chiasm-selected=true] .chiasm-color-bar {
+	color: $darkGray;
+	border-radius: $colorBarRounding;
+}
+
 .septet-color-bar {
-	border-top-right-radius: .2rem;
-	border-bottom-right-radius: .2rem;
+	border-top-right-radius: $colorBarRounding;
+	border-bottom-right-radius: $colorBarRounding;
 }
 
 [data-zoomed-in=true] .septet-color-bar {
-	border-radius: .2rem;
+	border-radius: $colorBarRounding;
 }
 
 @media (max-width: 1100px) {
@@ -83,7 +88,7 @@
 	}
 
 	.septet-color-bar {
-		border-radius: .2rem;
+		border-radius: $colorBarRounding;
 	}
 }
 

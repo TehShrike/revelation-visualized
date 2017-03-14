@@ -1,4 +1,4 @@
-@import "../colors";
+@import "../constants";
 
 .content {
 	max-width: 800px;
