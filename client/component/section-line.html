@@ -2,14 +2,14 @@
 <div class="section-line" data-zoomed-in="{{zoomedIn}}" data-visible="{{visible}}">
 	{{#if sectionIdentifier && showColorBar}}
 	<Link
-		className="color-bar paragraph-margin"
+		className="color-bar septet-color-bar paragraph-margin"
 		style="background-color: {{getChiasmColor(sectionIdentifier)}}"
 		parameters="{{ linkParameters }}"
 	>
 		{{shortSeptetLabel(sectionIdentifier)}}
 	</Link>
 	{{else}}
-	<div class="color-bar paragraph-margin"></div>
+	<div class="color-bar septet-color-bar paragraph-margin"></div>
 	{{/if}}
 
 	<div class="section-content {{contentClass}}">

@@ -49,6 +49,15 @@
 	color: $darkGray;
 }
 
+.septet-color-bar {
+	border-top-right-radius: .2rem;
+	border-bottom-right-radius: .2rem;
+}
+
+[data-zoomed-in=true] .septet-color-bar {
+	border-radius: .2rem;
+}
+
 @media (max-width: 1100px) {
 	.section-description {
 		width: 250px;
@@ -71,6 +80,10 @@
 	}
 	.section-content-description-directly-below .section-description {
 		margin-top: 0;
+	}
+
+	.septet-color-bar {
+		border-radius: .2rem;
 	}
 }
 
