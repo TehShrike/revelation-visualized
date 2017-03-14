@@ -41,12 +41,13 @@
 				{{#if !currentSubsection}}
 				<SectionLine
 					description="{{section.description}}"
+					contentClass="section-content-description-directly-below"
 					descriptionClass="header-margin"
 					anchor="{{sectionIsVisible(section) && section.anchor}}"
 					siblingAnchor="{{section.siblingAnchor}}"
 					siblingIsDown="{{section.siblingIsDown}}"
 				>
-					<h1 style="color: {{chiasmColorBarColor(section.identifier)}}">
+					<h1 style="color: {{getChiasmColor(section.identifier)}}">
 						{{section.title}}
 					</h1>
 				</SectionLine>
@@ -174,7 +175,8 @@ export default {
 	},
 	helpers: {
 		extractRangeFromVerses,
-		sectionLabel
+		sectionLabel,
+		getChiasmColor
 	}
 }
 </script>

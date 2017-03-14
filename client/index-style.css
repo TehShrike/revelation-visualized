@@ -11,6 +11,10 @@
 @define-mixin content-section-padding {
 	margin-left: 16px;
 	margin-right: 0;
+
+	@media (max-width: 900px) {
+		margin-right: 16px;
+	}
 }
 
 .section-body {
@@ -22,6 +26,12 @@
 .section-line {
 	display: flex;
 	flex-direction: row;
+}
+
+.section-content {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: row-reverse;
 }
 
 .section-text {
@@ -46,8 +56,18 @@
 }
 
 @media (max-width: 900px) {
+	.section-content {
+		flex-direction: column;
+	}
 	.section-description {
-		width: 150px;
+		width: initial;
+		flex-grow: 1;
+	}
+	.section-content-description-directly-below {
+		flex-direction: column-reverse;
+	}
+	.section-content-description-directly-below .section-description {
+		margin-top: 0;
 	}
 }
 

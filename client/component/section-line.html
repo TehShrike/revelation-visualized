@@ -12,21 +12,23 @@
 	<div class="color-bar paragraph-margin"></div>
 	{{/if}}
 
-	<div class="section-text">
-		{{yield}}
-	</div>
-	<div class="section-description {{descriptionClass}}">
-		{{#if siblingAnchor}}
-			<a
-				href="#{{siblingAnchor}}"
-				class="sibling-link everblue"
-			>
-				{{#if siblingIsDown}}&#8609;{{else}}&#8607;{{/if}}
-			</a>
-		{{/if}}
-		{{description || ''}}
+	<div class="section-content {{contentClass}}">
+		<div class="section-description {{descriptionClass}}">
+			{{#if siblingAnchor}}
+				<a
+					href="#{{siblingAnchor}}"
+					class="sibling-link everblue"
+				>
+					{{#if siblingIsDown}}&#8609;{{else}}&#8607;{{/if}}
+				</a>
+			{{/if}}
+			{{description || ''}}
 
-		{{#if range}}<small><VerseRange range="{{range}}" /></small>{{/if}}
+			{{#if range}}<small><VerseRange range="{{range}}" /></small>{{/if}}
+		</div>
+		<div class="section-text">
+			{{yield}}
+		</div>
 	</div>
 </div>
 

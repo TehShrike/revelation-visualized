@@ -22,13 +22,6 @@ body {
 	margin: 0;
 }
 
-@media (max-width: 500px) {
-	body {
-		padding: 8px;
-	}
-}
-
-
 p {
 	line-height: 1.3rem;
 }
@@ -36,6 +29,26 @@ p {
 h1, h2, h3, h4, h5, h6 {
 	font-family: Verdana, sans-serif;
 	line-height: 100%;
+}
+
+h1 {
+	font-size: 35px;
+}
+
+@media (max-width: 900px) {
+	h1 {
+		font-size: 30px;
+	}
+}
+
+@media (max-width: 500px) {
+	body {
+		padding: 8px;
+	}
+
+	h1 {
+		font-size: 20px;
+	}
 }
 
 a:link {
