@@ -6,9 +6,9 @@
     "build": "npm run build-index && npm run build-explanation && npm run build-css",
     "now-build": "npm run create-symlinks && npm run build",
     "build-index": "browserify -t [ babelify --presets [ es2015 ] ] -t [ sveltify --extensions [.html] ] client/index.js -o public/build.js",
-    "watch-index": "watchify -t [ babelify --presets [ es2015 ] ] -t [ sveltify --extensions [.html] ] client/index.js -o public/build.js -d",
+    "watch-index": "watch \"npm run build-index -d\" client --filter=compile-js-filter.js",
     "build-explanation": "browserify -t [ babelify --presets [ es2015 ] ] -t [ sveltify --extensions [.html] ] client/explanation-index.js -o public/explanation-build.js",
-    "watch-explanation": "watchify -t [ babelify --presets [ es2015 ] ] -t [ sveltify --extensions [.html] ] client/explanation-index.js -o public/explanation-build.js -d",
+    "watch-explanation": "watch \"npm run build-explanation -d\" client --filter=compile-js-filter.js",
     "create-symlinks": "mkdir client/node_modules/; cd client/node_modules; ln -s ../component/ component && ln -s ../lib/ lib; cd ../../;",
     "watch-css": "node ./compile-css.js watch",
     "build-css": "node ./compile-css.js",
@@ -46,7 +46,7 @@
     "babel-preset-es2015": "6.22.0",
     "babelify": "7.3.0",
     "chokidar": "1.6.0",
-    "watchify": "3.9.0"
+    "watch": "1.0.2"
   },
   "browserify": {
     "transform": [
