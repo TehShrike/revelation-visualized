@@ -63,7 +63,7 @@ module.exports = pipe([
 		subsections: [
 			s('Trumpet 1 - The land is set on fire', r([ 8, 7 ], [ 8, 7 ]), 'a'),
 			s('Trumpet 2 - The sea is turned to blood', r([ 8, 8 ], [ 8, 9 ]), 'b'),
-			s('Trumpet 3 - The rivers and springs become bitter', r([ 8, 10 ], [ 8, 12 ]), 'c'),
+			s('Trumpet 3 - The rivers and springs become bitter', r([ 8, 10 ], [ 8, 11 ]), 'c'),
 			s('Trumpet 4 - The heavenly bodies are dimmed', r([ 8, 12 ], [ 8, 13 ]), 'd'),
 			s('Trumpet 5 - Demons released from the pit', r([ 9, 1 ], [ 9, 12 ]), 'e'),
 			s('Trumpet 6 - Demons released from Euphrates', r([ 9, 13 ], [ 9, 21 ]), 'f'),
