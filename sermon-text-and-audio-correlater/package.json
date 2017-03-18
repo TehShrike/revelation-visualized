@@ -1,0 +1,18 @@
+{
+  "name": "kc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "WTFPL",
+  "dependencies": {
+    "date-fns": "1.28.0",
+    "level-mem": "0.18.0",
+    "noddity-butler": "2.6.2",
+    "noddity-fs-retrieval": "1.1.0"
+  }
+}
