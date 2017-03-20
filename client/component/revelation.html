@@ -59,7 +59,8 @@
 							subsections="{{section.introduction.subsections}}"
 							chiasmIdentifier="{{section.identifier}}"
 							currentSubsection="{{currentSubsection}}"
-							verses="{{extractRangeFromVerses(section.verses, section.introduction.range)}}"
+							verses="{{introductionVerses(section)}}"
+							sermons="{{introductionSermons(section)}}"
 							showColorBar="{{!!currentChiasm}}"
 							useAnchors="{{sectionIsVisible(section)}}"
 						/>
@@ -74,8 +75,9 @@
 							siblingAnchor="{{section.introduction.siblingAnchor}}"
 							siblingIsDown="{{section.introduction.siblingIsDown}}"
 							range="{{section.introduction.range}}"
+							sermons="{{introductionSermons(section)}}"
 						>
-							<Paragraphs verses="{{extractRangeFromVerses(section.verses, section.introduction.range)}}" />
+							<Paragraphs verses="{{introductionVerses(section)}}" />
 						</SectionLine>
 					{{/if}}
 				{{/if}}
@@ -85,13 +87,17 @@
 						subsections="{{section.subsections}}"
 						chiasmIdentifier="{{section.identifier}}"
 						currentSubsection="{{currentSubsection}}"
-						verses="{{extractRangeFromVerses(section.verses, section.range)}}"
+						verses="{{sectionVerses(section)}}"
+						sermons="{{sectionSermons(section)}}"
 						showColorBar="{{!!currentChiasm}}"
 						useAnchors="{{sectionIsVisible(section)}}"
 					/>
 				{{elseif !currentSubsection}}
-					<SectionLine range="{{section.range}}">
-						<Paragraphs verses="{{extractRangeFromVerses(section.verses, section.range)}}" />
+					<SectionLine
+						range="{{section.range}}"
+						sermons="{{section.sermons}}"
+					>
+						<Paragraphs verses="{{sectionVerses(section)}}" />
 					</SectionLine>
 				{{/if}}
 			</div>
@@ -117,25 +123,34 @@ const SectionLine = require('component/section-line.html')
 
 const { Link } = require('lib/router-instance')
 
-const structure = require('lib/structure')
+const structure = require('lib/data/structure')
+const sermons = require('lib/data/sermons.json')
+
 const sectionLabel = require('lib/section-label')
 const extractRangeFromVerses = require('lib/extract-range-from-verses')
+const extractRangeFromSermons = require('lib/extract-range-from-sermons')
 const getChiasmColor = require('lib/identifier-color')
-const combineStructureAndVerses = require('lib/combine-structure-and-verses')
+const combineStructureWithVerses = require('lib/combine-structure-with-verses')
+const combineStructureWithSermons = require('lib/combine-structure-with-sermons')
 const getParametersWithTranslationToggled = require('lib/toggle-translation-parameter')
 
+const structureWithSermons = combineStructureWithSermons(structure, sermons)
+
 export default {
+	data() {
+		return {
+			querystringParameters: {}
+		}
+	},
 	computed: {
 		toggledTranslationParameters: (querystringParameters) => {
-			return querystringParameters
-				? getParametersWithTranslationToggled(querystringParameters)
-				: {}
+			return getParametersWithTranslationToggled(querystringParameters)
 		},
 		currentChiasm: querystringParameters => {
-			return querystringParameters && querystringParameters.chiasm
+			return querystringParameters.chiasm
 		},
 		currentSubsection: querystringParameters => {
-			return querystringParameters && querystringParameters.section
+			return querystringParameters.section
 		},
 		subsectionIsSelected: currentSubsection => !!currentSubsection,
 		getLinkParameters: currentChiasm => {
@@ -153,16 +168,16 @@ export default {
 			}
 		},
 		currentTranslation: (querystringParameters, translations) => {
-			return querystringParameters && querystringParameters.translation === 'greek'
+			return querystringParameters.translation === 'greek'
 				? translations.greek
 				: translations.english
 		},
 		structuredText: currentTranslation => {
-			return combineStructureAndVerses(structure, currentTranslation)
+			return combineStructureWithVerses(structureWithSermons, currentTranslation)
 		},
 		sectionIsVisible: currentChiasm => {
 			return section => !currentChiasm || currentChiasm === section.identifier
-		}
+		},
 	},
 	components: {
 		Paragraphs,
@@ -171,9 +186,12 @@ export default {
 		Link
 	},
 	helpers: {
-		extractRangeFromVerses,
 		sectionLabel,
-		getChiasmColor
+		getChiasmColor,
+		introductionVerses: section => extractRangeFromVerses(section.verses, section.introduction.range),
+		sectionVerses: section => extractRangeFromVerses(section.verses, section.range),
+		introductionSermons: section => extractRangeFromSermons(section.sermons, section.introduction.range),
+		sectionSermons: section => extractRangeFromSermons(section.sermons, section.range)
 	}
 }
 </script>

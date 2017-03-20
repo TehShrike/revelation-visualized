@@ -25,6 +25,10 @@
 			{{description || ''}}
 
 			{{#if range}}<small><VerseRange range="{{range}}" /></small>{{/if}}
+
+			{{#each sermons as sermon}}
+				Sermon: {{sermon.title}} ({{sermon.date}})
+			{{/each}}
 		</div>
 		<div class="section-text">
 			{{yield}}
@@ -69,6 +73,7 @@ export default {
 			zoomedIn: false,
 			showColorBar: true,
 			visible: true,
+			sermons: []
 		}
 	},
 	components: {

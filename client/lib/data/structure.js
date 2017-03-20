@@ -1,12 +1,10 @@
+const pipe = require('lib/pipe')
+
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
 const {
 	VERSE_SECTION_RANGE_MIN,
 	VERSE_SECTION_RANGE_MAX
 } = require('lib/constants')
-
-function pipe(input, ...fns) {
-	return fns.reduce((lastResult, fn) => fn(lastResult), input)
-}
 
 module.exports = pipe([
 	{

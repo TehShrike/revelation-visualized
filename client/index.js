@@ -8,7 +8,7 @@ const router = require('lib/router-instance')
 const positionPreserver = require('lib/position-preserver')
 const keypressWatcher = require('lib/keypress-watcher')
 
-router.attachQuerystringData(new Revelation({
+const revelationComponent = new Revelation({
 	target: document.querySelector('#verses'),
 	data: {
 		translations: {
@@ -16,7 +16,9 @@ router.attachQuerystringData(new Revelation({
 			english
 		}
 	}
-}))
+})
+router.attachQuerystringData(revelationComponent)
+console.log(revelationComponent.get('structuredText'))
 
 router.attachQuerystringData(new Title({
 	target: document.querySelector('title')
