@@ -26,8 +26,29 @@
 
 			{{#if range}}<small><VerseRange range="{{range}}" /></small>{{/if}}
 
+			{{#if sermons.length > 0}}
+				<small>
+					<strong>
+						Sermon{{#if sermons.length > 1}}s{{/if}}:
+					</strong>
+				</small>
+			{{/if}}
 			{{#each sermons as sermon}}
-				Sermon: {{sermon.title}} ({{sermon.date}})
+				<small>
+					{{sermon.title}} <a
+						href="https://kaysercommentary.com/{{encodeURI(sermon.filename)}}"
+						target="_blank"
+						rel="external noopener"
+					>
+						text
+					</a> <a
+						href="http://www.dominioncovenantchurch.com/sermons/?sermon_id={{sermon.audioId}}"
+						target="_blank"
+						rel="external noopener"
+					>
+						audio
+					</a>
+				</small>
 			{{/each}}
 		</div>
 		<div class="section-text">
