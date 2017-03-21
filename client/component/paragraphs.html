@@ -2,19 +2,30 @@
 	<p style="{{color ? 'color: ' + color : ''}}">
 		{{#each paragraph as chunk}}
 			{{#if chunk.type === 'verse'}}
-				<span
-				data-chapter-number="{{chunk.chapterNumber}}"
-				data-verse-number="{{chunk.verseNumber}}"
-				data-section-number="{{chunk.sectionNumber}}"
-				>
-					{{chunk.text}}
-				</span>
+				<HoverReflector targetIdentifier="{{chunkReference(chunk)}}">
+					<span
+						data-chapter-number="{{chunk.chapterNumber}}"
+						data-verse-number="{{chunk.verseNumber}}"
+						data-section-number="{{chunk.sectionNumber}}"
+					>
+
+						{{chunk.text}}
+					</span>
+				</HoverReflector>
 			{{/if}}
 		{{/each}}
 	</p>
 {{/each}}
 
+<style>
+[data-sibling-hovered=true] {
+	color: #ba4460;
+}
+</style>
+
 <script>
+
+const { HoverReflector } = require('lib/hover-instance')
 
 function splitIntoParagraphs(chunks) {
 	const paragraphs = []
@@ -49,7 +60,15 @@ export default {
 	computed: {
 		paragraphs(verses) {
 			return splitIntoParagraphs(verses)
+		},
+	},
+	helpers: {
+		chunkReference(chunk) {
+			return [ chunk.chapterNumber, chunk.verseNumber, chunk.sectionNumber ]
 		}
+	},
+	components: {
+		HoverReflector
 	}
 }
 </script>

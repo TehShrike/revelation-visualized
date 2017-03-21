@@ -35,19 +35,21 @@
 			{{/if}}
 			{{#each sermons as sermon}}
 				<small>
-					{{sermon.title}} <a
-						href="https://kaysercommentary.com/{{encodeURI(sermon.filename)}}"
-						target="_blank"
-						rel="external noopener"
-					>
-						text
-					</a> <a
-						href="http://www.dominioncovenantchurch.com/sermons/?sermon_id={{sermon.audioId}}"
-						target="_blank"
-						rel="external noopener"
-					>
-						audio
-					</a>
+					<HoverDetector identifier="{{sermon.range}}">
+						{{sermon.title}} &middot; <a
+							href="https://kaysercommentary.com/{{encodeURI(sermon.filename)}}"
+							target="_blank"
+							rel="external noopener"
+						>
+							text
+						</a> &middot; <a
+							href="http://www.dominioncovenantchurch.com/sermons/?sermon_id={{sermon.audioId}}"
+							target="_blank"
+							rel="external noopener"
+						>
+							audio
+						</a>
+					</HoverDetector>
 				</small>
 			{{/each}}
 		</div>
@@ -83,6 +85,7 @@ const getChiasmColor = require('lib/identifier-color')
 const { Link } = require('lib/router-instance')
 const VerseRange = require('component/verse-range.html')
 const septetLabel = require('lib/septet-label')
+const { HoverDetector } = require('lib/hover-instance')
 
 export default {
 	data() {
@@ -99,7 +102,8 @@ export default {
 	},
 	components: {
 		Link,
-		VerseRange
+		VerseRange,
+		HoverDetector
 	},
 	computed: {
 		linkParameters: (chiasmIdentifier, sectionIdentifier, zoomedIn) => {

@@ -77,7 +77,9 @@
 							range="{{section.introduction.range}}"
 							sermons="{{introductionSermons(section)}}"
 						>
-							<Paragraphs verses="{{introductionVerses(section)}}" />
+							<Paragraphs
+								verses="{{introductionVerses(section)}}"
+							/>
 						</SectionLine>
 					{{/if}}
 				{{/if}}
@@ -97,7 +99,9 @@
 						range="{{section.range}}"
 						sermons="{{section.sermons}}"
 					>
-						<Paragraphs verses="{{sectionVerses(section)}}" />
+						<Paragraphs
+							verses="{{sectionVerses(section)}}"
+						/>
 					</SectionLine>
 				{{/if}}
 			</div>
@@ -124,7 +128,7 @@ const SectionLine = require('component/section-line.html')
 const { Link } = require('lib/router-instance')
 
 const structure = require('lib/data/structure')
-const sermons = require('lib/data/sermons.json')
+const sermons = require('lib/data/sermons')
 
 const sectionLabel = require('lib/section-label')
 const extractRangeFromVerses = require('lib/extract-range-from-verses')

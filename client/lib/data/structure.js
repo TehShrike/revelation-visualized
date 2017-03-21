@@ -5,6 +5,7 @@ const {
 	VERSE_SECTION_RANGE_MIN,
 	VERSE_SECTION_RANGE_MAX
 } = require('lib/constants')
+const guaranteeRangeSection = require('lib/guarantee-range-section')
 
 module.exports = pipe([
 	{
@@ -185,14 +186,6 @@ function r(rangeStart, randeEnd) {
 		guaranteeRangeSection(rangeStart, VERSE_SECTION_RANGE_MIN),
 		guaranteeRangeSection(randeEnd, VERSE_SECTION_RANGE_MAX),
 	]
-}
-
-function guaranteeRangeSection(range, defaultSection) {
-	if (range.length === 3) {
-		return range
-	} else {
-		return [ ...range, defaultSection ]
-	}
 }
 
 function addPrimeBooleanToChiasmSections(sections) {

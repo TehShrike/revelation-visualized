@@ -1,7 +1,3 @@
-const {
-	VERSE_SECTION_RANGE_MIN
-} = require('lib/constants')
-
 const withinRange = require('multi-part-range-compare')
 
 module.exports = function extractRangeFromSermons(sermons, range) {
@@ -12,10 +8,7 @@ module.exports = function extractRangeFromSermons(sermons, range) {
 	let hitEndOfRange = false
 	sermons.forEach(sermon => {
 		if (!hitEndOfRange) {
-			const [ chapterNumber, verseNumber ] = sermon.range[0]
-
-			const currentSermonIsInRange = withinRange(rangeStart, rangeEnd,
-				[ chapterNumber, verseNumber, VERSE_SECTION_RANGE_MIN ])
+			const currentSermonIsInRange = withinRange(rangeStart, rangeEnd, sermon.range[0])
 
 			hitEndOfRange = insideMatchingRange && !currentSermonIsInRange
 			insideMatchingRange = currentSermonIsInRange

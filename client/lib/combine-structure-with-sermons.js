@@ -3,14 +3,11 @@ const withinRange = require('multi-part-range-compare')
 
 const getSectionRange = require('lib/get-section-range')
 
-const { VERSE_SECTION_RANGE_MIN } = require('lib/constants')
-
-
 module.exports = function combineStructureWithSermons(structure, sermons) {
 	return oneToManyZip(structure, sortSermons(sermons), (section, sermon) => {
 		const { rangeStart, rangeEnd } = getSectionRange(section)
 
-		return withinRange(rangeStart, rangeEnd, [ ...sermon.range[0], VERSE_SECTION_RANGE_MIN ])
+		return withinRange(rangeStart, rangeEnd, sermon.range[0])
 	}).map(({ one: section, many: sermons }) => Object.assign({}, section, { sermons }))
 }
 
