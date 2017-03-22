@@ -2,67 +2,44 @@
 <div class="section-line" data-zoomed-in="{{zoomedIn}}" data-visible="{{visible}}">
 	{{#if sectionIdentifier && showColorBar}}
 	<Link
-		className="color-bar septet-color-bar paragraph-margin"
+		className="color-bar septet-color-bar"
 		style="background-color: {{getChiasmColor(sectionIdentifier)}}"
 		parameters="{{ linkParameters }}"
 	>
 		{{shortSeptetLabel(sectionIdentifier)}}
 	</Link>
 	{{else}}
-	<div class="color-bar septet-color-bar paragraph-margin"></div>
+	<div class="color-bar septet-color-bar"></div>
 	{{/if}}
 
-	<div class="section-content {{contentClass}}">
-		<div class="section-description {{descriptionClass}}">
-			{{#if siblingAnchor}}
-				<a
-					href="#{{siblingAnchor}}"
-					class="sibling-link everblue"
-				>
-					{{#if siblingIsDown}}&#8609;{{else}}&#8607;{{/if}}
-				</a>
-			{{/if}}
-			{{description || ''}}
-
-			{{#if range}}<small><VerseRange range="{{range}}" /></small>{{/if}}
-
-			{{#if sermons.length > 0}}
-				<small>
-					<strong>
-						Sermon{{#if sermons.length > 1}}s{{/if}}:
-					</strong>
-				</small>
-			{{/if}}
-			{{#each sermons as sermon}}
-				<small>
-					<VerseHoverReflector targetIdentifier="{{sermon.range}}">
-						<SermonHoverDetector identifier="{{sermon.range}}">
-							{{sermon.title}}
-							&middot;
-							<a
-								href="https://kaysercommentary.com/{{encodeURI(sermon.filename)}}"
-								target="_blank"
-								rel="external noopener"
-							>
-								text
-							</a>
-							&middot;
-							<a
-								href="http://www.dominioncovenantchurch.com/sermons/?sermon_id={{sermon.audioId}}"
-								target="_blank"
-								rel="external noopener"
-							>
-								audio
-							</a>
-						</SermonHoverDetector>
-					</VerseHoverReflector>
-				</small>
-			{{/each}}
+	{{#if verses}}
+		<Paragraphs
+			verses="{{verses}}"
+			descriptionClass="{{descriptionClass}}"
+			siblingAnchor="{{siblingAnchor}}"
+			siblingIsDown="{{siblingIsDown}}"
+			description="{{description}}"
+			range="{{range}}"
+			sermons="{{sermons}}"
+			contentClass="{{contentClass}}"
+		/>
+	{{else}}
+		<div class="section-horizontal-units">
+			<div class="section-content {{contentClass}}">
+				<LineDescription
+					descriptionClass="{{descriptionClass}}"
+					siblingAnchor="{{siblingAnchor}}"
+					siblingIsDown="{{siblingIsDown}}"
+					description="{{description}}"
+					range="{{range}}"
+					sermons="{{sermons}}"
+				/>
+				<div class="section-text">
+					{{yield}}
+				</div>
+			</div>
 		</div>
-		<div class="section-text">
-			{{yield}}
-		</div>
-	</div>
+	{{/if}}
 </div>
 
 <style>
@@ -91,16 +68,18 @@ small {
 </style>
 
 <script>
+const LineDescription = require('component/line-description.html')
+const Paragraphs = require('component/paragraphs.html')
+
 const getChiasmColor = require('lib/identifier-color')
 const { Link } = require('lib/router-instance')
-const VerseRange = require('component/verse-range.html')
 const septetLabel = require('lib/septet-label')
 const { sermonHover, verseHover } = require('lib/hover-instance')
 
 export default {
 	data() {
 		return {
-			descriptionClass: 'paragraph-margin',
+			descriptionClass: '',
 			contentClass: '',
 			chiasmIdentifier: null,
 			sectionIdentifier: null,
@@ -112,9 +91,10 @@ export default {
 	},
 	components: {
 		Link,
-		VerseRange,
 		SermonHoverDetector: sermonHover.HoverDetector,
-		VerseHoverReflector: verseHover.HoverReflector
+		VerseHoverReflector: verseHover.HoverReflector,
+		LineDescription,
+		Paragraphs
 	},
 	computed: {
 		linkParameters: (chiasmIdentifier, sectionIdentifier, zoomedIn) => {

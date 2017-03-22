@@ -1,23 +1,40 @@
-{{#each paragraphs as paragraph}}
-	<p style="{{color ? 'color: ' + color : ''}}">
-		{{#each paragraph as chunk}}
-			{{#if chunk.type === 'verse'}}
-				<SermonHoverReflector targetIdentifier="{{chunkReference(chunk)}}">
-					<VerseHoverDetector identifier="{{chunkReference(chunk)}}">
-						<span
-							data-chapter-number="{{chunk.chapterNumber}}"
-							data-verse-number="{{chunk.verseNumber}}"
-							data-section-number="{{chunk.sectionNumber}}"
-						>
-
-							{{chunk.text}}
-						</span>
-					</VerseHoverDetector>
-				</SermonHoverReflector>
+<div class="section-horizontal-units">
+	{{#each paragraphs as paragraph, paragraphIndex}}
+		<span class="section-content {{contentClass}}">
+			{{#if paragraphIndex === 0}}
+				<LineDescription
+					descriptionClass="{{descriptionClass}}"
+					siblingAnchor="{{siblingAnchor}}"
+					siblingIsDown="{{siblingIsDown}}"
+					description="{{description}}"
+					range="{{range}}"
+					sermons="{{sermonsForVerses(paragraph)}}"
+				/>
+			{{else}}
+				<LineDescription
+					sermons="{{sermonsForVerses(paragraph)}}"
+				/>
 			{{/if}}
-		{{/each}}
-	</p>
-{{/each}}
+
+			<p class="section-text">
+				{{#each paragraph as chunk}}
+					<SermonHoverReflector targetIdentifier="{{chunkReference(chunk)}}">
+						<VerseHoverDetector identifier="{{chunkReference(chunk)}}">
+							<span
+								data-chapter-number="{{chunk.chapterNumber}}"
+								data-verse-number="{{chunk.verseNumber}}"
+								data-section-number="{{chunk.sectionNumber}}"
+							>
+
+								{{chunk.text}}
+							</span>
+						</VerseHoverDetector>
+					</SermonHoverReflector>
+				{{/each}}
+			</p>
+		</span>
+	{{/each}}
+</div>
 
 <style>
 [data-sibling-hovered=true] {
@@ -27,8 +44,10 @@
 
 <script>
 const { sermonHover, verseHover } = require('lib/hover-instance')
+const LineDescription = require('component/line-description.html')
+const extractRangeFromSermons = require('lib/extract-range-from-sermons')
 
-function splitIntoParagraphs(chunks) {
+function paragraphsOfJustVerses(chunks) {
 	const paragraphs = []
 	let currentParagraph = []
 
@@ -42,7 +61,7 @@ function splitIntoParagraphs(chunks) {
 	chunks.forEach(chunk => {
 		if (chunk.type === 'paragraph break') {
 			finishParagraph()
-		} else {
+		} else if (chunk.type === 'verse') {
 			currentParagraph.push(chunk)
 		}
 	})
@@ -52,16 +71,34 @@ function splitIntoParagraphs(chunks) {
 	return paragraphs
 }
 
+function getRangeFromVerses(verses) {
+	return [
+		[
+			verses[0].chapterNumber,
+			verses[0].verseNumber,
+			verses[0].sectionNumber
+		], [
+			verses[verses.length - 1].chapterNumber,
+			verses[verses.length - 1].verseNumber,
+			verses[verses.length - 1].sectionNumber
+		]
+	]
+}
+
 export default {
 	data() {
 		return {
-			verses: []
+			verses: [],
+			sermons: []
 		}
 	},
 	computed: {
 		paragraphs(verses) {
-			return splitIntoParagraphs(verses)
+			return paragraphsOfJustVerses(verses)
 		},
+		sermonsForVerses(sermons) {
+			return verses => extractRangeFromSermons(sermons, getRangeFromVerses(verses))
+		}
 	},
 	helpers: {
 		chunkReference(chunk) {
@@ -70,7 +107,8 @@ export default {
 	},
 	components: {
 		SermonHoverReflector: sermonHover.HoverReflector,
-		VerseHoverDetector: verseHover.HoverDetector
+		VerseHoverDetector: verseHover.HoverDetector,
+		LineDescription
 	}
 }
 </script>

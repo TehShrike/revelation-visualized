@@ -76,11 +76,8 @@
 							siblingIsDown="{{section.introduction.siblingIsDown}}"
 							range="{{section.introduction.range}}"
 							sermons="{{introductionSermons(section)}}"
-						>
-							<Paragraphs
-								verses="{{introductionVerses(section)}}"
-							/>
-						</SectionLine>
+							verses="{{introductionVerses(section)}}"
+						/>
 					{{/if}}
 				{{/if}}
 
@@ -98,11 +95,8 @@
 					<SectionLine
 						range="{{section.range}}"
 						sermons="{{section.sermons}}"
-					>
-						<Paragraphs
-							verses="{{sectionVerses(section)}}"
-						/>
-					</SectionLine>
+						verses="{{sectionVerses(section)}}"
+					/>
 				{{/if}}
 			</div>
 		</div>
@@ -121,7 +115,6 @@
 </style>
 
 <script>
-const Paragraphs = require('component/paragraphs.html')
 const Subsections = require('component/subsections.html')
 const SectionLine = require('component/section-line.html')
 
@@ -184,7 +177,6 @@ export default {
 		},
 	},
 	components: {
-		Paragraphs,
 		Subsections,
 		SectionLine,
 		Link

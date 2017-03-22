@@ -6,8 +6,8 @@
 	font-size: 1.3em;
 }
 
-p, .paragraph-margin {
-	margin: 10px 0;
+p {
+	margin: $paragraphMargin 0;
 }
 
 h1, .header-margin {
