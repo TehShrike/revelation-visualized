@@ -59,6 +59,7 @@
 .septet-color-bar {
 	border-top-right-radius: $colorBarRounding;
 	border-bottom-right-radius: $colorBarRounding;
+	margin: calc($paragraphMargin / 2) 0;
 }
 
 [data-zoomed-in=true] .septet-color-bar {
