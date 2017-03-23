@@ -2,7 +2,7 @@
 	{{#each paragraphs as paragraph, paragraphIndex}}
 		<span class="section-content {{contentClass}}">
 			{{#if paragraphIndex === 0}}
-				<LineDescription
+				<ParagraphDescription
 					descriptionClass="{{descriptionClass}}"
 					siblingAnchor="{{siblingAnchor}}"
 					siblingIsDown="{{siblingIsDown}}"
@@ -11,7 +11,7 @@
 					sermons="{{sermonsForVerses(paragraph)}}"
 				/>
 			{{else}}
-				<LineDescription
+				<ParagraphDescription
 					sermons="{{sermonsForVerses(paragraph)}}"
 				/>
 			{{/if}}
@@ -44,7 +44,7 @@
 
 <script>
 const { sermonHover, verseHover } = require('lib/hover-instance')
-const LineDescription = require('component/line-description.html')
+const ParagraphDescription = require('component/ParagraphDescription.html')
 const extractRangeFromSermons = require('lib/extract-range-from-sermons')
 
 function paragraphsOfJustVerses(chunks) {
@@ -108,7 +108,7 @@ export default {
 	components: {
 		SermonHoverReflector: sermonHover.HoverReflector,
 		VerseHoverDetector: verseHover.HoverDetector,
-		LineDescription
+		ParagraphDescription
 	}
 }
 </script>

@@ -1,6 +1,6 @@
-const Outline = require('./explanation/outline.html')
-const Subsections = require('./explanation/subsections.html')
-const InnerChiasm = require('./explanation/inner-chiasm.html')
+const Outline = require('./explanation/Outline.html')
+const Subsections = require('./explanation/Subsections.html')
+const InnerChiasm = require('./explanation/InnerChiasm.html')
 
 const createKeyboardListener = require('lib/keyboard-shortcut')
 

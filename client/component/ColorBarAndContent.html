@@ -26,7 +26,7 @@
 	{{else}}
 		<div class="section-horizontal-units">
 			<div class="section-content {{contentClass}}">
-				<LineDescription
+				<ParagraphDescription
 					descriptionClass="{{descriptionClass}}"
 					siblingAnchor="{{siblingAnchor}}"
 					siblingIsDown="{{siblingIsDown}}"
@@ -68,8 +68,8 @@ small {
 </style>
 
 <script>
-const LineDescription = require('component/line-description.html')
-const Paragraphs = require('component/paragraphs.html')
+const ParagraphDescription = require('component/ParagraphDescription.html')
+const Paragraphs = require('component/Paragraphs.html')
 
 const getChiasmColor = require('lib/identifier-color')
 const { Link } = require('lib/router-instance')
@@ -93,7 +93,7 @@ export default {
 		Link,
 		SermonHoverDetector: sermonHover.HoverDetector,
 		VerseHoverReflector: verseHover.HoverReflector,
-		LineDescription,
+		ParagraphDescription,
 		Paragraphs
 	},
 	computed: {

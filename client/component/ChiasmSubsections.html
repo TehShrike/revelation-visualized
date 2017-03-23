@@ -1,5 +1,5 @@
 {{#each subsectionsWithVersesAndSermons as subsection}}
-<SectionLine
+<ColorBarAndContent
 	description="{{subsection.title}}"
 	chiasmIdentifier="{{chiasmIdentifier}}"
 	sectionIdentifier="{{subsection.identifier}}"
@@ -21,8 +21,7 @@ const combineStructureWithSermons = require('lib/combine-structure-with-sermons'
 
 const pipe = require('lib/pipe')
 
-const Paragraphs = require('component/paragraphs.html')
-const SectionLine = require('component/section-line.html')
+const ColorBarAndContent = require('component/ColorBarAndContent.html')
 
 export default {
 	data() {
@@ -31,8 +30,7 @@ export default {
 		}
 	},
 	components: {
-		Paragraphs,
-		SectionLine
+		ColorBarAndContent
 	},
 	computed: {
 		subsectionIsVisible: currentSubsection => {

@@ -39,7 +39,7 @@
 			{{/if}}
 			<div class="section-body">
 				{{#if !currentSubsection}}
-				<SectionLine
+				<ColorBarAndContent
 					description="{{section.description}}"
 					contentClass="section-content-description-directly-below"
 					descriptionClass="header-margin"
@@ -50,12 +50,12 @@
 					<h1 style="color: {{getChiasmColor(section.identifier)}}">
 						{{section.title}}
 					</h1>
-				</SectionLine>
+				</ColorBarAndContent>
 				{{/if}}
 
 				{{#if section.introduction}}
 					{{#if section.introduction.subsections}}
-						<Subsections
+						<ChiasmSubsections
 							subsections="{{section.introduction.subsections}}"
 							chiasmIdentifier="{{section.identifier}}"
 							currentSubsection="{{currentSubsection}}"
@@ -65,7 +65,7 @@
 							useAnchors="{{sectionIsVisible(section)}}"
 						/>
 					{{elseif !currentSubsection || currentSubsection === 'introduction'}}
-						<SectionLine
+						<ColorBarAndContent
 							description="{{section.introduction.title}}"
 							chiasmIdentifier="{{section.identifier}}"
 							sectionIdentifier="introduction"
@@ -82,7 +82,7 @@
 				{{/if}}
 
 				{{#if section.subsections}}
-					<Subsections
+					<ChiasmSubsections
 						subsections="{{section.subsections}}"
 						chiasmIdentifier="{{section.identifier}}"
 						currentSubsection="{{currentSubsection}}"
@@ -92,7 +92,7 @@
 						useAnchors="{{sectionIsVisible(section)}}"
 					/>
 				{{elseif !currentSubsection}}
-					<SectionLine
+					<ColorBarAndContent
 						range="{{section.range}}"
 						sermons="{{section.sermons}}"
 						verses="{{sectionVerses(section)}}"
@@ -115,8 +115,8 @@
 </style>
 
 <script>
-const Subsections = require('component/subsections.html')
-const SectionLine = require('component/section-line.html')
+const ChiasmSubsections = require('component/ChiasmSubsections.html')
+const ColorBarAndContent = require('component/ColorBarAndContent.html')
 
 const { Link } = require('lib/router-instance')
 
@@ -177,8 +177,8 @@ export default {
 		},
 	},
 	components: {
-		Subsections,
-		SectionLine,
+		ChiasmSubsections,
+		ColorBarAndContent,
 		Link
 	},
 	helpers: {
