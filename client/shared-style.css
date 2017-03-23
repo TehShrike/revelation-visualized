@@ -1,4 +1,5 @@
 @import "./constants";
+@import "./mixins";
 
 .intro {
 	padding-bottom: 3em;
@@ -10,8 +11,8 @@ p {
 	margin: $paragraphMargin 0;
 }
 
-h1, .header-margin {
-	margin: 25px 0;
+h1 {
+	@mixin header-margin;
 }
 
 body {

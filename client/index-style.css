@@ -1,5 +1,5 @@
-@import "./constants";
 @import "./mixins";
+@import "./constants";
 
 .text-body {
 	font-size: 1.3em;
@@ -33,11 +33,13 @@
 	flex-direction: row-reverse;
 	justify-content: center;
 	> p {
-		margin: 0;
+		margin-top: 0;
+		margin-bottom: 0;
 	}
 }
 
 .section-text {
+	@mixin content-section-padding;
 	flex-grow: 1;
 	min-width: 300px;
 	max-width: 800px;
@@ -49,6 +51,10 @@
 	flex-grow: 0;
 	width: 400px;
 	color: $darkGray;
+}
+
+.header-section-description {
+	@mixin header-margin;
 }
 
 [data-chiasm-selected=true] .chiasm-color-bar {
@@ -72,7 +78,7 @@
 	}
 }
 
-@media (max-width: 900px) {
+@media (max-width: $smallScreen) {
 	.section-content {
 		flex-direction: column;
 	}
@@ -82,6 +88,11 @@
 	.section-description {
 		width: initial;
 		flex-grow: 1;
+		padding-bottom: 8px;
+	}
+	.header-section-description {
+		margin-top: 0;
+		margin-bottom: 0;
 	}
 	.section-content-description-directly-below {
 		flex-direction: column-reverse;

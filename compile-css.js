@@ -13,7 +13,6 @@ const writeFile = denodeify(fs.writeFile)
 
 async function build(filePath) {
 	const basename = path.basename(filePath)
-	console.log('building', basename)
 	const destination = `./public/${basename}`
 	const contents = await readFile(filePath, { encoding: 'utf8' })
 	const reasonablePrecss = precss({
@@ -22,6 +21,7 @@ async function build(filePath) {
 		}
 	})
 
+	console.log('building', basename)
 	const result = await postcss([ reasonablePrecss, autoprefixer ]).process(contents, {
 		from: filePath,
 		to: destination
@@ -45,14 +45,18 @@ function startIfItsNotRunningAlready(asyncFunction) {
 	let queued = false
 	let running = false
 
+	async function singleRun() {
+		running = true
+		await asyncFunction()
+		running = false
+	}
+
 	return async function run() {
 		if (running) {
 			queued = true
 		} else {
-			running = true
 			queued = false
-			await asyncFunction()
-			running = false
+			await singleRun()
 			if (queued) {
 				run()
 			}

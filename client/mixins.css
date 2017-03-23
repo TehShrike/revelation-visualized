@@ -6,3 +6,8 @@
 		margin-right: 16px;
 	}
 }
+
+@define-mixin header-margin {
+	margin-top: 24px;
+	margin-bottom: 24px;
+}
