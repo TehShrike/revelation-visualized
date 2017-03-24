@@ -4,7 +4,7 @@ The English text can be found in a different repo, [TehShrike/pickering-majority
 
 The Greek text can be found in [TehShrike/majority-text-family-35-revelation](https://github.com/TehShrike/majority-text-family-35-revelation).
 
-The data structure describing the chiasm is in [client/lib/structure.js](./client/lib/structure.js).
+The data structure describing the chiasm is in [client/lib/data/structure.js](./client/lib/data/structure.js).
 
 To develop:
 
