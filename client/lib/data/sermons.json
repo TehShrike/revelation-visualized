@@ -2,7 +2,7 @@
 	{
 		"title": "From Creation To Recreation",
 		"passage": "Genesis; Revelation",
-		"range": [[21, 1], [21, 1]],
+		"range": [[21,1], [21,1]],
 		"filename": "Sermons/New Testament/Revelation/Revelation 1-22 Introduction.md",
 		"date": "2015-04-26",
 		"audioId": 741
@@ -242,7 +242,7 @@
 	{
 		"title": "The Second Horseman",
 		"passage": "Revelation 6:3-4",
-		"range": [[6,4], [6,4]],
+		"range": [[6,3], [6,4]],
 		"filename": "Sermons/New Testament/Revelation/Revelation 6/Revelation 6_3-4.md",
 		"date": "2016-02-21",
 		"audioId": 825
@@ -452,6 +452,15 @@
 		"passage": "Revelation 11:7",
 		"range": [[11,7], [11,7]],
 		"filename": "Sermons/New Testament/Revelation/Revelation 11/Revelation 11_7.md",
-		"date": "2017-03-12"
+		"date": "2017-03-12",
+		"audioId": 1003
+	},
+	{
+		"title": "The Great City",
+		"passage": "Revelation 11:8",
+		"range": [[11,8], [11,8]],
+		"filename": "Sermons/New Testament/Revelation/Revelation 11/Revelation 11_8.md",
+		"date": "2017-03-19",
+		"audioId": 1004
 	}
 ]
