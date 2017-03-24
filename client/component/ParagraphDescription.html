@@ -24,14 +24,16 @@
 					>
 						text
 					</a>
-					&middot;
-					<a
-						href="http://www.dominioncovenantchurch.com/sermons/?sermon_id={{sermon.audioId}}"
-						target="_blank"
-						rel="external noopener"
-					>
-						audio
-					</a>
+					{{#if sermon.audioId}}
+						&middot;
+						<a
+							href="http://www.dominioncovenantchurch.com/sermons/?sermon_id={{sermon.audioId}}"
+							target="_blank"
+							rel="external noopener"
+						>
+							audio
+						</a>
+					{{/if}}
 				</SermonHoverDetector>
 			</VerseHoverReflector>
 		</small>
