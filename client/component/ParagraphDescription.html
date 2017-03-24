@@ -12,7 +12,7 @@
 	{{#if range}}<small><VerseRange range="{{range}}" /></small>{{/if}}
 
 	{{#each sermons as sermon}}
-		<small>
+		<small class="sermon">
 			<VerseHoverReflector targetIdentifier="{{sermon.range}}">
 				<SermonHoverDetector identifier="{{sermon.range}}">
 					{{sermon.title}}
@@ -38,6 +38,16 @@
 	{{/each}}
 </div>
 
+<style>
+.sermon {
+	display: block;
+	color: #a9a9a9;
+}
+.sermon:hover {
+	color: #7d7d7d;
+}
+</style>
+
 <script>
 const { sermonHover, verseHover } = require('lib/hover-instance')
 
@@ -49,7 +59,8 @@ export default {
 	},
 	components: {
 		SermonHoverDetector: sermonHover.HoverDetector,
-		VerseHoverReflector: verseHover.HoverReflector
+		VerseHoverReflector: verseHover.HoverReflector,
+		VerseRange: require('component/VerseRange.html')
 	}
 }
 </script>

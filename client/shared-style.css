@@ -7,14 +7,6 @@
 	font-size: 1.3em;
 }
 
-p {
-	margin: $paragraphMargin 0;
-}
-
-h1 {
-	@mixin header-margin;
-}
-
 body {
 	font-family: Palatino, Palatino Linotype, Serif;
 	background-color: $white;
@@ -25,6 +17,7 @@ body {
 
 p {
 	line-height: 1.5rem;
+	margin: $paragraphMargin 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -33,7 +26,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
+	@mixin header-margin;
 	font-size: 35px;
+}
+
+small {
+	font-size: 13px;
 }
 
 @media (max-width: 900px) {
