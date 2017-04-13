@@ -10,7 +10,6 @@
   "author": "",
   "license": "WTFPL",
   "dependencies": {
-    "date-fns": "1.28.0",
     "got": "6.7.1",
     "level-mem": "0.18.0",
     "loud-rejection": "1.6.0",

@@ -1,5 +1,6 @@
 const oneToManyZip = require('one-to-many-array-zip')
 const withinRange = require('multi-part-range-compare')
+const compareDateAsc = require('date-fns/compare_asc')
 
 const getSectionRange = require('lib/get-section-range')
 
@@ -13,7 +14,13 @@ module.exports = function combineStructureWithSermons(structure, sermons) {
 
 function sortSermons(sermons) {
 	return [ ...sermons ].sort((a, b) => {
-		return withinRange.relative(b.range[0], b.range[0], a.range[0])
+		const rangeComparison = withinRange.relative(b.range[0], b.range[0], a.range[0])
+
+		if (rangeComparison === 0) {
+			return compareDateAsc(a.date, b.date)
+		}
+
+		return rangeComparison
 	})
 }
 
