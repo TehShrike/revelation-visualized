@@ -39,7 +39,7 @@
     "revelation": "~2.0.1",
     "serve": "5.0.2",
     "svelte": "1.12.1",
-    "sveltify": "1.0.3",
+    "sveltify": "1.1.0",
     "then-denodeify": "1.0.1"
   },
   "devDependencies": {
