@@ -6,7 +6,7 @@ const getSectionRange = require('lib/get-section-range')
 
 module.exports = function combineStructureWithSermons(structure, sermons) {
 	return oneToManyZip(structure, sortSermons(sermons), (section, sermon) => {
-		const { rangeStart, rangeEnd } = getSectionRange(section)
+		const [ rangeStart, rangeEnd ] = getSectionRange(section)
 
 		return withinRange(rangeStart, rangeEnd, sermon.range[0])
 	}).map(({ one: section, many: sermons }) => Object.assign({}, section, { sermons }))

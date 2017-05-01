@@ -46,7 +46,7 @@
 					anchor="{{sectionIsVisible(section) && section.anchor}}"
 					siblingAnchor="{{section.siblingAnchor}}"
 					siblingIsDown="{{section.siblingIsDown}}"
-					range="{{section.range}}"
+					range="{{getSectionRange(section)}}"
 				>
 					<h1 style="color: {{getChiasmColor(section.identifier)}}">
 						{{section.title}}
@@ -188,7 +188,8 @@ export default {
 		introductionVerses: section => extractRangeFromVerses(section.verses, section.introduction.range),
 		sectionVerses: section => extractRangeFromVerses(section.verses, section.range),
 		introductionSermons: section => extractRangeFromSermons(section.sermons, section.introduction.range),
-		sectionSermons: section => extractRangeFromSermons(section.sermons, section.range)
+		sectionSermons: section => extractRangeFromSermons(section.sermons, section.range),
+		getSectionRange: require('lib/get-section-range')
 	}
 }
 </script>
