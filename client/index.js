@@ -4,7 +4,7 @@ const greek = require('majority-text-family-35-revelation')
 const Revelation = require('component/Revelation.html')
 const Title = require('component/Title.html')
 
-const router = require('lib/router-instance')
+const router = require('svelte-querystring-router')
 const positionPreserver = require('lib/position-preserver')
 const keypressWatcher = require('lib/keypress-watcher')
 

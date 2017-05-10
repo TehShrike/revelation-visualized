@@ -39,7 +39,8 @@
     "query-string": "4.3.2",
     "revelation": "~2.0.1",
     "serve": "5.0.2",
-    "svelte": "1.12.1",
+    "svelte": "1.20.2",
+    "svelte-querystring-router": "1.0.0",
     "sveltify": "1.1.0",
     "then-denodeify": "1.0.1"
   },
