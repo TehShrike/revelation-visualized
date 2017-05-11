@@ -25,12 +25,12 @@
 			data-is-selected="{{!!currentChiasm && currentChiasm === section.identifier}}"
 		>
 			{{#if subsectionIsSelected}}
-				<div class="color-bar">
+				<div class="color-bar unselectable">
 					{{sectionLabel(section)}}
 				</div>
 			{{else}}
 			<Link
-				className="color-bar chiasm-color-bar"
+				className="color-bar chiasm-color-bar unselectable"
 				style="background-color: {{chiasmColorBarColor(section.identifier)}}"
 				parameters="{{ getLinkParameters(section.identifier) }}"
 			>
@@ -48,9 +48,11 @@
 					siblingIsDown="{{section.siblingIsDown}}"
 					range="{{getSectionRange(section)}}"
 				>
-					<h1 style="color: {{getChiasmColor(section.identifier)}}">
-						{{section.title}}
-					</h1>
+					<Selectable identifier="meta">
+						<h1 style="color: {{getChiasmColor(section.identifier)}}">
+							{{section.title}}
+						</h1>
+					</Selectable>
 				</ColorBarAndContent>
 				{{/if}}
 
@@ -180,7 +182,8 @@ export default {
 	components: {
 		ChiasmSubsections,
 		ColorBarAndContent,
-		Link
+		Link,
+		Selectable: require('lib/selectable'),
 	},
 	helpers: {
 		sectionLabel,

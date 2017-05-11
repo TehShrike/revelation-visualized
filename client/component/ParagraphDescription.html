@@ -1,4 +1,5 @@
 <div class="section-description {{descriptionClass || ''}}">
+	<Selectable identifier="meta">
 	{{#if siblingAnchor}}
 		<a
 			href="#{{siblingAnchor}}"
@@ -38,6 +39,7 @@
 			</VerseHoverReflector>
 		</small>
 	{{/each}}
+	</Selectable>
 </div>
 
 <style>
@@ -62,7 +64,8 @@ export default {
 	components: {
 		SermonHoverDetector: sermonHover.HoverDetector,
 		VerseHoverReflector: verseHover.HoverReflector,
-		VerseRange: require('component/VerseRange.html')
+		VerseRange: require('component/VerseRange.html'),
+		Selectable: require('lib/selectable'),
 	}
 }
 </script>

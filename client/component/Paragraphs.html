@@ -17,6 +17,7 @@
 			{{/if}}
 
 			<p class="section-text">
+				<Selectable alwaysSelectable="{{true}}">
 				{{#each paragraph as chunk}}
 					<SermonHoverReflector targetIdentifier="{{chunkReference(chunk)}}">
 						<VerseHoverDetector identifier="{{chunkReference(chunk)}}">
@@ -31,6 +32,7 @@
 						</VerseHoverDetector>
 					</SermonHoverReflector>
 				{{/each}}
+				</Selectable>
 			</p>
 		</span>
 	{{/each}}
@@ -108,7 +110,8 @@ export default {
 	components: {
 		SermonHoverReflector: sermonHover.HoverReflector,
 		VerseHoverDetector: verseHover.HoverDetector,
-		ParagraphDescription
+		ParagraphDescription,
+		Selectable: require('lib/selectable'),
 	}
 }
 </script>
