@@ -16,7 +16,7 @@ function createInstance() {
 		emitter.on('selection possibility', emitterListener)
 
 		component.on('selection possibility', identifier => emitter.emit('selection possibility', identifier))
-		component.on('destroy', emitter.removeListener(emitterListener))
+		component.on('destroy', () => emitter.removeListener(emitterListener))
 
 		return component
 	}
