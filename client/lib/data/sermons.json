@@ -510,5 +510,20 @@
 		"filename": "Sermons/New Testament/Revelation/Revelation 11/Revelation 11_15-19.md",
 		"date": "2017-04-23",
 		"audioId": 1028
+	},
+	{
+		"title": "The Woman Clothed in the Sun",
+		"passage": "Revelation 12:1-2",
+		"range": [[12,1], [12,2]],
+		"filename": "Sermons/New Testament/Revelation/Revelation 12/Revelation 12_1-2.md",
+		"date": "2017-04-30",
+		"audioId": 1030
+	},
+	{
+		"title": "The Dragon's Kingdom",
+		"passage": "Revelation 12:3-6",
+		"range": [[12,3], [12,6]],
+		"filename": "Sermons/New Testament/Revelation/Revelation 12/Revelation 12_3-6.md",
+		"date": "2017-05-07"
 	}
 ]
