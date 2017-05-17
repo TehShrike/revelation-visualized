@@ -29,14 +29,15 @@
 					{{sectionLabel(section)}}
 				</div>
 			{{else}}
-			<Link
-				className="color-bar chiasm-color-bar unselectable"
-				style="background-color: {{chiasmColorBarColor(section.identifier)}}"
-				parameters="{{ getLinkParameters(section.identifier) }}"
-			>
-				{{sectionLabel(section)}}
-			</Link>
+				<Link
+					className="color-bar chiasm-color-bar unselectable"
+					style="background-color: {{chiasmColorBarColor(section.identifier)}}"
+					parameters="{{ getLinkParameters(section.identifier) }}"
+				>
+					{{sectionLabel(section)}}
+				</Link>
 			{{/if}}
+			
 			<div class="section-body">
 				{{#if !currentSubsection}}
 				<ColorBarAndContent
