@@ -38,9 +38,10 @@
     "precss": "1.4.0",
     "query-string": "4.3.2",
     "revelation": "~2.0.1",
+    "revelation-project-menu": "^1.0.1",
     "serve": "5.0.2",
-    "svelte": "1.20.2",
-    "svelte-querystring-router": "1.0.0",
+    "svelte": "1.28.1",
+    "svelte-querystring-router": "1.1.1",
     "sveltify": "1.1.0",
     "then-denodeify": "1.0.1"
   },

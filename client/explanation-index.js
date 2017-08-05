@@ -1,20 +1,16 @@
+const RevelationProjectMenu = require('revelation-project-menu')
 const Outline = require('./explanation/Outline.html')
 const Subsections = require('./explanation/Subsections.html')
 const InnerChiasm = require('./explanation/InnerChiasm.html')
 
 const createKeyboardListener = require('lib/keyboard-shortcut')
 
-new Outline({
-	target: document.querySelector('Outline')
-})
+const mount = (Constructor, elementName) => new Constructor({ target: document.querySelector(elementName) })
 
-new Subsections({
-	target: document.querySelector('Subsections')
-})
-
-new InnerChiasm({
-	target: document.querySelector('InnerChiasm')
-})
+mount(RevelationProjectMenu, 'RevelationProjectMenu')
+mount(Outline, 'Outline')
+mount(Subsections, 'Subsections')
+mount(InnerChiasm, 'InnerChiasm')
 
 
 let easterEggActivated = false

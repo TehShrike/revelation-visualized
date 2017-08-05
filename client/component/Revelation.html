@@ -1,10 +1,9 @@
+<RevelationProjectMenu />
+
 <div class="intro">
 	<h1>
 		Revelation
 	</h1>
-	<p>
-		<a href="explanation.html">Explanation</a>
-	</p>
 	<p>
 		<small>
 			<Link parameters="{{toggledTranslationParameters}}">
@@ -37,7 +36,7 @@
 					{{sectionLabel(section)}}
 				</Link>
 			{{/if}}
-			
+
 			<div class="section-body">
 				{{#if !currentSubsection}}
 				<ColorBarAndContent
@@ -185,6 +184,7 @@ export default {
 		ColorBarAndContent,
 		Link,
 		Selectable: require('lib/selectable'),
+		RevelationProjectMenu: require('revelation-project-menu'),
 	},
 	helpers: {
 		sectionLabel,
