@@ -20,9 +20,8 @@ module.exports = function startKeypressWatcher(router) {
 }
 
 function getFirstAnchorInViewport() {
-	const [ firstAnchorInViewport ] = [...document.querySelectorAll('a')]
-		.filter(element => element.id)
-		.filter(element => inViewport(element))
+	const firstAnchorInViewport = [...document.querySelectorAll('a')]
+		.find(element => element.id && inViewport(element))
 
 	return firstAnchorInViewport
 }
