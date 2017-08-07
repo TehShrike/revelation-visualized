@@ -1,12 +1,12 @@
-const english = require('revelation')
-const greek = require('majority-text-family-35-revelation')
+import english from 'revelation'
+import greek from 'majority-text-family-35-revelation'
 
-const Revelation = require('component/Revelation.html')
-const Title = require('component/Title.html')
+import Revelation from 'component/Revelation.html'
+import Title from 'component/Title.html'
 
-const router = require('svelte-querystring-router')
-const positionPreserver = require('lib/position-preserver')
-const keypressWatcher = require('lib/keypress-watcher')
+import router from 'svelte-querystring-router'
+import positionPreserver from 'lib/position-preserver'
+import keypressWatcher from 'lib/keypress-watcher'
 
 const revelationComponent = new Revelation({
 	target: document.querySelector('#verses'),

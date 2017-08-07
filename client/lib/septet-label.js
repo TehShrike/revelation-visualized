@@ -8,6 +8,6 @@ const labels = {
 	g: 7
 }
 
-module.exports = function septetLabel(identifier) {
+export default function septetLabel(identifier) {
 	return labels[identifier] || 'Interlude'
 }

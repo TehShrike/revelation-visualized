@@ -53,7 +53,9 @@
 </style>
 
 <script>
-const { sermonHover, verseHover } = require('lib/hover-instance')
+import { sermonHover, verseHover } from 'lib/hover-instance'
+import VerseRange from 'component/VerseRange.html'
+import Selectable from 'lib/selectable'
 
 export default {
 	data() {
@@ -64,8 +66,8 @@ export default {
 	components: {
 		SermonHoverDetector: sermonHover.HoverDetector,
 		VerseHoverReflector: verseHover.HoverReflector,
-		VerseRange: require('component/VerseRange.html'),
-		Selectable: require('lib/selectable'),
+		VerseRange,
+		Selectable,
 	}
 }
 </script>

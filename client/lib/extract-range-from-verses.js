@@ -1,6 +1,6 @@
-const withinRange = require('multi-part-range-compare')
+import withinRange from 'multi-part-range-compare'
 
-module.exports = function extractRangeFromVerses(verses, range) {
+export default function extractRangeFromVerses(verses, range) {
 	const [ rangeStart, rangeEnd ] = range
 	const matching = []
 

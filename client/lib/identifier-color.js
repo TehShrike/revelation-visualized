@@ -1,4 +1,4 @@
-const { MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH } = require('lib/constants')
+import { MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH } from 'lib/constants'
 
 const chiasmColors = {
 	a: '#018d5d',
@@ -11,7 +11,7 @@ const chiasmColors = {
 	introduction: '#7d7d7d'
 }
 
-module.exports = function getChiasmColor(identifier) {
+export default function getChiasmColor(identifier) {
 	if (identifier.length < MINIMUM_MEANINGFUL_IDENTIFIER_LENGTH) {
 		const key = identifier[identifier.length - 1].toLowerCase()
 		return chiasmColors[key]

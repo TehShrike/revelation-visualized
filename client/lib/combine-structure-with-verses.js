@@ -1,9 +1,9 @@
-const oneToManyZip = require('one-to-many-array-zip')
-const withinRange = require('multi-part-range-compare')
+import oneToManyZip from 'one-to-many-array-zip'
+import withinRange from 'multi-part-range-compare'
 
-const getSectionRange = require('lib/get-section-range')
+import getSectionRange from 'lib/get-section-range'
 
-module.exports = function combineStructureWithVerses(structure, verses) {
+export default function combineStructureWithVerses(structure, verses) {
 	return oneToManyZip(structure, verses, (section, verse) => {
 		const [ rangeStart, rangeEnd ] = getSectionRange(section)
 

@@ -62,13 +62,15 @@
 </style>
 
 <script>
-const ParagraphDescription = require('component/ParagraphDescription.html')
-const Paragraphs = require('component/Paragraphs.html')
+import ParagraphDescription from 'component/ParagraphDescription.html'
+import Paragraphs from 'component/Paragraphs.html'
 
-const getChiasmColor = require('lib/identifier-color')
-const { Link } = require('svelte-querystring-router')
-const septetLabel = require('lib/septet-label')
-const { sermonHover, verseHover } = require('lib/hover-instance')
+import getChiasmColor from 'lib/identifier-color'
+import svelteQuerystringRouter from 'svelte-querystring-router'
+const { Link } = svelteQuerystringRouter
+import septetLabel from 'lib/septet-label'
+
+import { sermonHover, verseHover } from 'lib/hover-instance'
 
 export default {
 	data() {

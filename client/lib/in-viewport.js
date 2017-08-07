@@ -1,11 +1,11 @@
 function contains() {
-	if (!global.document) {
+	if (!window.document) {
 		throw new Error('NO GLOBAL DOCUMENT!')
 	}
 
-	if (global.document.documentElement.compareDocumentPosition) {
+	if (window.document.documentElement.compareDocumentPosition) {
 		return (container, element) => !!(container.compareDocumentPosition(element) & 16)
-	} else if (global.document.documentElement.contains) {
+	} else if (window.document.documentElement.contains) {
 		return (container, element) => container !== element && (container.contains ? container.contains(element) : false)
 	}
 
@@ -19,8 +19,8 @@ function contains() {
 	}
 }
 
-module.exports = function isVisible(element, offset = 0) {
-	if (!contains(global.document.documentElement, element)) {
+export default function isVisible(element, offset = 0) {
+	if (!contains(window.document.documentElement, element)) {
 		return false
 	}
 
@@ -34,8 +34,8 @@ module.exports = function isVisible(element, offset = 0) {
 	const viewport = {
 		top: -offset,
 		left: -offset,
-		right: global.document.documentElement.clientWidth + offset,
-		bottom: global.document.documentElement.clientHeight + offset
+		right: window.document.documentElement.clientWidth + offset,
+		bottom: window.document.documentElement.clientHeight + offset
 	}
 
 	// The element must overlap with the visible part of the viewport

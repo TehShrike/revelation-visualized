@@ -45,9 +45,10 @@
 </style>
 
 <script>
-const { sermonHover, verseHover } = require('lib/hover-instance')
-const ParagraphDescription = require('component/ParagraphDescription.html')
-const extractRangeFromSermons = require('lib/extract-range-from-sermons')
+import Selectable from 'lib/selectable'
+import { sermonHover, verseHover } from 'lib/hover-instance'
+import ParagraphDescription from 'component/ParagraphDescription.html'
+import extractRangeFromSermons from 'lib/extract-range-from-sermons'
 
 function paragraphsOfJustVerses(chunks) {
 	const paragraphs = []
@@ -111,7 +112,7 @@ export default {
 		SermonHoverReflector: sermonHover.HoverReflector,
 		VerseHoverDetector: verseHover.HoverDetector,
 		ParagraphDescription,
-		Selectable: require('lib/selectable'),
+		Selectable,
 	}
 }
 </script>

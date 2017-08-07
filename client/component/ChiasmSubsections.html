@@ -16,12 +16,12 @@
 {{/each}}
 
 <script>
-const combineStructureWithVerses = require('lib/combine-structure-with-verses')
-const combineStructureWithSermons = require('lib/combine-structure-with-sermons')
+import combineStructureWithVerses from 'lib/combine-structure-with-verses'
+import combineStructureWithSermons from 'lib/combine-structure-with-sermons'
 
-const pipe = require('lib/pipe')
+import pipe from 'lib/pipe'
 
-const ColorBarAndContent = require('component/ColorBarAndContent.html')
+import ColorBarAndContent from 'component/ColorBarAndContent.html'
 
 export default {
 	data() {

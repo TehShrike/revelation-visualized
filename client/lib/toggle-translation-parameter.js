@@ -1,4 +1,4 @@
-module.exports = function getParametersWithTranslationToggled(parameters) {
+export default function getParametersWithTranslationToggled(parameters) {
 	const isCurrentlyGreek = parameters.translation === 'greek'
 	const toggledTranslation = isCurrentlyGreek ? 'english' : 'greek'
 

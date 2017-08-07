@@ -1,12 +1,12 @@
-const inViewport = require('lib/in-viewport')
-const getParametersWithTranslationToggled = require('lib/toggle-translation-parameter')
-const createKeyboardListener = require('lib/keyboard-shortcut')
+import inViewport from 'lib/in-viewport'
+import getParametersWithTranslationToggled from 'lib/toggle-translation-parameter'
+import createKeyboardListener from 'lib/keyboard-shortcut'
 
 const keyCodes = {
 	g: 71
 }
 
-module.exports = function startKeypressWatcher(router) {
+export default function startKeypressWatcher(router) {
 	createKeyboardListener({
 		[keyCodes.g]: () => {
 			const parameters = getParametersWithTranslationToggled(router.getCurrentParameters())

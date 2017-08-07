@@ -1,6 +1,6 @@
-const withinRange = require('multi-part-range-compare')
+import withinRange from 'multi-part-range-compare'
 
-module.exports = function extractRangeFromSermons(sermons, range) {
+export default function extractRangeFromSermons(sermons, range) {
 	const [ rangeStart, rangeEnd ] = range
 	const matching = []
 

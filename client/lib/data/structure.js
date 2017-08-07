@@ -1,13 +1,13 @@
-const pipe = require('lib/pipe')
+import pipe from 'lib/pipe'
 
 const identifiers = [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]
-const {
+import {
 	VERSE_SECTION_RANGE_MIN,
 	VERSE_SECTION_RANGE_MAX
-} = require('lib/constants')
-const guaranteeRangeSection = require('lib/guarantee-range-section')
+} from 'lib/constants'
+import guaranteeRangeSection from 'lib/guarantee-range-section'
 
-module.exports = pipe([
+export default pipe([
 	{
 		identifier: 'A',
 		title: 'Prologue',

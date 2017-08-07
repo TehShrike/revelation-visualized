@@ -1,9 +1,9 @@
-const RevelationProjectMenu = require('revelation-project-menu')
-const Outline = require('./explanation/Outline.html')
-const Subsections = require('./explanation/Subsections.html')
-const InnerChiasm = require('./explanation/InnerChiasm.html')
+import RevelationProjectMenu from 'revelation-project-menu'
+import Outline from './explanation/Outline.html'
+import Subsections from './explanation/Subsections.html'
+import InnerChiasm from './explanation/InnerChiasm.html'
 
-const createKeyboardListener = require('lib/keyboard-shortcut')
+import createKeyboardListener from 'lib/keyboard-shortcut'
 
 const mount = (Constructor, elementName) => new Constructor({ target: document.querySelector(elementName) })
 

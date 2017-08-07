@@ -60,10 +60,12 @@
 </style>
 
 <script>
-const structure = require('lib/data/structure')
-const getColor = require('lib/identifier-color')
-const sectionLabel = require('lib/section-label')
-const septetLabel = require('lib/septet-label')
+import structure from 'lib/data/structure'
+import getColor from 'lib/identifier-color'
+import sectionLabel from 'lib/section-label'
+import septetLabel from 'lib/septet-label'
+
+import VerseRange from 'component/VerseRange.html'
 
 export default {
 	data() {
@@ -72,7 +74,7 @@ export default {
 		}
 	},
 	components: {
-		VerseRange: require('component/VerseRange.html')
+		VerseRange
 	},
 	helpers: {
 		sectionLabel,

@@ -29,10 +29,12 @@
 </ol>
 
 <script>
-const structure = require('lib/data/structure')
-const getColor = require('lib/identifier-color')
-const sectionLabel = require('lib/section-label')
-const getSectionRange = require('lib/get-section-range')
+import structure from 'lib/data/structure'
+import getColor from 'lib/identifier-color'
+import sectionLabel from 'lib/section-label'
+import getSectionRange from 'lib/get-section-range'
+
+import VerseRange from 'component/VerseRange.html'
 
 export default {
 	data() {
@@ -41,7 +43,7 @@ export default {
 		}
 	},
 	components: {
-		VerseRange: require('component/VerseRange.html'),
+		VerseRange,
 	},
 	helpers: {
 		sectionLabel,

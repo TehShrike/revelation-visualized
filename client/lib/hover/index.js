@@ -1,13 +1,13 @@
-const EventEmitter = require('eventemitter3')
+import EventEmitter from 'eventemitter3'
 
-const HoverDetector = require('./HoverDetector.html')
-const HoverReflector = require('./HoverReflector.html')
+import HoverDetector from './HoverDetector.html'
+import HoverReflector from './HoverReflector.html'
 
 function defaultReflectionDecider(target, hoveredData) {
 	return target === hoveredData
 }
 
-module.exports = function createHoverComponents(shouldReflectChange = defaultReflectionDecider) {
+export default function createHoverComponents(shouldReflectChange = defaultReflectionDecider) {
 	const emitter = new EventEmitter()
 	let currentlyHoveredData = null
 

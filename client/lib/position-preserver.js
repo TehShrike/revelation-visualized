@@ -1,6 +1,6 @@
 // Heavily inspired by https://github.com/vvo/in-viewport/blob/f1bd60ba41bbaccff22ea7e9232dacbef260340b/in-viewport.js#L132-L173
 
-module.exports = function positionPreserver(router, options = defaultOptions()) {
+export default function positionPreserver(router, options = defaultOptions()) {
 	onNavigateByElement(router, element => {
 		const originalViewport = getViewport(options)
 		const originalRelationshipToViewport = originalViewport.top - element.getBoundingClientRect().top + 1
@@ -21,12 +21,12 @@ function onNavigateByElement(router, callback) {
 }
 
 function getViewport({ container, offset }) {
-	if (container === global.document.body) {
+	if (container === window.document.body) {
 		return {
 			top: -offset,
 			left: -offset,
-			right: global.document.documentElement.clientWidth + offset,
-			bottom: global.document.documentElement.clientHeight + offset
+			right: window.document.documentElement.clientWidth + offset,
+			bottom: window.document.documentElement.clientHeight + offset
 		}
 	} else {
 		var containerRect = container.getBoundingClientRect()
@@ -41,7 +41,7 @@ function getViewport({ container, offset }) {
 
 function defaultOptions() {
 	return {
-		container: global.document.body,
+		container: window.document.body,
 		offset: 0
 	}
 }

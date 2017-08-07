@@ -1,7 +1,7 @@
-const Selectable = require('./Selectable.html')
-const EventEmitter = require('eventemitter3')
+import Selectable from './Selectable.html'
+import EventEmitter from 'eventemitter3'
 
-module.exports = createInstance()
+export default createInstance()
 
 function createInstance() {
 	const emitter = new EventEmitter()

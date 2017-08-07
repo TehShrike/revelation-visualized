@@ -118,21 +118,26 @@
 </style>
 
 <script>
-const ChiasmSubsections = require('component/ChiasmSubsections.html')
-const ColorBarAndContent = require('component/ColorBarAndContent.html')
+import ChiasmSubsections from 'component/ChiasmSubsections.html'
+import ColorBarAndContent from 'component/ColorBarAndContent.html'
 
-const { Link } = require('svelte-querystring-router')
+import Selectable from 'lib/selectable'
+import RevelationProjectMenu from 'revelation-project-menu'
+import getSectionRange from 'lib/get-section-range'
 
-const structure = require('lib/data/structure')
-const sermons = require('lib/data/sermons')
+import svelteQuerystringRouter from 'svelte-querystring-router'
+const { Link } = svelteQuerystringRouter
 
-const sectionLabel = require('lib/section-label')
-const extractRangeFromVerses = require('lib/extract-range-from-verses')
-const extractRangeFromSermons = require('lib/extract-range-from-sermons')
-const getChiasmColor = require('lib/identifier-color')
-const combineStructureWithVerses = require('lib/combine-structure-with-verses')
-const combineStructureWithSermons = require('lib/combine-structure-with-sermons')
-const getParametersWithTranslationToggled = require('lib/toggle-translation-parameter')
+import structure from 'lib/data/structure'
+import sermons from 'lib/data/sermons'
+
+import sectionLabel from 'lib/section-label'
+import extractRangeFromVerses from 'lib/extract-range-from-verses'
+import extractRangeFromSermons from 'lib/extract-range-from-sermons'
+import getChiasmColor from 'lib/identifier-color'
+import combineStructureWithVerses from 'lib/combine-structure-with-verses'
+import combineStructureWithSermons from 'lib/combine-structure-with-sermons'
+import getParametersWithTranslationToggled from 'lib/toggle-translation-parameter'
 
 const structureWithSermons = combineStructureWithSermons(structure, sermons)
 
@@ -183,8 +188,8 @@ export default {
 		ChiasmSubsections,
 		ColorBarAndContent,
 		Link,
-		Selectable: require('lib/selectable'),
-		RevelationProjectMenu: require('revelation-project-menu'),
+		Selectable,
+		RevelationProjectMenu,
 	},
 	helpers: {
 		sectionLabel,
@@ -193,7 +198,7 @@ export default {
 		sectionVerses: section => extractRangeFromVerses(section.verses, section.range),
 		introductionSermons: section => extractRangeFromSermons(section.sermons, section.introduction.range),
 		sectionSermons: section => extractRangeFromSermons(section.sermons, section.range),
-		getSectionRange: require('lib/get-section-range')
+		getSectionRange,
 	}
 }
 </script>

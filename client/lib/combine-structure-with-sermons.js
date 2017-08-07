@@ -1,10 +1,10 @@
-const oneToManyZip = require('one-to-many-array-zip')
-const withinRange = require('multi-part-range-compare')
-const compareDateAsc = require('date-fns/compare_asc')
+import oneToManyZip from 'one-to-many-array-zip'
+import withinRange from 'multi-part-range-compare'
+import compareDateAsc from 'date-fns/compare_asc'
 
-const getSectionRange = require('lib/get-section-range')
+import getSectionRange from 'lib/get-section-range'
 
-module.exports = function combineStructureWithSermons(structure, sermons) {
+export default function combineStructureWithSermons(structure, sermons) {
 	return oneToManyZip(structure, sortSermons(sermons), (section, sermon) => {
 		const [ rangeStart, rangeEnd ] = getSectionRange(section)
 

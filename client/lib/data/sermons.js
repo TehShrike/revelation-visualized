@@ -1,7 +1,7 @@
-const sermons = require('lib/data/sermons.json')
-const guaranteeRangeSection = require('lib/guarantee-range-section')
+import sermons from 'lib/data/sermons.json'
+import guaranteeRangeSection from 'lib/guarantee-range-section'
 
-module.exports = sermons.map(sermon => {
+export default sermons.map(sermon => {
 	return Object.assign({}, sermon, {
 		range: [
 			guaranteeRangeSection(sermon.range[0]),
