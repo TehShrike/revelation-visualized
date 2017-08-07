@@ -28,6 +28,8 @@
   "homepage": "https://github.com/TehShrike/revelation-visualized#readme",
   "dependencies": {
     "autoprefixer": "6.7.7",
+    "babel-preset-es2015": "6.24.1",
+    "babelify": "7.3.0",
     "browserify": "14.1.0",
     "date-fns": "1.28.2",
     "eventemitter3": "2.0.2",
@@ -46,8 +48,6 @@
     "then-denodeify": "1.0.1"
   },
   "devDependencies": {
-    "babel-preset-es2015": "6.22.0",
-    "babelify": "7.3.0",
     "chokidar": "1.6.0",
     "watch": "1.0.2"
   },
