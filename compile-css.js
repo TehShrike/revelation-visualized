@@ -6,7 +6,6 @@ const precss = require('precss')
 const autoprefixer = require('autoprefixer')
 
 const denodeify = require('then-denodeify')
-const chokidar = require('chokidar')
 
 const readFile = denodeify(fs.readFile)
 const writeFile = denodeify(fs.writeFile)
@@ -65,6 +64,7 @@ function startIfItsNotRunningAlready(asyncFunction) {
 }
 
 function watch() {
+	const chokidar = require('chokidar')
 	const watcher = chokidar.watch('client/**/*.css')
 	const buildButOnlyOneAtATime = startIfItsNotRunningAlready(regularBuild)
 
