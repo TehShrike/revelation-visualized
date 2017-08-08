@@ -1,5 +1,11 @@
 @import "../constants";
 
+.intro {
+	padding-bottom: 2em;
+	text-align: center;
+	font-size: 1.3em;
+}
+
 .content {
 	max-width: 800px;
 	margin-left: auto;
